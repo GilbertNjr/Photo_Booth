@@ -70,7 +70,11 @@ export const FrameRender: React.FC<FrameRenderProps> = ({
               width: `${slot.width}%`,
               height: `${slot.height}%`,
               transform: slot.rotation ? `rotate(${slot.rotation}deg)` : 'none',
-              borderRadius: slot.borderRadius ? `${slot.borderRadius}px` : '4px',
+              borderRadius: slot.shape === 'arch'
+                ? '50% 50% 12px 12px / 25% 25% 12px 12px'
+                : slot.borderRadius
+                ? `${slot.borderRadius}px`
+                : '4px',
               backgroundColor: '#e2e8f0',
               boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
               overflow: 'hidden',

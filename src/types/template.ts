@@ -27,6 +27,7 @@ export interface PhotoSlot {
   rotation?: number;  // degrees tilt (-45 to 45)
   borderRadius?: number; // px
   aspectRatio?: number; // width / height
+  shape?: 'rect' | 'arch' | 'circle'; // Slot shape
 }
 
 export interface DecorativeElement {
@@ -70,7 +71,7 @@ export interface TemplateData {
   
   // Visual properties
   backgroundColor: string; // hex or CSS background
-  backgroundTexture?: 'none' | 'paper' | 'film-grain' | 'grid' | 'dots' | 'vintage-paper';
+  backgroundTexture?: 'none' | 'paper' | 'film-grain' | 'grid' | 'dots' | 'vintage-paper' | 'gingham' | 'leica';
   backgroundGradient?: string;
   frameBorderColor: string;
   frameBorderWidth: number;

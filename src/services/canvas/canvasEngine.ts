@@ -122,7 +122,10 @@ export class CanvasEngine {
       ctx.shadowOffsetY = 6;
 
       // Slot Clip / Rounding
-      if (slot.borderRadius) {
+      if (slot.shape === 'arch') {
+        this.archPath(ctx, slotX, slotY, slotW, slotH, slotW / 2);
+        ctx.clip();
+      } else if (slot.borderRadius) {
         this.roundRectPath(ctx, slotX, slotY, slotW, slotH, slot.borderRadius * 2);
         ctx.clip();
       }
@@ -239,6 +242,24 @@ export class CanvasEngine {
     ctx.quadraticCurveTo(x, y + height, x, y + height - radius);
     ctx.lineTo(x, y + radius);
     ctx.quadraticCurveTo(x, y, x + radius, y);
+    ctx.closePath();
+  }
+
+  private static archPath(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    width: number,
+    height: number,
+    radius: number
+  ) {
+    ctx.beginPath();
+    const r = Math.min(width / 2, radius);
+    ctx.moveTo(x, y + height);
+    ctx.lineTo(x, y + r);
+    ctx.arcTo(x, y, x + width / 2, y, r);
+    ctx.arcTo(x + width, y, x + width, y + r, r);
+    ctx.lineTo(x + width, y + height);
     ctx.closePath();
   }
 }
