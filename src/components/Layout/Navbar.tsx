@@ -4,6 +4,7 @@ import { Camera, Heart, Sparkles, Monitor } from 'lucide-react';
 interface NavbarProps {
   favoritesCount?: number;
   onFilterFavorites?: () => void;
+  onGoToStudio?: () => void;
   isShowingFavoritesOnly?: boolean;
   onToggleKiosk?: () => void;
   isKioskMode?: boolean;
@@ -12,13 +13,14 @@ interface NavbarProps {
 export const Navbar: React.FC<NavbarProps> = ({
   favoritesCount = 0,
   onFilterFavorites,
-  isShowingFavoritesOnly,
+  onGoToStudio,
+  isShowingFavoritesOnly = false,
   onToggleKiosk,
   isKioskMode,
 }) => {
   return (
     <header className="navbar">
-      <div className="navbar-brand">
+      <div className="navbar-brand" onClick={onGoToStudio} style={{ cursor: 'pointer' }}>
         <div className="navbar-logo-icon">
           <Camera size={22} />
         </div>
@@ -31,6 +33,17 @@ export const Navbar: React.FC<NavbarProps> = ({
       </div>
 
       <nav className="navbar-nav">
+        {onGoToStudio && (
+          <button
+            onClick={onGoToStudio}
+            className={`category-pill ${!isShowingFavoritesOnly ? 'active' : ''}`}
+            style={{ padding: '0.45rem 1rem' }}
+          >
+            <Camera size={16} />
+            <span>Studio</span>
+          </button>
+        )}
+
         {onFilterFavorites && (
           <button
             onClick={onFilterFavorites}
@@ -38,7 +51,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             style={{ padding: '0.45rem 1rem' }}
           >
             <Heart size={16} fill={isShowingFavoritesOnly ? 'currentColor' : 'none'} color={isShowingFavoritesOnly ? 'white' : '#f43f5e'} />
-            <span>Favorites</span>
+            <span>Favorit</span>
             {favoritesCount > 0 && <span className="category-count">{favoritesCount}</span>}
           </button>
         )}

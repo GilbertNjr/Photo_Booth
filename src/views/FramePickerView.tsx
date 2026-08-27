@@ -33,8 +33,17 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
   };
 
   const categoryCounts = useMemo(() => {
-    return TemplateService.getCategoryCounts();
-  }, []);
+    if (!isShowingFavoritesOnly) {
+      return TemplateService.getCategoryCounts();
+    }
+    const allTemplates = TemplateService.getAllTemplates();
+    const favTemplates = allTemplates.filter((t) => favorites.includes(t.id));
+    const counts: Record<string, number> = { all: favTemplates.length };
+    favTemplates.forEach((t) => {
+      counts[t.category] = (counts[t.category] || 0) + 1;
+    });
+    return counts;
+  }, [isShowingFavoritesOnly, favorites]);
 
   const filteredTemplates = useMemo(() => {
     let result = TemplateService.searchTemplates(searchQuery, selectedCategory);
@@ -119,6 +128,7 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
         favorites={favorites}
         onToggleFavorite={handleToggleFavorite}
         onSelectTemplate={(template) => setSelectedTemplateForModal(template)}
+        isShowingFavoritesOnly={isShowingFavoritesOnly}
       />
 
       {/* Template Inspection Modal */}

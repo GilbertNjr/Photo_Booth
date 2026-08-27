@@ -67,9 +67,13 @@ export function App() {
     <div className="app-container">
       <Navbar
         favoritesCount={favoritesCount}
+        onGoToStudio={() => {
+          setCurrentStep('picker');
+          setIsShowingFavoritesOnly(false);
+        }}
         onFilterFavorites={() => {
           setCurrentStep('picker');
-          setIsShowingFavoritesOnly((prev) => !prev);
+          setIsShowingFavoritesOnly(true);
         }}
         isShowingFavoritesOnly={isShowingFavoritesOnly}
         onToggleKiosk={toggleKioskMode}

@@ -7,6 +7,7 @@ interface TemplateGridProps {
   favorites: string[];
   onToggleFavorite: (id: string, e: React.MouseEvent) => void;
   onSelectTemplate: (template: TemplateData) => void;
+  isShowingFavoritesOnly?: boolean;
 }
 
 export const TemplateGrid: React.FC<TemplateGridProps> = ({
@@ -14,25 +15,30 @@ export const TemplateGrid: React.FC<TemplateGridProps> = ({
   favorites,
   onToggleFavorite,
   onSelectTemplate,
+  isShowingFavoritesOnly = false,
 }) => {
   if (templates.length === 0) {
     return (
       <div
         style={{
           textAlign: 'center',
-          padding: '4rem 1rem',
+          padding: '4rem 1.5rem',
           background: 'white',
           borderRadius: 'var(--radius-xl)',
           boxShadow: 'var(--shadow-sm)',
           margin: '2rem 0',
         }}
       >
-        <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>✨</div>
+        <div style={{ fontSize: '3rem', marginBottom: '0.5rem' }}>
+          {isShowingFavoritesOnly ? '♡' : '✨'}
+        </div>
         <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 700 }}>
-          No frame templates found
+          {isShowingFavoritesOnly ? 'Belum Ada Bingkai Favorit' : 'Tidak Ada Bingkai Ditemukan'}
         </h3>
         <p style={{ color: 'var(--color-neutral-sub)', fontSize: '0.9rem', marginTop: '0.25rem' }}>
-          Try clearing your search or selecting a different category pill.
+          {isShowingFavoritesOnly
+            ? 'Klik ikon hati ♡ pada bingkai di Studio untuk menyimpannya di sini!'
+            : 'Coba bersihkan pencarian atau pilih kategori lain.'}
         </p>
       </div>
     );
