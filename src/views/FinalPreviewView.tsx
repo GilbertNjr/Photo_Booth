@@ -78,10 +78,8 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
 
       {/* Main Container */}
       <div
+        className="final-preview-grid"
         style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 340px',
-          gap: '2.5rem',
           maxWidth: '920px',
           width: '100%',
           alignItems: 'center',

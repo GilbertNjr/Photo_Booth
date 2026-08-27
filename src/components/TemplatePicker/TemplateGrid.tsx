@@ -40,6 +40,7 @@ export const TemplateGrid: React.FC<TemplateGridProps> = ({
 
   return (
     <div
+      className="frame-card-grid"
       style={{
         display: 'grid',
         gridTemplateColumns: 'repeat(auto-fill, minmax(270px, 1fr))',

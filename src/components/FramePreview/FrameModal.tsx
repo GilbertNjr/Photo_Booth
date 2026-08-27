@@ -27,20 +27,9 @@ export const FrameModal: React.FC<FrameModalProps> = ({
 
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '1.5rem', alignItems: 'start' }}>
+      <div className="frame-modal-grid">
         {/* Left column: Frame preview */}
-        <div
-          style={{
-            background: 'var(--color-cream-dark)',
-            borderRadius: 'var(--radius-lg)',
-            padding: '1rem',
-            aspectRatio: '2/3',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: 'inset 0 0 16px rgba(0,0,0,0.06)',
-          }}
-        >
+        <div className="frame-modal-preview-box">
           <FrameRender template={template} />
         </div>
 
@@ -56,7 +45,9 @@ export const FrameModal: React.FC<FrameModalProps> = ({
                 <Heart size={18} fill={isFavorite ? 'currentColor' : 'none'} />
               </button>
             </div>
-            <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', fontWeight: 800 }}>{template.name}</h2>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.6rem', fontWeight: 800, color: 'var(--color-neutral-dark)' }}>
+              {template.name}
+            </h2>
             {template.subtitle && (
               <p style={{ color: 'var(--color-neutral-sub)', fontSize: '0.9rem', marginTop: '0.2rem' }}>{template.subtitle}</p>
             )}

@@ -195,14 +195,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
       </div>
 
       {/* Main Camera Workspace */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 340px',
-          gap: '2rem',
-          alignItems: 'start',
-        }}
-      >
+      <div className="camera-workspace-grid">
         {/* Left Column: Live Frame Overlay & Countdown Display */}
         <div
           style={{

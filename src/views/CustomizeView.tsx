@@ -119,14 +119,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
       </div>
 
       {/* Main Workspace */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: '1fr 420px',
-          gap: '2rem',
-          alignItems: 'start',
-        }}
-      >
+      <div className="editor-workspace-grid">
         {/* Left Column: Live Canvas Preview */}
         <div
           style={{
@@ -176,7 +169,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
           }}
         >
           {/* Navigation Control Tabs */}
-          <div style={{ display: 'flex', gap: '0.35rem', background: 'var(--color-cream-bg)', padding: '0.3rem', borderRadius: 'var(--radius-full)' }}>
+          <div style={{ display: 'flex', gap: '0.35rem', background: 'var(--color-cream-bg)', padding: '0.3rem', borderRadius: 'var(--radius-full)', overflowX: 'auto' }}>
             <button
               className={`category-pill ${activeTab === 'filter' ? 'active' : ''}`}
               onClick={() => setActiveTab('filter')}
