@@ -152,6 +152,68 @@ export const StickerIllustration: React.FC<StickerIllustrationProps> = ({
         </svg>
       );
 
+    // 🪩 3D Silver Disco Mirror Ball
+    case '🪩':
+      return (
+        <svg width={size} height={size * 1.2} viewBox="0 0 64 76" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <line x1="32" y1="0" x2="32" y2="16" stroke="#C0C0C0" strokeWidth="2"/>
+          <circle cx="32" cy="44" r="26" fill="url(#disco_grad)" stroke="#808080" strokeWidth="2"/>
+          <path d="M10 44C10 32 54 32 54 44C54 56 10 56 10 44Z" stroke="#E0E0E0" strokeWidth="1.5" strokeDasharray="3 3"/>
+          <path d="M16 44C16 24 48 24 48 44C48 64 16 64 16 44Z" stroke="#E0E0E0" strokeWidth="1.5" strokeDasharray="3 3"/>
+          <line x1="32" y1="18" x2="32" y2="70" stroke="#FFFFFF" strokeWidth="1.5" opacity="0.6"/>
+          <defs>
+            <radialGradient id="disco_grad" cx="32" cy="36" r="26" gradientUnits="userSpaceOnUse">
+              <stop stopColor="#FFFFFF"/>
+              <stop offset="0.5" stopColor="#D3D3D3"/>
+              <stop offset="1" stopColor="#707070"/>
+            </radialGradient>
+          </defs>
+        </svg>
+      );
+
+    // 🎵 Music Player Lyric Widget Card
+    case '🎵':
+      return (
+        <svg width={size * 1.8} height={size * 1.2} viewBox="0 0 110 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="110" height="70" rx="10" fill="#2C2219" opacity="0.85" stroke="#D2B48C" strokeWidth="2"/>
+          <rect x="10" y="10" width="22" height="22" rx="4" fill="#8C6239"/>
+          <circle cx="21" cy="21" r="6" fill="#F5EFE6"/>
+          <text x="38" y="20" fill="#F5EFE6" fontSize="9" fontFamily="Outfit" fontWeight="bold">Lover</text>
+          <text x="38" y="29" fill="#D2B48C" fontSize="7" fontFamily="Outfit">Taylor Swift ♡</text>
+          <text x="10" y="44" fill="#FFF" fontSize="8" fontFamily="Caveat">Can we always be this close? ✨</text>
+          <line x1="10" y1="56" x2="100" y2="56" stroke="#6C4A35" strokeWidth="2"/>
+          <circle cx="40" cy="56" r="3" fill="#D2B48C"/>
+        </svg>
+      );
+
+    // 📎 Gold Binder Paper Clip
+    case '📎':
+      return (
+        <svg width={size} height={size} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="20" y="12" width="24" height="14" rx="3" fill="#D4AF37" stroke="#8B6B1B" strokeWidth="2"/>
+          <path d="M26 26L20 52H44L38 26" stroke="#D4AF37" strokeWidth="3" fill="none"/>
+        </svg>
+      );
+
+    // 🐱 Twin Black & Cream Cats
+    case '🐱':
+      return (
+        <svg width={size * 1.5} height={size} viewBox="0 0 90 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          {/* Black Cat */}
+          <path d="M15 55C15 35 25 25 35 25C45 25 55 35 55 55H15Z" fill="#1A1817"/>
+          <polygon points="20,28 15,12 30,22" fill="#1A1817"/>
+          <polygon points="50,28 55,12 40,22" fill="#1A1817"/>
+          <circle cx="28" cy="33" r="3" fill="#FFD166"/>
+          <circle cx="42" cy="33" r="3" fill="#FFD166"/>
+          {/* Cream Cat */}
+          <path d="M40 55C40 38 50 28 62 28C74 28 84 38 84 55H40Z" fill="#F4E2D8"/>
+          <polygon points="46,30 42,16 56,25" fill="#F4E2D8"/>
+          <polygon points="78,30 82,16 68,25" fill="#F4E2D8"/>
+          <circle cx="54" cy="36" r="3" fill="#4B6584"/>
+          <circle cx="70" cy="36" r="3" fill="#4B6584"/>
+        </svg>
+      );
+
     // 🎓 Graduation Cap
     case '🎓':
       return (
