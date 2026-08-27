@@ -1,5 +1,6 @@
 import React from 'react';
 import type { TemplateData } from '../../types/template';
+import { StickerIllustration } from '../Common/StickerIllustration';
 
 interface FrameRenderProps {
   template: TemplateData;
@@ -225,15 +226,19 @@ export const FrameRender: React.FC<FrameRenderProps> = ({
             left: `${el.x}%`,
             top: `${el.y}%`,
             transform: `translate(-50%, -50%) ${el.rotation ? `rotate(${el.rotation}deg)` : ''}`,
-            fontSize: el.fontSize ? `${el.fontSize * 0.75}px` : '1rem',
             color: el.color || template.textColor,
             fontFamily: el.fontFamily || 'inherit',
             whiteSpace: 'nowrap',
             pointerEvents: 'none',
             zIndex: 10,
+            filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.25))',
           }}
         >
-          {el.content}
+          {el.type === 'sticker' || el.type === 'doodle' || el.type === 'stamp' ? (
+            <StickerIllustration content={el.content} size={el.fontSize ? el.fontSize * 0.8 : 40} color={el.color} />
+          ) : (
+            <span style={{ fontSize: el.fontSize ? `${el.fontSize * 0.75}px` : '1rem' }}>{el.content}</span>
+          )}
         </div>
       ))}
 
