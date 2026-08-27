@@ -156,14 +156,14 @@ export const CameraView: React.FC<CameraViewProps> = ({
       />
 
       {/* Header Bar */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div className="view-header-bar">
         <button className="btn-secondary" onClick={onBackToFrames} disabled={isCapturingSequence}>
           <ArrowLeft size={18} />
           <span>Change Frame</span>
         </button>
 
         <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', fontWeight: 800 }}>
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 800 }}>
             {template.name}
           </h2>
           <span style={{ fontSize: '0.85rem', color: 'var(--color-neutral-sub)' }}>
@@ -172,7 +172,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
         </div>
 
         {/* Toolbar Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', justifyContent: 'center' }}>
           <button
             className="category-pill"
             onClick={() => setMirror((p) => !p)}

@@ -97,14 +97,14 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       {/* Header Bar */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+      <div className="view-header-bar">
         <button className="btn-secondary" onClick={onBackToCamera}>
           <RotateCcw size={18} />
           <span>Retake Photos</span>
         </button>
 
         <div style={{ textAlign: 'center' }}>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.5rem', fontWeight: 800 }}>
+          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 800 }}>
             Customize Your Memory ✨
           </h2>
           <span style={{ fontSize: '0.85rem', color: 'var(--color-neutral-sub)' }}>

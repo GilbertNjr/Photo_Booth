@@ -46,7 +46,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         {onToggleKiosk && (
           <button
             onClick={onToggleKiosk}
-            className={`category-pill ${isKioskMode ? 'active' : ''}`}
+            className={`category-pill desktop-only ${isKioskMode ? 'active' : ''}`}
             title="Toggle Touchscreen Kiosk Mode"
             style={{ padding: '0.45rem 1rem' }}
           >
@@ -56,6 +56,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         )}
 
         <div
+          className="desktop-only"
           style={{
             display: 'flex',
             alignItems: 'center',

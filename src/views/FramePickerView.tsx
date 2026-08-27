@@ -98,6 +98,10 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
           flexDirection: 'column',
           alignItems: 'center',
           gap: '1.25rem',
+          width: '100%',
+          maxWidth: '100%',
+          boxSizing: 'border-box',
+          overflow: 'hidden',
         }}
       >
         <SearchBar value={searchQuery} onChange={setSearchQuery} />
