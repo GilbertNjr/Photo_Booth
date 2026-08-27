@@ -1,5 +1,6 @@
 import React from 'react';
 import type { TemplateData } from '../../types/template';
+import { StickerIllustration } from '../Common/StickerIllustration';
 
 interface CameraFrameOverlayProps {
   template: TemplateData;
@@ -48,6 +49,109 @@ export const CameraFrameOverlay: React.FC<CameraFrameOverlayProps> = ({
         const capturedImg = capturedPhotos[index];
         const isActive = index === activeSlotIndex && isCameraActive;
 
+        if (slot.frameStyle === 'polaroid') {
+          return (
+            <div
+              key={slot.id}
+              style={{
+                position: 'absolute',
+                left: `${slot.x}%`,
+                top: `${slot.y}%`,
+                width: `${slot.width}%`,
+                height: `${slot.height}%`,
+                transform: slot.rotation ? `rotate(${slot.rotation}deg)` : 'none',
+                background: '#ffffff',
+                padding: '6px 6px 24px 6px',
+                borderRadius: '4px',
+                boxShadow: isActive
+                  ? '0 0 0 4px #ff7597, 0 12px 28px rgba(0, 0, 0, 0.35)'
+                  : '0 10px 25px rgba(0, 0, 0, 0.28)',
+                boxSizing: 'border-box',
+                zIndex: index + 1,
+                transition: 'all 0.3s ease',
+              }}
+            >
+              {/* Corner Tape Detail */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '-8px',
+                  left: '15px',
+                  width: '32px',
+                  height: '12px',
+                  background: 'rgba(255, 255, 255, 0.85)',
+                  backdropFilter: 'blur(2px)',
+                  transform: 'rotate(-5deg)',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                }}
+              />
+              <div
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  overflow: 'hidden',
+                  borderRadius: '2px',
+                  background: '#1a1a1a',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                }}
+              >
+                {capturedImg ? (
+                  <img src={capturedImg} alt={`Captured ${index + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : isActive ? (
+                  <div style={{ color: '#ff7597', fontSize: '0.65rem', fontWeight: 700, padding: '0.2rem 0.5rem', background: 'rgba(0,0,0,0.6)', borderRadius: '12px' }}>
+                    ● LIVE
+                  </div>
+                ) : (
+                  <span style={{ color: '#fff', opacity: 0.5, fontSize: '0.65rem', fontWeight: 700 }}>SLOT {index + 1}</span>
+                )}
+              </div>
+            </div>
+          );
+        }
+
+        if (slot.frameStyle === 'digicam') {
+          return (
+            <div
+              key={slot.id}
+              style={{
+                position: 'absolute',
+                left: `${slot.x}%`,
+                top: `${slot.y}%`,
+                width: `${slot.width}%`,
+                height: `${slot.height}%`,
+                transform: slot.rotation ? `rotate(${slot.rotation}deg)` : 'none',
+                background: 'linear-gradient(135deg, #7c5a43 0%, #4a3324 100%)',
+                padding: '8px 14px 8px 8px',
+                borderRadius: '16px',
+                border: '2px solid #a88468',
+                boxShadow: isActive ? '0 0 0 4px #ff7597, 0 12px 28px rgba(0, 0, 0, 0.35)' : '0 12px 28px rgba(0, 0, 0, 0.35)',
+                boxSizing: 'border-box',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '8px',
+                zIndex: index + 1,
+              }}
+            >
+              <div style={{ flex: 1, height: '100%', overflow: 'hidden', borderRadius: '8px', border: '2px solid #3e2719', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                {capturedImg ? (
+                  <img src={capturedImg} alt={`Captured ${index + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                ) : isActive ? (
+                  <div style={{ color: '#ff7597', fontSize: '0.65rem', fontWeight: 700 }}>● LIVE</div>
+                ) : (
+                  <span style={{ color: '#fff', opacity: 0.5, fontSize: '0.65rem' }}>SLOT {index + 1}</span>
+                )}
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'center' }}>
+                <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: 'radial-gradient(#d4af37, #8b6b1b)' }} />
+                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#3e2719' }} />
+              </div>
+            </div>
+          );
+        }
+
         return (
           <div
             key={slot.id}
@@ -70,7 +174,6 @@ export const CameraFrameOverlay: React.FC<CameraFrameOverlayProps> = ({
             }}
           >
             {capturedImg ? (
-              // Display already captured photo
               <img
                 src={capturedImg}
                 alt={`Captured ${index + 1}`}
@@ -81,7 +184,6 @@ export const CameraFrameOverlay: React.FC<CameraFrameOverlayProps> = ({
                 }}
               />
             ) : isActive ? (
-              // Display Live Feed into active slot!
               <div
                 style={{
                   position: 'relative',
@@ -91,7 +193,6 @@ export const CameraFrameOverlay: React.FC<CameraFrameOverlayProps> = ({
                   background: '#000',
                 }}
               >
-                {/* Visual marker */}
                 <div
                   style={{
                     position: 'absolute',
@@ -111,7 +212,6 @@ export const CameraFrameOverlay: React.FC<CameraFrameOverlayProps> = ({
                 </div>
               </div>
             ) : (
-              // Slot Waiting Indicator
               <div
                 style={{
                   width: '100%',
@@ -143,15 +243,19 @@ export const CameraFrameOverlay: React.FC<CameraFrameOverlayProps> = ({
             left: `${el.x}%`,
             top: `${el.y}%`,
             transform: `translate(-50%, -50%) ${el.rotation ? `rotate(${el.rotation}deg)` : ''}`,
-            fontSize: el.fontSize ? `${el.fontSize * 0.75}px` : '1rem',
             color: el.color || template.textColor,
             fontFamily: el.fontFamily || 'inherit',
             whiteSpace: 'nowrap',
             pointerEvents: 'none',
             zIndex: 10,
+            filter: 'drop-shadow(0 4px 8px rgba(0, 0, 0, 0.25))',
           }}
         >
-          {el.content}
+          {el.type === 'sticker' || el.type === 'doodle' || el.type === 'stamp' ? (
+            <StickerIllustration content={el.content} size={el.fontSize ? el.fontSize * 0.8 : 40} color={el.color} />
+          ) : (
+            <span style={{ fontSize: el.fontSize ? `${el.fontSize * 0.75}px` : '1rem' }}>{el.content}</span>
+          )}
         </div>
       ))}
 
