@@ -1,0 +1,40 @@
+import type { TemplateData } from '../../types/template';
+
+export const cuteBear01: TemplateData = {
+  id: 'cute-bear-01',
+  name: 'Teddy & Friends Party',
+  subtitle: 'Cute teddy bear ears, ribbons, confetti & birthday party aesthetic',
+  category: 'birthday',
+  style: 'cute-bear',
+  photoSlotsCount: 3,
+  aspectRatio: '2:6',
+  canvasWidth: 600,
+  canvasHeight: 1800,
+  backgroundColor: '#fef3c7',
+  backgroundTexture: 'dots',
+  backgroundGradient: 'linear-gradient(180deg, #fffbeb 0%, #fef3c7 100%)',
+  frameBorderColor: '#f59e0b',
+  frameBorderWidth: 4,
+  frameBorderRadius: 20,
+  accentColor: '#d97706',
+  textColor: '#78350f',
+  colorPalettes: ['#fef3c7', '#ffe4e6', '#fce7f3', '#e0f2fe', '#f3e8ff'],
+  photoSlots: [
+    { id: 'slot-1', x: 12, y: 14, width: 76, height: 23, rotation: 0, borderRadius: 16, aspectRatio: 4 / 3 },
+    { id: 'slot-2', x: 12, y: 40, width: 76, height: 23, rotation: 0, borderRadius: 16, aspectRatio: 4 / 3 },
+    { id: 'slot-3', x: 12, y: 66, width: 76, height: 23, rotation: 0, borderRadius: 16, aspectRatio: 4 / 3 },
+  ],
+  decorativeElements: [
+    { id: 'bear-ears', type: 'sticker', content: '🧸', x: 50, y: 5, fontSize: 44, rotation: 0 },
+    { id: 'ribbon-1', type: 'sticker', content: '🎀', x: 8, y: 12, fontSize: 32, rotation: -15 },
+    { id: 'ribbon-2', type: 'sticker', content: '🎀', x: 82, y: 12, fontSize: 32, rotation: 15 },
+    { id: 'cake', type: 'sticker', content: '🎂', x: 10, y: 91, fontSize: 36, rotation: -10 },
+    { id: 'balloon', type: 'sticker', content: '🎈', x: 82, y: 91, fontSize: 36, rotation: 10 },
+  ],
+  textElements: [
+    { id: 'text-1', defaultText: 'HAPPY BIRTHDAY! 🎉', placeholder: 'Greeting', x: 50, y: 91, fontFamily: 'Fredoka', fontSize: 26, color: '#92400e', align: 'center', isEditable: true },
+    { id: 'text-2', defaultText: 'Make a wish & shine bright ♡', placeholder: 'Wish', x: 50, y: 96, fontFamily: 'Caveat', fontSize: 20, color: '#b45309', align: 'center', isEditable: true },
+  ],
+  tags: ['birthday', 'bear', 'teddy', 'cute', 'yellow', 'party', '3-photos'],
+  isPopular: true,
+};

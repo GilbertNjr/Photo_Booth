@@ -1,0 +1,42 @@
+import type { TemplateData } from '../../types/template';
+
+export const cutePink01: TemplateData = {
+  id: 'cute-pink-01',
+  name: 'Sweet Strawberry Scrapbook',
+  subtitle: 'Pastel strawberry theme with taped polaroid slots & handwritten captions',
+  category: 'cute',
+  style: 'scrapbook',
+  photoSlotsCount: 4,
+  aspectRatio: '2:6',
+  canvasWidth: 600,
+  canvasHeight: 1800,
+  backgroundColor: '#fff0f3',
+  backgroundTexture: 'paper',
+  backgroundGradient: 'linear-gradient(180deg, #fff0f3 0%, #ffdde1 100%)',
+  frameBorderColor: '#ffb3c1',
+  frameBorderWidth: 4,
+  frameBorderRadius: 16,
+  accentColor: '#ff4d6d',
+  textColor: '#590d22',
+  colorPalettes: ['#fff0f3', '#ffe4e6', '#fce7f3', '#fae8ff', '#f3e8ff'],
+  photoSlots: [
+    { id: 'slot-1', x: 10, y: 7, width: 80, height: 18, rotation: -2, borderRadius: 8, aspectRatio: 4 / 3 },
+    { id: 'slot-2', x: 10, y: 28, width: 80, height: 18, rotation: 1.5, borderRadius: 8, aspectRatio: 4 / 3 },
+    { id: 'slot-3', x: 10, y: 49, width: 80, height: 18, rotation: -1, borderRadius: 8, aspectRatio: 4 / 3 },
+    { id: 'slot-4', x: 10, y: 70, width: 80, height: 18, rotation: 2, borderRadius: 8, aspectRatio: 4 / 3 },
+  ],
+  decorativeElements: [
+    { id: 'tape-1', type: 'tape', content: '🍓', x: 38, y: 4, width: 24, rotation: -5, color: '#ff8097' },
+    { id: 'sticker-1', type: 'sticker', content: '🎀', x: 80, y: 24, rotation: 12, fontSize: 32 },
+    { id: 'sticker-2', type: 'sticker', content: '✨', x: 8, y: 46, rotation: -15, fontSize: 28 },
+    { id: 'sticker-3', type: 'sticker', content: '🍰', x: 78, y: 66, rotation: 10, fontSize: 30 },
+    { id: 'doodle-1', type: 'doodle', content: '♡ ♡ ♡', x: 32, y: 94, fontSize: 22, color: '#ff4d6d', fontFamily: 'Caveat' },
+  ],
+  textElements: [
+    { id: 'text-1', defaultText: 'Sweet Memories ♡', placeholder: 'Title', x: 50, y: 90, fontFamily: 'Caveat', fontSize: 36, color: '#ff4d6d', align: 'center', isEditable: true },
+    { id: 'text-2', defaultText: '2026.08.27', placeholder: 'Date', x: 50, y: 96, fontFamily: 'Plus Jakarta Sans', fontSize: 14, color: '#a4133c', align: 'center', isEditable: true },
+  ],
+  tags: ['scrapbook', 'pink', 'strawberry', 'tape', 'cute', '4-photos'],
+  isPopular: true,
+  isNew: true,
+};

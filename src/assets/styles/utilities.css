@@ -1,0 +1,88 @@
+/* Utility Badges & Tags */
+.badge-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.25rem 0.65rem;
+  border-radius: var(--radius-full);
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.02em;
+}
+
+.badge-cute {
+  background: var(--color-pink-soft);
+  color: var(--color-pink-primary);
+}
+
+.badge-minimal {
+  background: #f1f5f9;
+  color: #475569;
+}
+
+.badge-vintage {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge-romantic {
+  background: #ffe4e6;
+  color: #e11d48;
+}
+
+.badge-friendship {
+  background: #f3e8ff;
+  color: #6b21a8;
+}
+
+.badge-birthday {
+  background: #fef08a;
+  color: #854d0e;
+}
+
+.badge-graduation {
+  background: #e0f2fe;
+  color: #0369a1;
+}
+
+.badge-seasonal {
+  background: #dcfce7;
+  color: #15803d;
+}
+
+.badge-slot {
+  background: rgba(30, 30, 36, 0.75);
+  color: white;
+  backdrop-filter: blur(4px);
+  padding: 0.25rem 0.6rem;
+}
+
+/* Animations */
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Text Gradients */
+.text-gradient-pink {
+  background: linear-gradient(135deg, var(--color-pink-primary), #ff8ea8);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.text-gradient-purple {
+  background: linear-gradient(135deg, #7b61ff, #a855f7);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Kiosk Specific Tweaks */
+body.kiosk-mode {
+  user-select: none;
+  -webkit-user-select: none;
+  cursor: pointer;
+}

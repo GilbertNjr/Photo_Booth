@@ -1,0 +1,41 @@
+import type { TemplateData } from '../../types/template';
+
+export const newspaper01: TemplateData = {
+  id: 'newspaper-01',
+  name: 'The Daily Romance Gazette',
+  subtitle: 'Vintage editorial newspaper style with custom headline & columns',
+  category: 'romantic',
+  style: 'newspaper',
+  photoSlotsCount: 3,
+  aspectRatio: '4:6',
+  canvasWidth: 1200,
+  canvasHeight: 1800,
+  backgroundColor: '#f5f2eb',
+  backgroundTexture: 'vintage-paper',
+  backgroundGradient: 'none',
+  frameBorderColor: '#2b2627',
+  frameBorderWidth: 2,
+  frameBorderRadius: 0,
+  accentColor: '#8b0000',
+  textColor: '#1a1a1a',
+  colorPalettes: ['#f5f2eb', '#faf8f5', '#eee9e0', '#e5dfd3'],
+  photoSlots: [
+    { id: 'slot-1', x: 8, y: 22, width: 40, height: 42, rotation: 0, borderRadius: 0, aspectRatio: 3 / 4 },
+    { id: 'slot-2', x: 52, y: 22, width: 40, height: 20, rotation: 0, borderRadius: 0, aspectRatio: 4 / 3 },
+    { id: 'slot-3', x: 52, y: 44, width: 40, height: 20, rotation: 0, borderRadius: 0, aspectRatio: 4 / 3 },
+  ],
+  decorativeElements: [
+    { id: 'header-line-1', type: 'badge', content: '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', x: 50, y: 13, fontSize: 16, color: '#1a1a1a' },
+    { id: 'sub-header', type: 'badge', content: 'VOL. XXIV NO. 182  •  SPECIAL LOVERS EDITION  •  PRICE $0.05', x: 50, y: 15, fontSize: 14, color: '#4a4a4a', fontFamily: 'Playfair Display' },
+    { id: 'header-line-2', type: 'badge', content: '━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━', x: 50, y: 17, fontSize: 16, color: '#1a1a1a' },
+    { id: 'caption-1', type: 'text', content: 'Fig 1. A timeless moment captured in eternity.', x: 28, y: 65, fontSize: 13, color: '#4a4a4a', fontFamily: 'Playfair Display' },
+  ],
+  textElements: [
+    { id: 'text-headline', defaultText: 'THE DAILY ROMANCE', placeholder: 'Headline', x: 50, y: 7, fontFamily: 'Playfair Display', fontSize: 44, color: '#1a1a1a', align: 'center', isEditable: true },
+    { id: 'text-story-title', defaultText: 'LOVE IS IN THE AIR TODAY', placeholder: 'Sub-headline', x: 50, y: 69, fontFamily: 'Playfair Display', fontSize: 26, color: '#8b0000', align: 'center', isEditable: true },
+    { id: 'text-story-body', defaultText: '"Two hearts beat as one under the twilight sky. Witnesses report unprecedented levels of joy and laughter."', placeholder: 'Article', x: 50, y: 76, fontFamily: 'Playfair Display', fontSize: 16, color: '#2b2627', align: 'center', isEditable: true },
+    { id: 'text-date', defaultText: 'ESTABLISHED 2026', placeholder: 'Date', x: 50, y: 92, fontFamily: 'Playfair Display', fontSize: 14, color: '#666', align: 'center', isEditable: true },
+  ],
+  tags: ['newspaper', 'romantic', 'editorial', 'vintage', 'love', '3-photos'],
+  isPopular: true,
+};

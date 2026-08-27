@@ -1,0 +1,40 @@
+import type { TemplateData } from '../../types/template';
+
+export const vintageCamera01: TemplateData = {
+  id: 'vintage-camera-01',
+  name: 'Retro Leica 1988',
+  subtitle: 'Classic analog camera frame with film stamp, timestamps & grain',
+  category: 'vintage',
+  style: 'vintage-camera',
+  photoSlotsCount: 3,
+  aspectRatio: '2:6',
+  canvasWidth: 600,
+  canvasHeight: 1800,
+  backgroundColor: '#2b2623',
+  backgroundTexture: 'film-grain',
+  backgroundGradient: 'linear-gradient(180deg, #2b2623 0%, #1a1715 100%)',
+  frameBorderColor: '#d4af37',
+  frameBorderWidth: 2,
+  frameBorderRadius: 12,
+  accentColor: '#e0a96d',
+  textColor: '#f5ebe0',
+  colorPalettes: ['#2b2623', '#3d312a', '#1e2022', '#4a3b32', '#2c3539'],
+  photoSlots: [
+    { id: 'slot-1', x: 12, y: 12, width: 76, height: 23, rotation: 0, borderRadius: 4, aspectRatio: 4 / 3 },
+    { id: 'slot-2', x: 12, y: 38, width: 76, height: 23, rotation: 0, borderRadius: 4, aspectRatio: 4 / 3 },
+    { id: 'slot-3', x: 12, y: 64, width: 76, height: 23, rotation: 0, borderRadius: 4, aspectRatio: 4 / 3 },
+  ],
+  decorativeElements: [
+    { id: 'badge-1', type: 'badge', content: '📷 LEICA R5', x: 12, y: 5, fontSize: 14, color: '#e0a96d', fontFamily: 'Outfit' },
+    { id: 'badge-2', type: 'badge', content: 'ISO 400', x: 74, y: 5, fontSize: 13, color: '#9c8878', fontFamily: 'Outfit' },
+    { id: 'stamp-1', type: 'stamp', content: '\'88 08 27', x: 70, y: 33, fontSize: 16, color: '#ff5722', fontFamily: 'Outfit' },
+    { id: 'stamp-2', type: 'stamp', content: '\'88 08 27', x: 70, y: 59, fontSize: 16, color: '#ff5722', fontFamily: 'Outfit' },
+    { id: 'stamp-3', type: 'stamp', content: '\'88 08 27', x: 70, y: 85, fontSize: 16, color: '#ff5722', fontFamily: 'Outfit' },
+    { id: 'barcode-1', type: 'barcode', content: '||||| ||| ||||||| |||', x: 50, y: 94, fontSize: 18, color: '#8c7a6b', fontFamily: 'monospace' },
+  ],
+  textElements: [
+    { id: 'text-1', defaultText: 'ANALOG MEMORIES', placeholder: 'Caption', x: 50, y: 89, fontFamily: 'Outfit', fontSize: 20, color: '#e0a96d', align: 'center', isEditable: true },
+  ],
+  tags: ['vintage', 'camera', 'analog', 'retro', 'film', '3-photos'],
+  isPopular: true,
+};
