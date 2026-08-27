@@ -28,6 +28,7 @@ export interface PhotoSlot {
   borderRadius?: number; // px
   aspectRatio?: number; // width / height
   shape?: 'rect' | 'arch' | 'circle'; // Slot shape
+  frameStyle?: 'polaroid' | 'digicam' | 'ticket' | 'normal'; // Frame wrapper style
 }
 
 export interface DecorativeElement {

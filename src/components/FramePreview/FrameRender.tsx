@@ -68,6 +68,114 @@ export const FrameRender: React.FC<FrameRenderProps> = ({
       {/* Render Photo Slots */}
       {template.photoSlots.map((slot, index) => {
         const sampleUrl = SAMPLE_PHOTOS[index % SAMPLE_PHOTOS.length];
+
+        if (slot.frameStyle === 'polaroid') {
+          return (
+            <div
+              key={slot.id}
+              style={{
+                position: 'absolute',
+                left: `${slot.x}%`,
+                top: `${slot.y}%`,
+                width: `${slot.width}%`,
+                height: `${slot.height}%`,
+                transform: slot.rotation ? `rotate(${slot.rotation}deg)` : 'none',
+                background: '#ffffff',
+                padding: '6px 6px 24px 6px',
+                borderRadius: '4px',
+                boxShadow: '0 10px 25px rgba(0, 0, 0, 0.28), 0 2px 6px rgba(0, 0, 0, 0.12)',
+                boxSizing: 'border-box',
+                zIndex: index + 1,
+              }}
+            >
+              {/* Corner Tape Detail */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '-8px',
+                  left: '15px',
+                  width: '32px',
+                  height: '12px',
+                  background: 'rgba(255, 255, 255, 0.75)',
+                  backdropFilter: 'blur(2px)',
+                  transform: 'rotate(-5deg)',
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                }}
+              />
+              <div
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  overflow: 'hidden',
+                  borderRadius: '2px',
+                  background: '#1a1a1a',
+                }}
+              >
+                {showPhotoPlaceholders && (
+                  <img
+                    src={sampleUrl}
+                    alt={`Sample ${index + 1}`}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  />
+                )}
+              </div>
+            </div>
+          );
+        }
+
+        if (slot.frameStyle === 'digicam') {
+          return (
+            <div
+              key={slot.id}
+              style={{
+                position: 'absolute',
+                left: `${slot.x}%`,
+                top: `${slot.y}%`,
+                width: `${slot.width}%`,
+                height: `${slot.height}%`,
+                transform: slot.rotation ? `rotate(${slot.rotation}deg)` : 'none',
+                background: 'linear-gradient(135deg, #7c5a43 0%, #4a3324 100%)',
+                padding: '8px 14px 8px 8px',
+                borderRadius: '16px',
+                border: '2px solid #a88468',
+                boxShadow: '0 12px 28px rgba(0, 0, 0, 0.35)',
+                boxSizing: 'border-box',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                gap: '8px',
+                zIndex: index + 1,
+              }}
+            >
+              {/* Screen Cutout */}
+              <div
+                style={{
+                  flex: 1,
+                  height: '100%',
+                  overflow: 'hidden',
+                  borderRadius: '8px',
+                  border: '2px solid #3e2719',
+                  background: '#000',
+                }}
+              >
+                {showPhotoPlaceholders && (
+                  <img
+                    src={sampleUrl}
+                    alt={`Sample ${index + 1}`}
+                    style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                  />
+                )}
+              </div>
+              {/* Camera Dial & Buttons */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'center' }}>
+                <div style={{ width: '16px', height: '16px', borderRadius: '50%', background: 'radial-gradient(#d4af37, #8b6b1b)', border: '1px solid #fff' }} />
+                <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#3e2719' }} />
+                <div style={{ width: '10px', height: '10px', borderRadius: '50%', background: '#3e2719' }} />
+              </div>
+            </div>
+          );
+        }
+
         return (
           <div
             key={slot.id}
