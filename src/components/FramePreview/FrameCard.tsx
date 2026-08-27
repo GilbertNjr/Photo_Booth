@@ -36,6 +36,11 @@ export const FrameCard: React.FC<FrameCardProps> = ({
 
       <div className="frame-card-preview-wrapper">
         <FrameRender template={template} />
+        <div className="frame-card-hover-overlay">
+          <button className="btn-primary" style={{ padding: '0.65rem 1.25rem', fontSize: '0.85rem', boxShadow: '0 8px 20px rgba(255, 117, 151, 0.4)' }}>
+            <span>Pilih Bingkai ✨</span>
+          </button>
+        </div>
       </div>
 
       <div className="frame-card-info">

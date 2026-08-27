@@ -8,6 +8,13 @@ interface FrameRenderProps {
   showPhotoPlaceholders?: boolean;
 }
 
+const SAMPLE_PHOTOS = [
+  'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=500&q=80',
+  'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=500&q=80',
+  'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=500&q=80',
+  'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=500&q=80',
+];
+
 export const FrameRender: React.FC<FrameRenderProps> = ({
   template,
   className = '',
@@ -60,6 +67,7 @@ export const FrameRender: React.FC<FrameRenderProps> = ({
 
       {/* Render Photo Slots */}
       {template.photoSlots.map((slot, index) => {
+        const sampleUrl = SAMPLE_PHOTOS[index % SAMPLE_PHOTOS.length];
         return (
           <div
             key={slot.id}
@@ -85,24 +93,16 @@ export const FrameRender: React.FC<FrameRenderProps> = ({
             }}
           >
             {showPhotoPlaceholders && (
-              <div
+              <img
+                src={sampleUrl}
+                alt={`Sample ${index + 1}`}
                 style={{
                   width: '100%',
                   height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  background: `linear-gradient(135deg, ${template.backgroundColor}, ${template.accentColor}33)`,
-                  color: template.textColor,
-                  fontSize: '0.75rem',
-                  fontWeight: 700,
-                  gap: '0.2rem',
+                  objectFit: 'cover',
+                  display: 'block',
                 }}
-              >
-                <div style={{ opacity: 0.7, fontSize: '1rem' }}>📸</div>
-                <div style={{ opacity: 0.8, fontSize: '0.65rem' }}>PHOTO {index + 1}</div>
-              </div>
+              />
             )}
           </div>
         );

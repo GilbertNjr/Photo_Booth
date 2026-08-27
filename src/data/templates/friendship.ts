@@ -36,7 +36,7 @@ export const ticket01: TemplateData = {
     { id: 'ticket-stub', type: 'sticker', content: '🎫', x: 82, y: 86, rotation: 12, fontSize: 48 },
   ],
   textElements: [
-    { id: 'text-1', defaultText: 'Ticket Anywhere', placeholder: 'Title', x: 18, y: 24, fontFamily: 'Courier New', fontSize: 16, color: '#1a1715', align: 'left', isEditable: true },
+    { id: 'text-1', defaultText: 'Ticket Anywhere 🎫', placeholder: 'Title', x: 50, y: 7, fontFamily: 'Courier New', fontSize: 18, color: '#1a1715', align: 'center', isEditable: true },
     { id: 'text-2', defaultText: 'good things are coming', placeholder: 'Caption', x: 50, y: 96, fontFamily: 'Caveat', fontSize: 24, color: '#b91c1c', align: 'center', isEditable: true },
   ],
   tags: ['y2k', 'film-strip', 'gingham', 'hibiscus', 'receipt', '4-photos'],
