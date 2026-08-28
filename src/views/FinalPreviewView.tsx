@@ -10,7 +10,6 @@ import {
   Printer,
   Edit3,
   RotateCcw,
-  Sparkles,
   CheckCircle,
   QrCode,
   Share2,
@@ -61,154 +60,185 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2rem', alignItems: 'center' }}>
-      {/* Hero Title */}
-      <div style={{ textAlign: 'center' }}>
-        <div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.4rem',
-            background: 'var(--color-pink-soft)',
-            color: 'var(--color-pink-primary)',
-            padding: '0.3rem 0.85rem',
-            borderRadius: 'var(--radius-full)',
-            fontSize: '0.82rem',
-            fontWeight: 700,
-            marginBottom: '0.75rem',
-          }}
-        >
-          <Sparkles size={14} />
-          <span>HASIL CROP & CETAK SIAP</span>
-        </div>
-
-        <h1
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', alignItems: 'center', width: '100%', maxWidth: '520px', margin: '0 auto', paddingBottom: '90px' }}>
+      {/* Header Subtitle matching "save your strip." */}
+      <div style={{ textAlign: 'center', margin: '0.25rem 0' }}>
+        <h2
           style={{
             fontFamily: 'var(--font-heading)',
-            fontSize: '2.5rem',
-            fontWeight: 800,
-            letterSpacing: '-0.02em',
-            color: 'var(--color-neutral-dark)',
+            fontSize: '1.35rem',
+            fontWeight: 500,
+            color: 'var(--color-neutral-sub)',
+            letterSpacing: '0.02em',
+            margin: 0,
           }}
         >
-          Kenangan Anda Siap Disimpan ✨
-        </h1>
-        <p style={{ color: 'var(--color-neutral-sub)', fontSize: '1rem', marginTop: '0.25rem' }}>
-          Unduh foto resolusi tinggi PNG, cetak langsung dalam ukuran photobooth strip, atau simpan ke HP via QR Code!
-        </p>
+          save your strip.
+        </h2>
       </div>
 
-      {/* Main Container */}
-      <div
-        className="final-preview-grid"
-        style={{
-          maxWidth: '920px',
-          width: '100%',
-          alignItems: 'center',
-        }}
-      >
-        {/* Left: Large High-Res Image Preview */}
+      {/* Center Image Output Card */}
+      <div style={{ position: 'relative', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <div
           style={{
-            background: 'var(--color-cream-dark)',
-            borderRadius: 'var(--radius-xl)',
-            padding: '1.5rem',
+            background: '#ffffff',
+            borderRadius: 'var(--radius-lg)',
+            padding: '1.25rem',
             aspectRatio: '2/3',
-            maxHeight: '75vh',
+            maxHeight: '65vh',
+            maxWidth: '420px',
+            width: '100%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: 'var(--shadow-hover)',
+            boxShadow: '0 12px 36px rgba(92, 6, 18, 0.12)',
+            border: '1px solid var(--color-border-soft)',
           }}
         >
           <img
             src={finalImageDataUrl}
-            alt="Final Photo Booth Output"
+            alt="Final Photo Strip"
             style={{
               maxHeight: '100%',
               maxWidth: '100%',
               objectFit: 'contain',
-              borderRadius: 'var(--radius-md)',
-              boxShadow: 'var(--shadow-polaroid)',
+              borderRadius: 'var(--radius-sm)',
             }}
           />
         </div>
 
-        {/* Right: Actions Panel */}
-        <div
+        {/* Pink Star Decorative Badge at bottom left */}
+        <span
           style={{
-            background: 'white',
-            borderRadius: 'var(--radius-xl)',
-            padding: '1.75rem',
-            boxShadow: 'var(--shadow-card)',
-            border: '1px solid var(--color-border-soft)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1.1rem',
+            position: 'absolute',
+            bottom: '-12px',
+            left: '12px',
+            fontSize: '1.35rem',
+            color: 'var(--color-pink-primary)',
           }}
         >
-          <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 800 }}>
-            Simpan & Cetak Foto 📸
-          </h3>
+          ★
+        </span>
+      </div>
 
-          <Button
-            variant="primary"
+      {/* 4 Action Buttons Grid matching reference screenshot */}
+      <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
+        {/* Row 1: Solid Red Buttons (Download & Print) */}
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <button
             onClick={handleDownload}
-            style={{ padding: '0.95rem', fontSize: '0.95rem', width: '100%' }}
+            style={{
+              flex: 1,
+              background: 'var(--color-pink-primary)',
+              color: '#ffffff',
+              padding: '0.85rem 1rem',
+              borderRadius: '9999px',
+              fontSize: '0.96rem',
+              fontWeight: 800,
+              border: '1.5px dashed rgba(255,255,255,0.4)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              boxShadow: '0 6px 20px rgba(211, 47, 47, 0.25)',
+            }}
           >
             <Download size={18} />
-            <span>Unduh Gambar PNG (High DPI)</span>
-          </Button>
+            <span>Download</span>
+          </button>
 
-          <Button
-            variant="secondary"
-            onClick={() => setIsQrModalOpen(true)}
-            style={{ padding: '0.9rem', fontSize: '0.95rem', width: '100%', borderColor: 'var(--color-pink-primary)', color: 'var(--color-pink-primary)' }}
-          >
-            <QrCode size={18} />
-            <span>Scan QR Code via HP 📱</span>
-          </Button>
-
-          <Button
-            variant="secondary"
+          <button
             onClick={() => setIsPrintModalOpen(true)}
-            style={{ padding: '0.9rem', fontSize: '0.95rem', width: '100%' }}
+            style={{
+              flex: 1,
+              background: 'var(--color-pink-primary)',
+              color: '#ffffff',
+              padding: '0.85rem 1rem',
+              borderRadius: '9999px',
+              fontSize: '0.96rem',
+              fontWeight: 800,
+              border: '1.5px dashed rgba(255,255,255,0.4)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+              boxShadow: '0 6px 20px rgba(211, 47, 47, 0.25)',
+            }}
           >
-            <Printer size={18} color="#7b61ff" />
-            <span>Cetak Photo Strip 🖨️</span>
-          </Button>
+            <Printer size={18} />
+            <span>Print</span>
+          </button>
+        </div>
 
-          <Button
-            variant="secondary"
+        {/* Row 2: Outlined Dashed Buttons (Edit Again & Retake) */}
+        <div style={{ display: 'flex', gap: '0.75rem' }}>
+          <button
             onClick={onEditCustomization}
-            style={{ padding: '0.9rem', fontSize: '0.95rem', width: '100%' }}
+            style={{
+              flex: 1,
+              background: '#ffffff',
+              color: 'var(--color-burgundy-deep)',
+              padding: '0.85rem 1rem',
+              borderRadius: '9999px',
+              fontSize: '0.96rem',
+              fontWeight: 800,
+              border: '1.5px dashed var(--color-burgundy-deep)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.5rem',
+            }}
           >
-            <Edit3 size={18} />
-            <span>Edit Hiasan & Filter</span>
-          </Button>
-
-          <hr style={{ border: 'none', borderTop: '1px solid var(--color-border-soft)', margin: '0.3rem 0' }} />
+            <Edit3 size={17} />
+            <span>Edit Again</span>
+          </button>
 
           <button
             onClick={onNewSession}
             style={{
-              display: 'inline-flex',
+              flex: 1,
+              background: '#ffffff',
+              color: 'var(--color-burgundy-deep)',
+              padding: '0.85rem 1rem',
+              borderRadius: '9999px',
+              fontSize: '0.96rem',
+              fontWeight: 800,
+              border: '1.5px dashed var(--color-burgundy-deep)',
+              cursor: 'pointer',
+              display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '0.5rem',
-              color: 'var(--color-neutral-sub)',
-              fontSize: '0.9rem',
-              fontWeight: 600,
-              padding: '0.5rem',
-              background: 'transparent',
-              border: 'none',
-              cursor: 'pointer',
             }}
           >
-            <RotateCcw size={16} />
-            <span>Mulai Sesi Foto Baru ✨</span>
+            <RotateCcw size={17} />
+            <span>Retake</span>
           </button>
         </div>
+
+        {/* QR Code Action Option */}
+        <button
+          onClick={() => setIsQrModalOpen(true)}
+          style={{
+            background: 'none',
+            border: 'none',
+            color: 'var(--color-neutral-sub)',
+            fontSize: '0.85rem',
+            fontWeight: 700,
+            cursor: 'pointer',
+            marginTop: '0.25rem',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.4rem',
+          }}
+        >
+          <QrCode size={15} />
+          <span>Simpan ke HP via QR Code 📱</span>
+        </button>
       </div>
 
       {/* QR Code Scan Modal */}
