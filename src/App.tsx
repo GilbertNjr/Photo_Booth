@@ -12,6 +12,7 @@ import { TemplateService } from './services/template/templateService';
 import { StorageService } from './services/storage/storageService';
 
 import { GalleryView } from './views/GalleryView';
+import { AboutView } from './views/AboutView';
 
 import { BottomNav } from './components/Layout/BottomNav';
 
@@ -133,6 +134,10 @@ export function App() {
           hasFinalImage={!!finalImageDataUrl}
         />
 
+        {currentStep === 'picker' && activeBottomTab === 'about' && (
+          <AboutView />
+        )}
+
         {currentStep === 'picker' && activeBottomTab === 'gallery' && (
           <GalleryView
             onSelectFrame={handleSelectFrame}
@@ -144,7 +149,7 @@ export function App() {
           />
         )}
 
-        {currentStep === 'picker' && activeBottomTab !== 'gallery' && (
+        {currentStep === 'picker' && activeBottomTab === 'home' && (
           <FramePickerView
             onSelectFrame={handleSelectFrame}
             isShowingFavoritesOnly={isShowingFavoritesOnly}
@@ -190,7 +195,7 @@ export function App() {
             setIsShowingFavoritesOnly(true);
             navigateToStep('picker');
           } else if (tab === 'about') {
-            alert('PixBooth Studio v2.0 • Ultra-High DPI Commercial Photo Booth System 📸✨');
+            navigateToStep('picker');
           }
         }}
       />
