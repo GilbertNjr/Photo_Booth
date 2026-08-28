@@ -327,18 +327,18 @@ export const FrameRender: React.FC<FrameRenderProps> = ({
       <div
         style={{
           position: 'absolute',
-          bottom: '8px',
-          left: '12px',
-          right: '12px',
+          bottom: '4px',
+          left: '10px',
+          right: '10px',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
           zIndex: 15,
           pointerEvents: 'none',
-          opacity: 0.75,
+          opacity: 0.5,
           color: template.textColor,
           fontFamily: 'monospace',
-          fontSize: '0.62rem',
+          fontSize: '0.52rem',
           letterSpacing: '0.05em',
         }}
       >

@@ -1,4 +1,11 @@
 import type { TemplateData } from '../../types/template';
+import {
+  nusantaraPostcard,
+  jakartaLife4cuts,
+  baliPolaroid,
+  bandungDigicam,
+  jogjaHeritage,
+} from './indonesiaTemplates';
 import { cutePink01 } from './cute';
 import { haruSky01 } from './haruSky';
 import { y2kSilver01 } from './y2kSilver';
@@ -19,6 +26,11 @@ import {
 } from './globalCountry';
 
 export const TEMPLATES: TemplateData[] = [
+  nusantaraPostcard,
+  jakartaLife4cuts,
+  baliPolaroid,
+  bandungDigicam,
+  jogjaHeritage,
   seoulLife4Cuts,
   tokyoPurikura,
   parisRiviera,
@@ -37,6 +49,7 @@ export const TEMPLATES: TemplateData[] = [
   seasonalSummer01,
 ];
 
+export * from './indonesiaTemplates';
 export * from './cute';
 export * from './haruSky';
 export * from './y2kSilver';
