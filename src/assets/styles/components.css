@@ -709,9 +709,9 @@
 }
 
 .step-item.current {
-  background: linear-gradient(135deg, var(--color-pink-primary), #ff8ea8);
+  background: var(--color-pink-primary);
   color: white;
-  box-shadow: 0 6px 18px rgba(255, 117, 151, 0.35);
+  box-shadow: 0 6px 18px rgba(128, 0, 32, 0.25);
 }
 
 .step-item.completed {
@@ -778,7 +778,7 @@
 }
 
 .step-connector.active {
-  background: linear-gradient(90deg, var(--color-pink-primary), #3b82f6);
+  background: var(--color-pink-primary);
 }
 
 @media (max-width: 768px) {

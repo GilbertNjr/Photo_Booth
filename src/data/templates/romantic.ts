@@ -12,7 +12,6 @@ export const newspaper01: TemplateData = {
   canvasHeight: 1800,
   backgroundColor: '#4a0e17',
   backgroundTexture: 'paper',
-  backgroundGradient: 'linear-gradient(180deg, #58101d 0%, #390a12 100%)',
   frameBorderColor: '#2b070d',
   frameBorderWidth: 4,
   frameBorderRadius: 16,

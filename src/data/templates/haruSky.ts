@@ -12,7 +12,6 @@ export const haruSky01: TemplateData = {
   canvasHeight: 1800,
   backgroundColor: '#7dd3fc',
   backgroundTexture: 'dots',
-  backgroundGradient: 'linear-gradient(180deg, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 100%)',
   frameBorderColor: '#ffffff',
   frameBorderWidth: 4,
   frameBorderRadius: 20,

@@ -757,7 +757,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
                 padding: '1rem',
                 fontSize: '1rem',
                 width: '100%',
-                background: 'linear-gradient(135deg, #10b981, #059669)',
+                background: '#10b981',
                 boxShadow: '0 8px 20px rgba(16, 185, 129, 0.35)',
               }}
             >

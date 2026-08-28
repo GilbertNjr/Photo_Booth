@@ -12,7 +12,6 @@ export const cutePink01: TemplateData = {
   canvasHeight: 1800,
   backgroundColor: '#26201c',
   backgroundTexture: 'paper',
-  backgroundGradient: 'linear-gradient(180deg, #2d2621 0%, #1f1a17 100%)',
   frameBorderColor: '#3a302a',
   frameBorderWidth: 4,
   frameBorderRadius: 16,

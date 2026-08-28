@@ -12,7 +12,6 @@ export const y2kSilver01: TemplateData = {
   canvasHeight: 1800,
   backgroundColor: '#cbd5e1',
   backgroundTexture: 'paper',
-  backgroundGradient: 'linear-gradient(135deg, #f1f5f9 0%, #cbd5e1 50%, #94a3b8 100%)',
   frameBorderColor: '#475569',
   frameBorderWidth: 4,
   frameBorderRadius: 18,
