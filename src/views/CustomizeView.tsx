@@ -4,16 +4,7 @@ import type { PhotoFilterType, PlacedSticker } from '../types/editor';
 import { FilterPicker } from '../components/PhotoEditor/FilterPicker';
 import { TextEditor } from '../components/PhotoEditor/TextEditor';
 import { StickerPicker } from '../components/PhotoEditor/StickerPicker';
-import { Button } from '../components/Common/Button';
 import { CanvasEngine } from '../services/canvas/canvasEngine';
-import {
-  Sparkles,
-  Palette,
-  Type,
-  Smile,
-  CheckCircle,
-  RotateCcw,
-} from 'lucide-react';
 
 interface CustomizeViewProps {
   template: TemplateData;
@@ -99,27 +90,67 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Header Bar */}
-      <div className="view-header-bar">
-        <button className="btn-secondary" onClick={onBackToCamera}>
-          <RotateCcw size={18} />
-          <span>Retake Photos</span>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', paddingBottom: '90px' }}>
+      {/* Header Bar matching "Make It Yours ✦" */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          padding: '0.5rem 0',
+          borderBottom: '1px solid var(--color-border-soft)',
+        }}
+      >
+        <button
+          onClick={onBackToCamera}
+          title="Retake Photos"
+          style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            border: '1.5px dashed var(--color-burgundy-deep)',
+            background: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            color: 'var(--color-burgundy-deep)',
+          }}
+        >
+          ✕
         </button>
 
-        <div style={{ textAlign: 'center' }}>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 800 }}>
-            Customize Your Memory ✨
-          </h2>
-          <span style={{ fontSize: '0.85rem', color: 'var(--color-neutral-sub)' }}>
-            Apply photo filters, background colors, custom text & cute stickers!
-          </span>
-        </div>
+        <h1
+          style={{
+            fontFamily: 'var(--font-heading)',
+            fontSize: '1.8rem',
+            fontWeight: 800,
+            color: 'var(--color-burgundy-deep)',
+            margin: 0,
+          }}
+        >
+          Make It Yours ✦
+        </h1>
 
-        <Button variant="primary" onClick={handleApply} disabled={isRendering}>
-          <CheckCircle size={18} />
-          <span>Apply & Finalize ✨</span>
-        </Button>
+        <button
+          onClick={handleApply}
+          disabled={isRendering}
+          title="Done Customizing"
+          style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            border: '1.5px dashed var(--color-burgundy-deep)',
+            background: 'white',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            cursor: 'pointer',
+            color: 'var(--color-burgundy-deep)',
+          }}
+        >
+          ✓
+        </button>
       </div>
 
       {/* Main Workspace */}
@@ -129,10 +160,10 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
           style={{
             background: 'var(--color-cream-dark)',
             borderRadius: 'var(--radius-xl)',
-            padding: '1.5rem',
+            padding: '1.25rem',
             aspectRatio: '2/3',
-            maxHeight: '75vh',
-            maxWidth: '520px',
+            maxHeight: '70vh',
+            maxWidth: '480px',
             width: '100%',
             margin: '0 auto',
             display: 'flex',
@@ -164,7 +195,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
           style={{
             background: 'white',
             borderRadius: 'var(--radius-xl)',
-            padding: '1.5rem',
+            padding: '1.25rem',
             boxShadow: 'var(--shadow-card)',
             border: '1px solid var(--color-border-soft)',
             display: 'flex',
@@ -172,39 +203,57 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
             gap: '1.25rem',
           }}
         >
-          {/* Navigation Control Tabs */}
-          <div style={{ display: 'flex', gap: '0.35rem', background: 'var(--color-cream-bg)', padding: '0.3rem', borderRadius: 'var(--radius-full)', overflowX: 'auto' }}>
-            <button
-              className={`category-pill ${activeTab === 'filter' ? 'active' : ''}`}
-              onClick={() => setActiveTab('filter')}
-              style={{ flex: 1, padding: '0.5rem', justifyContent: 'center', fontSize: '0.82rem' }}
-            >
-              <Sparkles size={14} /> Filter
-            </button>
-            <button
-              className={`category-pill ${activeTab === 'color' ? 'active' : ''}`}
-              onClick={() => setActiveTab('color')}
-              style={{ flex: 1, padding: '0.5rem', justifyContent: 'center', fontSize: '0.82rem' }}
-            >
-              <Palette size={14} /> Color
-            </button>
-            <button
-              className={`category-pill ${activeTab === 'text' ? 'active' : ''}`}
-              onClick={() => setActiveTab('text')}
-              style={{ flex: 1, padding: '0.5rem', justifyContent: 'center', fontSize: '0.82rem' }}
-            >
-              <Type size={14} /> Text
-            </button>
-            <button
-              className={`category-pill ${activeTab === 'stickers' ? 'active' : ''}`}
-              onClick={() => setActiveTab('stickers')}
-              style={{ flex: 1, padding: '0.5rem', justifyContent: 'center', fontSize: '0.82rem' }}
-            >
-              <Smile size={14} /> Stickers
-            </button>
+          {/* Sheet Handle Indicator */}
+          <div style={{ width: '40px', height: '4px', background: 'var(--color-border)', borderRadius: '2px', margin: '0 auto' }} />
+
+          {/* Navigation Tabs (STICKERS, FRAME, BG, TEXT, FILTER) */}
+          <div style={{ display: 'flex', borderBottom: '1px solid var(--color-border-soft)', overflowX: 'auto' }}>
+            {[
+              { id: 'stickers', label: 'STICKERS' },
+              { id: 'color', label: 'FRAME' },
+              { id: 'color', label: 'BG' },
+              { id: 'text', label: 'TEXT' },
+              { id: 'filter', label: 'FILTER' },
+            ].map((tab, idx) => {
+              const isActive = activeTab === tab.id;
+              return (
+                <button
+                  key={idx}
+                  onClick={() => setActiveTab(tab.id as any)}
+                  style={{
+                    flex: 1,
+                    padding: '0.6rem 0.5rem',
+                    background: 'none',
+                    border: 'none',
+                    borderBottom: isActive ? '2px solid var(--color-burgundy-deep)' : '2px solid transparent',
+                    color: isActive ? 'var(--color-burgundy-deep)' : 'var(--color-neutral-sub)',
+                    fontWeight: isActive ? 800 : 600,
+                    fontSize: '0.78rem',
+                    letterSpacing: '0.04em',
+                    cursor: 'pointer',
+                    whiteSpace: 'nowrap',
+                  }}
+                >
+                  {tab.label}
+                </button>
+              );
+            })}
           </div>
 
           {/* Active Tab Content */}
+          {activeTab === 'stickers' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+              <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--color-neutral-sub)', letterSpacing: '0.05em' }}>
+                ADD DOODLES
+              </span>
+              <StickerPicker
+                onAddSticker={handleAddSticker}
+                placedStickers={placedStickers}
+                onRemoveSticker={handleRemoveSticker}
+              />
+            </div>
+          )}
+
           {activeTab === 'filter' && (
             <FilterPicker
               selectedFilter={selectedFilter}
@@ -218,8 +267,8 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
 
           {activeTab === 'color' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <label style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--color-neutral-sub)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-                <Palette size={16} color="#10b981" /> FRAME BACKGROUND COLOR
+              <label style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-neutral-sub)', textTransform: 'uppercase' }}>
+                FRAME BACKGROUND COLOR
               </label>
 
               <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
@@ -232,32 +281,17 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                       height: '36px',
                       borderRadius: '50%',
                       backgroundColor: c,
-                      border: backgroundColor === c ? '3px solid var(--color-pink-primary)' : '1px solid rgba(0,0,0,0.15)',
-                      boxShadow: 'var(--shadow-sm)',
+                      border: backgroundColor === c ? '3px solid var(--color-burgundy-deep)' : '1px solid rgba(0,0,0,0.15)',
                       cursor: 'pointer',
-                      transition: 'transform 0.15s ease',
                     }}
                   />
                 ))}
-              </div>
-
-              {/* Custom Color Input */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', marginTop: '0.5rem' }}>
-                <span style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--color-neutral-sub)' }}>
-                  CUSTOM COLOR:
-                </span>
-                <input
-                  type="color"
-                  value={backgroundColor}
-                  onChange={(e) => setBackgroundColor(e.target.value)}
-                  style={{ width: '40px', height: '32px', border: 'none', borderRadius: '4px', cursor: 'pointer' }}
-                />
               </div>
             </div>
           )}
 
           {activeTab === 'text' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <TextEditor
                 textElements={template.textElements}
                 customTexts={customTexts}
@@ -265,7 +299,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
               />
               <div style={{ background: 'var(--color-cream-bg)', padding: '0.85rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border-soft)' }}>
                 <label style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--color-neutral-sub)', display: 'block', marginBottom: '0.4rem' }}>
-                  STEMPEL TANGGAL / FOOTER TEKS:
+                  FOOTER TEKS:
                 </label>
                 <input
                   type="text"
@@ -278,35 +312,52 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                     borderRadius: 'var(--radius-md)',
                     border: '1px solid var(--color-border)',
                     fontSize: '0.88rem',
-                    fontFamily: 'monospace',
                     boxSizing: 'border-box',
                   }}
                 />
               </div>
             </div>
           )}
-
-          {activeTab === 'stickers' && (
-            <StickerPicker
-              onAddSticker={handleAddSticker}
-              placedStickers={placedStickers}
-              onRemoveSticker={handleRemoveSticker}
-            />
-          )}
-
-          {/* Action CTA */}
-          <div style={{ marginTop: 'auto', paddingTop: '1rem' }}>
-            <Button
-              variant="primary"
-              onClick={handleApply}
-              disabled={isRendering}
-              style={{ width: '100%', padding: '0.9rem', fontSize: '1rem' }}
-            >
-              <CheckCircle size={18} />
-              <span>Finalize & Preview ✨</span>
-            </Button>
-          </div>
         </div>
+      </div>
+
+      {/* Floating Sticky Bottom "Print & Save" Button */}
+      <div
+        style={{
+          position: 'fixed',
+          bottom: '76px',
+          left: '50%',
+          transform: 'translateX(-50%)',
+          zIndex: 1010,
+          width: 'calc(100% - 32px)',
+          maxWidth: '380px',
+          display: 'flex',
+          justifyContent: 'center',
+        }}
+      >
+        <button
+          onClick={handleApply}
+          disabled={isRendering}
+          style={{
+            width: '100%',
+            background: 'var(--color-pink-primary)',
+            color: '#ffffff',
+            padding: '0.95rem 1.75rem',
+            borderRadius: '9999px',
+            fontSize: '1.02rem',
+            fontWeight: 800,
+            border: 'none',
+            boxShadow: '0 10px 30px rgba(211, 47, 47, 0.35)',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.6rem',
+            transition: 'transform 0.2s ease, background 0.2s ease',
+          }}
+        >
+          <span>🖨️ Print & Save</span>
+        </button>
       </div>
     </div>
   );
