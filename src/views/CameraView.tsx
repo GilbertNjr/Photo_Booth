@@ -333,7 +333,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
                   border: '1px solid rgba(255, 255, 255, 0.15)',
                 }}
               >
-                4K / 8K ULTRA HD ✨
+                4K UHD • 120/90 FPS ✨
               </div>
             </div>
 

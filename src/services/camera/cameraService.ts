@@ -30,7 +30,7 @@ export class CameraService {
           width: { ideal: 3840, min: 1920 },
           height: { ideal: 2160, min: 1080 },
           facingMode: deviceId ? undefined : facingMode,
-          frameRate: { ideal: 60, min: 30 },
+          frameRate: { ideal: 120, min: 60 },
         },
         audio: false,
       };
