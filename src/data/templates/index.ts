@@ -9,8 +9,22 @@ import { filmStrip01 } from './minimal';
 import { cuteBear01 } from './birthday';
 import { polaroid01 } from './graduation';
 import { seasonalSummer01 } from './seasonal';
+import {
+  seoulLife4Cuts,
+  tokyoPurikura,
+  parisRiviera,
+  romaCinema,
+  nycDigicam,
+  nusantaraBatik,
+} from './globalCountry';
 
 export const TEMPLATES: TemplateData[] = [
+  seoulLife4Cuts,
+  tokyoPurikura,
+  parisRiviera,
+  romaCinema,
+  nycDigicam,
+  nusantaraBatik,
   haruSky01,
   cutePink01,
   y2kSilver01,
@@ -33,3 +47,4 @@ export * from './minimal';
 export * from './birthday';
 export * from './graduation';
 export * from './seasonal';
+export * from './globalCountry';

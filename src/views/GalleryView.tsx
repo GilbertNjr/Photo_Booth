@@ -113,14 +113,19 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
       <div
         style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr)',
-          gap: '1rem',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))',
+          gap: '1.25rem',
           marginTop: '0.5rem',
         }}
       >
         {filteredTemplates.map((template: TemplateData, index: number) => {
           const isFav = favorites.includes(template.id);
           const sampleImg = template.samplePhotos?.[0];
+          // Extract flag emoji if available in name
+          const flagMatch = template.name.match(/^[\uD83C-\uDBFF\uDC00-\uDFFF]{2}/);
+          const flagEmoji = flagMatch ? flagMatch[0] : '✦';
+          const cleanTitle = template.name.replace(/^[\uD83C-\uDBFF\uDC00-\uDFFF]{2}\s*/, '');
+
           return (
             <div
               key={template.id}
@@ -128,17 +133,34 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
               style={{
                 position: 'relative',
                 background: '#ffffff',
-                borderRadius: 'var(--radius-lg)',
-                padding: '0.75rem',
-                border: '1px solid var(--color-border-soft)',
-                boxShadow: '0 8px 24px rgba(92, 6, 18, 0.08)',
+                borderRadius: 'var(--radius-xl)',
+                padding: '0.9rem',
+                border: '1.5px solid var(--color-border-soft)',
+                boxShadow: '0 12px 32px rgba(92, 6, 18, 0.09)',
                 cursor: 'pointer',
                 display: 'flex',
                 flexDirection: 'column',
-                gap: '0.5rem',
-                transition: 'transform 0.2s ease, box-shadow 0.2s ease',
+                gap: '0.65rem',
+                transition: 'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
               }}
             >
+              {/* Paper Washi Tape Overlay Decor */}
+              <div
+                style={{
+                  position: 'absolute',
+                  top: '-12px',
+                  left: '50%',
+                  transform: `translateX(-50%) rotate(${index % 2 === 0 ? '-3deg' : '4deg'})`,
+                  width: '60px',
+                  height: '18px',
+                  background: 'rgba(244, 194, 194, 0.65)',
+                  borderLeft: '2px dashed rgba(255,255,255,0.8)',
+                  borderRight: '2px dashed rgba(255,255,255,0.8)',
+                  zIndex: 3,
+                  boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
+                }}
+              />
+
               {/* Star Accent on alternating cards */}
               {index % 2 === 0 && (
                 <span
@@ -146,16 +168,16 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
                     position: 'absolute',
                     top: '-10px',
                     left: '12px',
-                    fontSize: '1.2rem',
-                    color: '#fecdd3',
-                    zIndex: 2,
+                    fontSize: '1.25rem',
+                    color: 'var(--color-pink-soft)',
+                    zIndex: 4,
                   }}
                 >
                   ★
                 </span>
               )}
 
-              {/* Card Image Preview */}
+              {/* Card Image Preview with Styled Frame Border */}
               <div
                 style={{
                   width: '100%',
@@ -167,6 +189,8 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
+                  boxShadow: 'inset 0 0 12px rgba(0,0,0,0.08)',
+                  border: `2px solid ${template.frameBorderColor || '#ffffff'}`,
                 }}
               >
                 {sampleImg ? (
@@ -176,50 +200,92 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
                     style={{ width: '100%', height: '100%', objectFit: 'cover' }}
                   />
                 ) : (
-                  <div style={{ textAlign: 'center', padding: '0.5rem' }}>
-                    <Sparkles size={24} color="var(--color-burgundy-deep)" />
-                    <span style={{ fontSize: '0.75rem', fontWeight: 700, display: 'block', marginTop: '0.25rem' }}>
-                      {template.name}
+                  <div style={{ textAlign: 'center', padding: '0.75rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
+                    <Sparkles size={28} color="var(--color-burgundy-deep)" />
+                    <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-burgundy-deep)' }}>
+                      {cleanTitle}
+                    </span>
+                    <span style={{ fontSize: '0.7rem', color: 'var(--color-neutral-sub)' }}>
+                      {template.photoSlotsCount} Frame Slots
                     </span>
                   </div>
                 )}
 
-                {/* Heart Favorite Badge */}
+                {/* Country Flag Badge Tag */}
+                {flagMatch && (
+                  <div
+                    style={{
+                      position: 'absolute',
+                      bottom: '8px',
+                      left: '8px',
+                      background: 'rgba(255, 255, 255, 0.92)',
+                      backdropFilter: 'blur(6px)',
+                      padding: '0.2rem 0.5rem',
+                      borderRadius: 'var(--radius-full)',
+                      fontSize: '0.85rem',
+                      boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.25rem',
+                    }}
+                  >
+                    <span>{flagEmoji}</span>
+                    <span style={{ fontSize: '0.68rem', fontWeight: 800, color: 'var(--color-neutral-dark)', textTransform: 'uppercase' }}>
+                      {template.category}
+                    </span>
+                  </div>
+                )}
+
+                {/* Heart Favorite Button */}
                 <button
                   onClick={(e) => toggleFavorite(template.id, e)}
                   style={{
                     position: 'absolute',
                     top: '8px',
                     right: '8px',
-                    width: '30px',
-                    height: '30px',
+                    width: '32px',
+                    height: '32px',
                     borderRadius: '50%',
-                    background: 'rgba(255, 255, 255, 0.85)',
+                    background: 'rgba(255, 255, 255, 0.9)',
                     backdropFilter: 'blur(4px)',
                     border: 'none',
                     display: 'flex',
                     alignItems: 'center',
                     justifyContent: 'center',
                     cursor: 'pointer',
-                    color: isFav ? '#e11d48' : 'var(--color-neutral-sub)',
+                    color: isFav ? '#D22B2B' : 'var(--color-neutral-sub)',
+                    boxShadow: '0 4px 10px rgba(0,0,0,0.12)',
                   }}
                 >
-                  <Heart size={16} fill={isFav ? '#e11d48' : 'none'} />
+                  <Heart size={16} fill={isFav ? '#D22B2B' : 'none'} />
                 </button>
               </div>
 
-              {/* Card Title & Slot Info */}
-              <div style={{ textAlign: 'center', padding: '0.2rem 0' }}>
-                <span
+              {/* Card Footer Details */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', padding: '0.2rem 0.2rem 0' }}>
+                <h3
                   style={{
-                    fontSize: '0.78rem',
-                    fontWeight: 700,
-                    color: 'var(--color-neutral-sub)',
-                    letterSpacing: '0.04em',
-                    textTransform: 'uppercase',
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: '0.98rem',
+                    fontWeight: 800,
+                    color: 'var(--color-burgundy-deep)',
+                    margin: 0,
+                    lineHeight: 1.2,
+                    whiteSpace: 'nowrap',
+                    overflow: 'hidden',
+                    textOverflow: 'ellipsis',
                   }}
                 >
-                  {template.name} • {template.photoSlotsCount} Slots
+                  {template.name}
+                </h3>
+                <span
+                  style={{
+                    fontSize: '0.75rem',
+                    color: 'var(--color-neutral-sub)',
+                    fontWeight: 600,
+                  }}
+                >
+                  {template.photoSlotsCount} Photo Slots • {template.style}
                 </span>
               </div>
             </div>
