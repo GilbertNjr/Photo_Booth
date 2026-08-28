@@ -8,7 +8,10 @@ import { CameraView } from './views/CameraView';
 import { CustomizeView } from './views/CustomizeView';
 import { FinalPreviewView } from './views/FinalPreviewView';
 import type { TemplateData } from './types/template';
+import { TemplateService } from './services/template/templateService';
 import { StorageService } from './services/storage/storageService';
+
+import { GalleryView } from './views/GalleryView';
 
 import { BottomNav } from './components/Layout/BottomNav';
 
@@ -130,7 +133,18 @@ export function App() {
           hasFinalImage={!!finalImageDataUrl}
         />
 
-        {currentStep === 'picker' && (
+        {currentStep === 'picker' && activeBottomTab === 'gallery' && (
+          <GalleryView
+            onSelectFrame={handleSelectFrame}
+            onGoToCamera={() => {
+              setActiveBottomTab('home');
+              const defaultTpl = selectedFrame || TemplateService.getAllTemplates()[0];
+              if (defaultTpl) handleSelectFrame(defaultTpl);
+            }}
+          />
+        )}
+
+        {currentStep === 'picker' && activeBottomTab !== 'gallery' && (
           <FramePickerView
             onSelectFrame={handleSelectFrame}
             isShowingFavoritesOnly={isShowingFavoritesOnly}
