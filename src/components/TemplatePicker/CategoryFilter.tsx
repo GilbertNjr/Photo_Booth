@@ -18,7 +18,7 @@ interface CategoryFilterProps {
 }
 
 export const CATEGORIES: { id: FrameCategory | 'all'; label: string; icon: React.ReactNode }[] = [
-  { id: 'all', label: 'All Frames', icon: <LayoutGrid size={16} /> },
+  { id: 'all', label: 'Semua Frame', icon: <LayoutGrid size={16} /> },
   { id: 'cute', label: 'Cute', icon: <Sparkles size={16} /> },
   { id: 'minimal', label: 'Minimal', icon: <Camera size={16} /> },
   { id: 'vintage', label: 'Vintage', icon: <Camera size={16} /> },

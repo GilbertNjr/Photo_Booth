@@ -89,6 +89,7 @@ export interface TemplateData {
   textElements: TextElement[];
   
   tags: string[];
+  samplePhotos?: string[];
   isPopular?: boolean;
   isNew?: boolean;
 }

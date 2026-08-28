@@ -1,3 +1,13 @@
+## [1.1.0] - 2026-08-28 (Enhanced Camera Viewport & Right Sidebar Card Layout)
+
+### Added & Refactored
+- **Main Live Camera Viewport (`CameraView.tsx`):** Added a dedicated, high-definition live webcam feed viewport positioned on the left/main area so users can see their face position clearly before and during photo capture.
+- **Face Alignment Guide Overlay (`face-alignment-guide`):** Added an interactive, pulsing face contour guide ("Posisi Wajah Di Sini ✨") to assist users in centering their face.
+- **Rule of Thirds Grid Lines (`grid-lines-overlay`):** Added optional 3x3 framing grid lines toggle for composition control.
+- **Right Sidebar Frame Card Panel (`camera-sidebar-card`):** Moved the Template Frame Card to a clean, dedicated right sidebar panel ("samping kanan bar clean, enak dilihat").
+- **Live Stream Card Slot Mirroring (`CameraFrameOverlay.tsx`):** Updated active frame slots inside the template card to stream live webcam video simultaneously in real time.
+- **Camera Service Stream Access (`cameraService.ts`):** Added `getActiveStream()` method to enable multi-viewport video stream rendering.
+
 ## [1.0.0] - 2026-08-27 (Full Core Application: Canvas Engine, Customization Editor, Final Preview & Printing)
 
 ### Added

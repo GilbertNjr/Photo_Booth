@@ -1,5 +1,6 @@
 import React from 'react';
 import type { TemplateData } from '../../types/template';
+import { CameraService } from '../../services/camera/cameraService';
 import { StickerIllustration } from '../Common/StickerIllustration';
 
 interface CameraFrameOverlayProps {
@@ -7,6 +8,7 @@ interface CameraFrameOverlayProps {
   capturedPhotos: string[]; // List of captured photos so far
   activeSlotIndex: number; // Index of slot currently being captured
   isCameraActive: boolean;
+  mirror?: boolean;
 }
 
 export const CameraFrameOverlay: React.FC<CameraFrameOverlayProps> = ({
@@ -14,7 +16,10 @@ export const CameraFrameOverlay: React.FC<CameraFrameOverlayProps> = ({
   capturedPhotos,
   activeSlotIndex,
   isCameraActive,
+  mirror = true,
 }) => {
+  const activeStream = CameraService.getActiveStream();
+
   return (
     <div
       style={{
@@ -48,6 +53,78 @@ export const CameraFrameOverlay: React.FC<CameraFrameOverlayProps> = ({
       {template.photoSlots.map((slot, index) => {
         const capturedImg = capturedPhotos[index];
         const isActive = index === activeSlotIndex && isCameraActive;
+
+        const renderSlotMedia = () => {
+          if (capturedImg) {
+            return (
+              <img
+                src={capturedImg}
+                alt={`Captured ${index + 1}`}
+                style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+              />
+            );
+          }
+          if (isActive && activeStream) {
+            return (
+              <div style={{ position: 'relative', width: '100%', height: '100%', overflow: 'hidden', background: '#000' }}>
+                <video
+                  ref={(el) => {
+                    if (el && el.srcObject !== activeStream) {
+                      el.srcObject = activeStream;
+                      el.play().catch(() => {});
+                    }
+                  }}
+                  autoPlay
+                  playsInline
+                  muted
+                  style={{
+                    width: '100%',
+                    height: '100%',
+                    objectFit: 'cover',
+                    transform: mirror ? 'scaleX(-1)' : 'none',
+                  }}
+                />
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '4px',
+                    left: '4px',
+                    background: 'rgba(255, 117, 151, 0.9)',
+                    color: 'white',
+                    fontSize: '0.6rem',
+                    fontWeight: 800,
+                    padding: '0.15rem 0.45rem',
+                    borderRadius: '10px',
+                    backdropFilter: 'blur(4px)',
+                    zIndex: 5,
+                    boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                    letterSpacing: '0.03em',
+                  }}
+                >
+                  ● LIVE
+                </div>
+              </div>
+            );
+          }
+          return (
+            <div
+              style={{
+                width: '100%',
+                height: '100%',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: '#1a1a1a',
+                color: 'rgba(255, 255, 255, 0.4)',
+                fontSize: '0.65rem',
+                fontWeight: 700,
+                letterSpacing: '0.05em',
+              }}
+            >
+              SLOT {index + 1}
+            </div>
+          );
+        };
 
         if (slot.frameStyle === 'polaroid') {
           return (
@@ -92,20 +169,9 @@ export const CameraFrameOverlay: React.FC<CameraFrameOverlayProps> = ({
                   overflow: 'hidden',
                   borderRadius: '2px',
                   background: '#1a1a1a',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
                 }}
               >
-                {capturedImg ? (
-                  <img src={capturedImg} alt={`Captured ${index + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                ) : isActive ? (
-                  <div style={{ color: '#ff7597', fontSize: '0.65rem', fontWeight: 700, padding: '0.2rem 0.5rem', background: 'rgba(0,0,0,0.6)', borderRadius: '12px' }}>
-                    ● LIVE
-                  </div>
-                ) : (
-                  <span style={{ color: '#fff', opacity: 0.5, fontSize: '0.65rem', fontWeight: 700 }}>SLOT {index + 1}</span>
-                )}
+                {renderSlotMedia()}
               </div>
             </div>
           );
@@ -135,14 +201,8 @@ export const CameraFrameOverlay: React.FC<CameraFrameOverlayProps> = ({
                 zIndex: index + 1,
               }}
             >
-              <div style={{ flex: 1, height: '100%', overflow: 'hidden', borderRadius: '8px', border: '2px solid #3e2719', background: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                {capturedImg ? (
-                  <img src={capturedImg} alt={`Captured ${index + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                ) : isActive ? (
-                  <div style={{ color: '#ff7597', fontSize: '0.65rem', fontWeight: 700 }}>● LIVE</div>
-                ) : (
-                  <span style={{ color: '#fff', opacity: 0.5, fontSize: '0.65rem' }}>SLOT {index + 1}</span>
-                )}
+              <div style={{ flex: 1, height: '100%', overflow: 'hidden', borderRadius: '8px', border: '2px solid #3e2719', background: '#000' }}>
+                {renderSlotMedia()}
               </div>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', alignItems: 'center' }}>
                 <div style={{ width: '14px', height: '14px', borderRadius: '50%', background: 'radial-gradient(#d4af37, #8b6b1b)' }} />
@@ -166,70 +226,11 @@ export const CameraFrameOverlay: React.FC<CameraFrameOverlayProps> = ({
               backgroundColor: '#e2e8f0',
               boxShadow: isActive ? '0 0 0 4px var(--color-pink-primary), 0 8px 20px rgba(0,0,0,0.2)' : '0 4px 12px rgba(0,0,0,0.1)',
               overflow: 'hidden',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
               transition: 'all 0.3s ease',
               border: isActive ? '3px solid #ff7597' : '2px solid rgba(255,255,255,0.8)',
             }}
           >
-            {capturedImg ? (
-              <img
-                src={capturedImg}
-                alt={`Captured ${index + 1}`}
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  objectFit: 'cover',
-                }}
-              />
-            ) : isActive ? (
-              <div
-                style={{
-                  position: 'relative',
-                  width: '100%',
-                  height: '100%',
-                  overflow: 'hidden',
-                  background: '#000',
-                }}
-              >
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '8px',
-                    left: '8px',
-                    background: 'rgba(255, 117, 151, 0.85)',
-                    color: 'white',
-                    fontSize: '0.65rem',
-                    fontWeight: 700,
-                    padding: '0.15rem 0.5rem',
-                    borderRadius: 'var(--radius-full)',
-                    zIndex: 5,
-                    backdropFilter: 'blur(4px)',
-                  }}
-                >
-                  ● LIVE SLOT {index + 1}
-                </div>
-              </div>
-            ) : (
-              <div
-                style={{
-                  width: '100%',
-                  height: '100%',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  background: `linear-gradient(135deg, ${template.backgroundColor}, ${template.accentColor}22)`,
-                  color: template.textColor,
-                  fontSize: '0.75rem',
-                  fontWeight: 700,
-                  opacity: 0.6,
-                }}
-              >
-                <span>SLOT {index + 1}</span>
-              </div>
-            )}
+            {renderSlotMedia()}
           </div>
         );
       })}
@@ -284,3 +285,4 @@ export const CameraFrameOverlay: React.FC<CameraFrameOverlayProps> = ({
     </div>
   );
 };
+

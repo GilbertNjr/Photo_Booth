@@ -1,5 +1,7 @@
 import type { TemplateData } from '../../types/template';
 import { cutePink01 } from './cute';
+import { haruSky01 } from './haruSky';
+import { y2kSilver01 } from './y2kSilver';
 import { vintageCamera01 } from './vintage';
 import { newspaper01 } from './romantic';
 import { ticket01 } from './friendship';
@@ -9,7 +11,9 @@ import { polaroid01 } from './graduation';
 import { seasonalSummer01 } from './seasonal';
 
 export const TEMPLATES: TemplateData[] = [
+  haruSky01,
   cutePink01,
+  y2kSilver01,
   vintageCamera01,
   newspaper01,
   ticket01,
@@ -20,6 +24,8 @@ export const TEMPLATES: TemplateData[] = [
 ];
 
 export * from './cute';
+export * from './haruSky';
+export * from './y2kSilver';
 export * from './vintage';
 export * from './romantic';
 export * from './friendship';

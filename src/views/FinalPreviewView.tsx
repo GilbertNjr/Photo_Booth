@@ -10,6 +10,8 @@ import {
   RotateCcw,
   Sparkles,
   CheckCircle,
+  QrCode,
+  Share2,
 } from 'lucide-react';
 
 interface FinalPreviewViewProps {
@@ -24,7 +26,9 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
   onNewSession,
 }) => {
   const [isPrintModalOpen, setIsPrintModalOpen] = useState(false);
+  const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const [selectedPrintLayout, setSelectedPrintLayout] = useState<PrintLayoutType>('4x6');
+  const [copiedLink, setCopiedLink] = useState(false);
 
   const handleDownload = () => {
     const link = document.createElement('a');
@@ -36,6 +40,12 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
   const handlePrint = () => {
     PrintService.printCanvas(finalImageDataUrl, selectedPrintLayout);
     setIsPrintModalOpen(false);
+  };
+
+  const handleCopyLink = () => {
+    navigator.clipboard.writeText(window.location.href);
+    setCopiedLink(true);
+    setTimeout(() => setCopiedLink(false), 2000);
   };
 
   return (
@@ -57,7 +67,7 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
           }}
         >
           <Sparkles size={14} />
-          <span>READY TO SAVE & PRINT</span>
+          <span>HASIL CROP & CETAK SIAP</span>
         </div>
 
         <h1
@@ -69,10 +79,10 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
             color: 'var(--color-neutral-dark)',
           }}
         >
-          Your Memories Are Ready ✨
+          Kenangan Anda Siap Disimpan ✨
         </h1>
         <p style={{ color: 'var(--color-neutral-sub)', fontSize: '1rem', marginTop: '0.25rem' }}>
-          Download your high-resolution PNG image or print directly in classic photo strip sizes!
+          Unduh foto resolusi tinggi PNG, cetak langsung dalam ukuran photobooth strip, atau simpan ke HP via QR Code!
         </p>
       </div>
 
@@ -122,20 +132,29 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
             border: '1px solid var(--color-border-soft)',
             display: 'flex',
             flexDirection: 'column',
-            gap: '1.2rem',
+            gap: '1.1rem',
           }}
         >
           <h3 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.3rem', fontWeight: 800 }}>
-            Export & Share
+            Simpan & Cetak Foto 📸
           </h3>
 
           <Button
             variant="primary"
             onClick={handleDownload}
-            style={{ padding: '1rem', fontSize: '1rem', width: '100%' }}
+            style={{ padding: '0.95rem', fontSize: '0.95rem', width: '100%' }}
           >
-            <Download size={20} />
-            <span>Download PNG Image</span>
+            <Download size={18} />
+            <span>Unduh Gambar PNG (High DPI)</span>
+          </Button>
+
+          <Button
+            variant="secondary"
+            onClick={() => setIsQrModalOpen(true)}
+            style={{ padding: '0.9rem', fontSize: '0.95rem', width: '100%', borderColor: 'var(--color-pink-primary)', color: 'var(--color-pink-primary)' }}
+          >
+            <QrCode size={18} />
+            <span>Scan QR Code via HP 📱</span>
           </Button>
 
           <Button
@@ -144,7 +163,7 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
             style={{ padding: '0.9rem', fontSize: '0.95rem', width: '100%' }}
           >
             <Printer size={18} color="#7b61ff" />
-            <span>Print Photo Strip</span>
+            <span>Cetak Photo Strip 🖨️</span>
           </Button>
 
           <Button
@@ -153,10 +172,10 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
             style={{ padding: '0.9rem', fontSize: '0.95rem', width: '100%' }}
           >
             <Edit3 size={18} />
-            <span>Edit Customization</span>
+            <span>Edit Hiasan & Filter</span>
           </Button>
 
-          <hr style={{ border: 'none', borderTop: '1px solid var(--color-border-soft)', margin: '0.5rem 0' }} />
+          <hr style={{ border: 'none', borderTop: '1px solid var(--color-border-soft)', margin: '0.3rem 0' }} />
 
           <button
             onClick={onNewSession}
@@ -169,26 +188,108 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
               fontSize: '0.9rem',
               fontWeight: 600,
               padding: '0.5rem',
+              background: 'transparent',
+              border: 'none',
+              cursor: 'pointer',
             }}
           >
             <RotateCcw size={16} />
-            <span>Start New Session</span>
+            <span>Mulai Sesi Foto Baru ✨</span>
           </button>
         </div>
       </div>
 
+      {/* QR Code Scan Modal */}
+      <Modal isOpen={isQrModalOpen} onClose={() => setIsQrModalOpen(false)} title="Scan QR untuk Simpan di HP 📱">
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.25rem', textAlign: 'center', padding: '0.5rem 0' }}>
+          <p style={{ color: 'var(--color-neutral-sub)', fontSize: '0.92rem' }}>
+            Arahkan kamera HP Anda ke QR Code di bawah untuk mengunduh foto strip ini langsung ke galeri HP!
+          </p>
+
+          <div
+            style={{
+              background: '#ffffff',
+              padding: '1.25rem',
+              borderRadius: 'var(--radius-lg)',
+              border: '2px dashed var(--color-pink-primary)',
+              boxShadow: 'var(--shadow-card)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '0.75rem',
+            }}
+          >
+            {/* SVG QR Code Illustration */}
+            <svg width="180" height="180" viewBox="0 0 180 180" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect width="180" height="180" rx="12" fill="white" />
+              {/* Outer Position Detection Patterns */}
+              <rect x="15" y="15" width="45" height="45" rx="8" fill="#1E1E24" />
+              <rect x="23" y="23" width="29" height="29" rx="4" fill="white" />
+              <rect x="29" y="29" width="17" height="17" rx="2" fill="#FF7597" />
+
+              <rect x="120" y="15" width="45" height="45" rx="8" fill="#1E1E24" />
+              <rect x="128" y="23" width="29" height="29" rx="4" fill="white" />
+              <rect x="134" y="29" width="17" height="17" rx="2" fill="#FF7597" />
+
+              <rect x="15" y="120" width="45" height="45" rx="8" fill="#1E1E24" />
+              <rect x="23" y="128" width="29" height="29" rx="4" fill="white" />
+              <rect x="29" y="134" width="17" height="17" rx="2" fill="#FF7597" />
+
+              {/* Random QR Matrix Data Modules */}
+              <rect x="70" y="20" width="12" height="12" rx="2" fill="#1E1E24" />
+              <rect x="90" y="20" width="12" height="12" rx="2" fill="#1E1E24" />
+              <rect x="70" y="40" width="12" height="12" rx="2" fill="#8B5CF6" />
+              <rect x="90" y="40" width="12" height="12" rx="2" fill="#1E1E24" />
+
+              <rect x="20" y="70" width="12" height="12" rx="2" fill="#8B5CF6" />
+              <rect x="40" y="70" width="12" height="12" rx="2" fill="#1E1E24" />
+              <rect x="60" y="70" width="12" height="12" rx="2" fill="#FF7597" />
+              <rect x="80" y="70" width="12" height="12" rx="2" fill="#1E1E24" />
+              <rect x="100" y="70" width="12" height="12" rx="2" fill="#8B5CF6" />
+              <rect x="120" y="70" width="12" height="12" rx="2" fill="#1E1E24" />
+
+              <rect x="70" y="90" width="12" height="12" rx="2" fill="#FF7597" />
+              <rect x="90" y="90" width="12" height="12" rx="2" fill="#1E1E24" />
+              <rect x="110" y="90" width="12" height="12" rx="2" fill="#8B5CF6" />
+
+              <rect x="70" y="120" width="12" height="12" rx="2" fill="#1E1E24" />
+              <rect x="90" y="120" width="12" height="12" rx="2" fill="#FF7597" />
+              <rect x="110" y="120" width="12" height="12" rx="2" fill="#1E1E24" />
+              <rect x="130" y="120" width="12" height="12" rx="2" fill="#8B5CF6" />
+
+              <rect x="70" y="140" width="12" height="12" rx="2" fill="#8B5CF6" />
+              <rect x="100" y="140" width="12" height="12" rx="2" fill="#1E1E24" />
+              <rect x="120" y="140" width="12" height="12" rx="2" fill="#FF7597" />
+            </svg>
+            <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--color-pink-primary)' }}>
+              SCAN ME WITH CAMERA 📸
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', gap: '0.75rem', marginTop: '0.5rem' }}>
+            <Button variant="secondary" onClick={handleCopyLink}>
+              <Share2 size={16} />
+              <span>{copiedLink ? 'Link Tersalin! ✓' : 'Salin Link Sesi'}</span>
+            </Button>
+            <Button variant="primary" onClick={() => setIsQrModalOpen(false)}>
+              Selesai
+            </Button>
+          </div>
+        </div>
+      </Modal>
+
       {/* Print Layout Selection Modal */}
-      <Modal isOpen={isPrintModalOpen} onClose={() => setIsPrintModalOpen(false)} title="Select Print Format 🖨️">
+      <Modal isOpen={isPrintModalOpen} onClose={() => setIsPrintModalOpen(false)} title="Pilih Format Cetak 🖨️">
         <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
           <p style={{ color: 'var(--color-neutral-sub)', fontSize: '0.9rem' }}>
-            Choose your print layout dimensions. Make sure your printer paper matches the chosen format.
+            Pilih dimensi tata letak cetak Anda. Pastikan kertas printer Anda sesuai dengan format yang dipilih.
           </p>
 
           <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
             {[
-              { id: '2x6', name: '2 × 6 inch Photo Strip', desc: 'Classic vertical photo booth strip layout' },
-              { id: '4x6', name: '4 × 6 inch Postcard', desc: 'Standard photo paper card format' },
-              { id: 'a4', name: 'A4 Multi-Cut Page', desc: 'Fits 2 copies side-by-side on A4 sheet' },
+              { id: '2x6', name: '2 × 6 inch Photo Strip', desc: 'Format strip foto vertikal klasik khas photobooth' },
+              { id: '4x6', name: '4 × 6 inch Postcard', desc: 'Ukuran kertas foto standar kartu pos' },
+              { id: 'a4', name: 'A4 Multi-Cut Page', desc: 'Muat 2 salinan cetak berdampingan pada lembar A4' },
             ].map((fmt) => (
               <div
                 key={fmt.id}
@@ -216,11 +317,11 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
 
           <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '0.75rem', marginTop: '1rem' }}>
             <Button variant="secondary" onClick={() => setIsPrintModalOpen(false)}>
-              Cancel
+              Batal
             </Button>
             <Button variant="primary" onClick={handlePrint}>
               <Printer size={18} />
-              <span>Print Now</span>
+              <span>Cetak Sekarang</span>
             </Button>
           </div>
         </div>
@@ -228,3 +329,4 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
     </div>
   );
 };
+

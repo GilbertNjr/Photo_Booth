@@ -56,48 +56,82 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
       {/* Hero Header */}
-      <div style={{ textAlign: 'center', margin: '0.5rem 0 1rem' }}>
+      <div style={{ textAlign: 'center', margin: '0.25rem 0 1.25rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <div
           style={{
             display: 'inline-flex',
             alignItems: 'center',
-            gap: '0.4rem',
-            background: 'var(--color-pink-soft)',
+            gap: '0.5rem',
+            background: 'linear-gradient(135deg, rgba(255, 117, 151, 0.15), rgba(139, 92, 246, 0.15))',
             color: 'var(--color-pink-primary)',
-            padding: '0.3rem 0.85rem',
+            padding: '0.4rem 1.1rem',
             borderRadius: 'var(--radius-full)',
             fontSize: '0.82rem',
-            fontWeight: 700,
-            marginBottom: '0.75rem',
+            fontWeight: 800,
+            marginBottom: '0.85rem',
+            border: '1px solid rgba(255, 117, 151, 0.3)',
+            boxShadow: '0 4px 12px rgba(255, 117, 151, 0.1)',
+            letterSpacing: '0.04em',
           }}
         >
-          <Sparkles size={14} />
-          <span>STEP 1 OF 4</span>
+          <Sparkles size={15} />
+          <span>KOREAN PHOTO BOOTH KIOSK 📸 • HIGH DPI PRINT</span>
         </div>
 
         <h1
           style={{
             fontFamily: 'var(--font-heading)',
-            fontSize: '2.5rem',
-            fontWeight: 800,
-            letterSpacing: '-0.02em',
-            color: 'var(--color-neutral-dark)',
+            fontSize: '2.75rem',
+            fontWeight: 900,
+            letterSpacing: '-0.025em',
+            background: 'linear-gradient(135deg, #1e1e24 20%, var(--color-pink-primary) 100%)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
             lineHeight: 1.15,
+            marginBottom: '0.4rem',
           }}
         >
-          {isShowingFavoritesOnly ? 'Your Favorite Frames ♡' : 'Choose Your Frame ✨'}
+          {isShowingFavoritesOnly ? 'Bingkai Favorit Saya ♡' : 'Pilih Frame Photobooth ✨'}
         </h1>
 
         <p
           style={{
             color: 'var(--color-neutral-sub)',
-            fontSize: '1.05rem',
-            maxWidth: '560px',
-            margin: '0.5rem auto 0',
+            fontSize: '1.08rem',
+            maxWidth: '600px',
+            margin: '0 auto 1.25rem',
+            lineHeight: 1.5,
+            fontWeight: 500,
           }}
         >
-          Select an aesthetic template for your photo booth session. Fully customizable with colors, stickers & handwritten captions!
+          Koleksi bingkai scrapbook aesthetic, polaroid & digicam. Bebas pilih gaya, hias stiker lucu, filter warna & caption tulisan tangan!
         </p>
+
+        {/* Aesthetic Quick Tags */}
+        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.5rem' }}>
+          {[
+            { icon: '✨', label: 'Aesthetic & Cute' },
+            { icon: '🖼️', label: 'Multi-Slot Strip' },
+            { icon: '🎨', label: 'Filter Foto Realtime' },
+            { icon: '🖨️', label: 'Cetak High DPI' },
+          ].map((tag, idx) => (
+            <span
+              key={idx}
+              style={{
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                color: 'var(--color-neutral-dark)',
+                background: 'rgba(255, 255, 255, 0.85)',
+                border: '1px solid var(--color-border-soft)',
+                padding: '0.25rem 0.75rem',
+                borderRadius: 'var(--radius-full)',
+                boxShadow: 'var(--shadow-sm)',
+              }}
+            >
+              {tag.icon} {tag.label}
+            </span>
+          ))}
+        </div>
       </div>
 
       {/* Controls: Search & Category Filters */}

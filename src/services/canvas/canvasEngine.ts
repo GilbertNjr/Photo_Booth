@@ -86,6 +86,7 @@ export class CanvasEngine {
       filter?: PhotoFilterType;
       backgroundColor?: string;
       customTexts?: Record<string, string>;
+      customBottomText?: string;
       placedStickers?: PlacedSticker[];
     } = {}
   ): Promise<string> {
@@ -410,6 +411,23 @@ export class CanvasEngine {
       ctx.fillText(st.content, 0, 0);
       ctx.restore();
     });
+
+    // 7. Render Photobooth Bottom Date Stamp & Glossy Sheen Overlay on final export
+    ctx.save();
+    ctx.fillStyle = template.textColor;
+    ctx.font = '600 24px monospace';
+    ctx.textAlign = 'left';
+    ctx.fillText(options.customBottomText || '2026.08.28 • PHOTO BOOTH STUDIO', 32, height - 32);
+    ctx.textAlign = 'right';
+    ctx.fillText('#04829', width - 32, height - 32);
+
+    const sheenGrad = ctx.createLinearGradient(0, 0, width, height);
+    sheenGrad.addColorStop(0, 'rgba(255, 255, 255, 0.18)');
+    sheenGrad.addColorStop(0.45, 'rgba(255, 255, 255, 0)');
+    sheenGrad.addColorStop(1, 'rgba(0, 0, 0, 0.08)');
+    ctx.fillStyle = sheenGrad;
+    ctx.fillRect(0, 0, width, height);
+    ctx.restore();
 
     return canvas.toDataURL('image/png');
   }

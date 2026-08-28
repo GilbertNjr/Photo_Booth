@@ -81,7 +81,7 @@ export class CaptureService {
   }
 
   /**
-   * Capture a single frame from video element as base64 JPEG
+   * Capture a single frame from video element as base64 JPEG with auto studio portrait enhancement
    */
   static captureFrame(videoElement: HTMLVideoElement, mirror: boolean = true): string {
     const canvas = document.createElement('canvas');
@@ -94,9 +94,13 @@ export class CaptureService {
         ctx.translate(canvas.width, 0);
         ctx.scale(-1, 1);
       }
+
+      // Apply Auto Studio Lighting Enhancement (Brightness boost, skin warmth & contrast sharpening)
+      ctx.filter = 'brightness(1.08) contrast(1.06) saturate(1.08)';
       ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+      ctx.filter = 'none';
     }
 
-    return canvas.toDataURL('image/jpeg', 0.95);
+    return canvas.toDataURL('image/jpeg', 0.96);
   }
 }

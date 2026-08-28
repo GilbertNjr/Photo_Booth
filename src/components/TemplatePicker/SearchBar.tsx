@@ -10,7 +10,7 @@ interface SearchBarProps {
 export const SearchBar: React.FC<SearchBarProps> = ({
   value,
   onChange,
-  placeholder = 'Search frames, tags (e.g. pink, 35mm, scrapbook)...',
+  placeholder = 'Cari frame, tema (cth: pink, vintage, cute, minimal)...',
 }) => {
   return (
     <div

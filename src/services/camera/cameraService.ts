@@ -58,4 +58,12 @@ export class CameraService {
   static isCameraActive(): boolean {
     return !!this.activeStream && this.activeStream.active;
   }
+
+  /**
+   * Get active MediaStream instance
+   */
+  static getActiveStream(): MediaStream | null {
+    return this.activeStream;
+  }
 }
+

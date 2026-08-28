@@ -22,7 +22,7 @@ export const FrameCard: React.FC<FrameCardProps> = ({
       <div className="frame-card-badges">
         <Badge variant="slot">
           <ImageIcon size={12} />
-          <span>{template.photoSlotsCount} Photos</span>
+          <span>{template.photoSlotsCount} Foto</span>
         </Badge>
 
         <button
@@ -55,20 +55,39 @@ export const FrameCard: React.FC<FrameCardProps> = ({
           <p className="frame-card-subtitle">{template.subtitle}</p>
         )}
 
-        <div className="frame-card-tags">
-          <Badge variant={template.category}>{template.category.toUpperCase()}</Badge>
-          <span
+        <div className="frame-card-tags" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
+          <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
+            <Badge variant={template.category}>{template.category.toUpperCase()}</Badge>
+            <span
+              style={{
+                fontSize: '0.72rem',
+                color: 'var(--color-neutral-sub)',
+                background: 'var(--color-cream-dark)',
+                padding: '0.2rem 0.55rem',
+                borderRadius: 'var(--radius-full)',
+                textTransform: 'capitalize',
+              }}
+            >
+              {template.style.replace('-', ' ')}
+            </span>
+          </div>
+
+          <button
             style={{
-              fontSize: '0.72rem',
-              color: 'var(--color-neutral-sub)',
-              background: 'var(--color-cream-dark)',
-              padding: '0.2rem 0.55rem',
+              padding: '0.35rem 0.75rem',
+              fontSize: '0.78rem',
+              fontWeight: 700,
+              color: '#ffffff',
+              background: 'var(--color-pink-primary)',
+              border: 'none',
               borderRadius: 'var(--radius-full)',
-              textTransform: 'capitalize',
+              cursor: 'pointer',
+              boxShadow: '0 4px 10px rgba(255, 117, 151, 0.3)',
+              transition: 'transform 0.2s ease',
             }}
           >
-            {template.style.replace('-', ' ')}
-          </span>
+            Pilih ➔
+          </button>
         </div>
       </div>
     </div>

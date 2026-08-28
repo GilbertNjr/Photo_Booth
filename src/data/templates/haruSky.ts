@@ -1,0 +1,46 @@
+import type { TemplateData } from '../../types/template';
+
+export const haruSky01: TemplateData = {
+  id: 'haru-sky-01',
+  name: 'Haru Soft Cloud Sky (하루 4-Cut)',
+  subtitle: 'Classic Korean 4-cut vertical strip with soft sky blue gradient & cloud sparkles ☁️✨',
+  category: 'cute',
+  style: 'film-strip',
+  photoSlotsCount: 4,
+  aspectRatio: '2:6',
+  canvasWidth: 600,
+  canvasHeight: 1800,
+  backgroundColor: '#7dd3fc',
+  backgroundTexture: 'dots',
+  backgroundGradient: 'linear-gradient(180deg, #e0f2fe 0%, #bae6fd 50%, #7dd3fc 100%)',
+  frameBorderColor: '#ffffff',
+  frameBorderWidth: 4,
+  frameBorderRadius: 20,
+  accentColor: '#0284c7',
+  textColor: '#0369a1',
+  colorPalettes: ['#e0f2fe', '#bae6fd', '#7dd3fc', '#0284c7', '#0369a1'],
+  photoSlots: [
+    { id: 'slot-1', x: 8, y: 5, width: 84, height: 19.5, borderRadius: 8, aspectRatio: 4 / 3 },
+    { id: 'slot-2', x: 8, y: 27, width: 84, height: 19.5, borderRadius: 8, aspectRatio: 4 / 3 },
+    { id: 'slot-3', x: 8, y: 49, width: 84, height: 19.5, borderRadius: 8, aspectRatio: 4 / 3 },
+    { id: 'slot-4', x: 8, y: 71, width: 84, height: 19.5, borderRadius: 8, aspectRatio: 4 / 3 },
+  ],
+  decorativeElements: [
+    { id: 'cloud-1', type: 'sticker', content: '☁️', x: 86, y: 4, rotation: 10, fontSize: 44 },
+    { id: 'cloud-2', type: 'sticker', content: '☁️', x: 12, y: 47, rotation: -12, fontSize: 38 },
+    { id: 'sparkle-1', type: 'sticker', content: '✨', x: 88, y: 69, rotation: 15, fontSize: 36 },
+    { id: 'heart-1', type: 'sticker', content: '🩵', x: 10, y: 92, rotation: -10, fontSize: 34 },
+  ],
+  textElements: [
+    { id: 'title-text', defaultText: 'our sweet moment ♡', placeholder: 'Title', x: 50, y: 93.5, fontFamily: 'Caveat', fontSize: 28, color: '#0369a1', align: 'center', isEditable: true },
+  ],
+  tags: ['haru-film', 'korean-4cut', 'cloud', 'sky-blue', '4-photos', 'aesthetic'],
+  samplePhotos: [
+    'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=600&q=80',
+    'https://images.unsplash.com/photo-1517841905240-472988babdf9?auto=format&fit=crop&w=600&q=80',
+    'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=600&q=80',
+    'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&w=600&q=80',
+  ],
+  isPopular: true,
+  isNew: true,
+};

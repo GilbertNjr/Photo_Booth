@@ -34,6 +34,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
   const [selectedFilter, setSelectedFilter] = useState<PhotoFilterType>('original');
   const [backgroundColor, setBackgroundColor] = useState<string>(template.backgroundColor);
   const [customTexts, setCustomTexts] = useState<Record<string, string>>({});
+  const [customBottomText, setCustomBottomText] = useState<string>('2026.08.28 • PHOTO BOOTH STUDIO');
   const [placedStickers, setPlacedStickers] = useState<PlacedSticker[]>([]);
 
   // Live Canvas Rendering State
@@ -51,6 +52,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
         filter: selectedFilter,
         backgroundColor,
         customTexts,
+        customBottomText,
         placedStickers,
       });
 
@@ -65,7 +67,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
     return () => {
       isCancelled = true;
     };
-  }, [template, capturedPhotos, selectedFilter, backgroundColor, customTexts, placedStickers]);
+  }, [template, capturedPhotos, selectedFilter, backgroundColor, customTexts, customBottomText, placedStickers]);
 
   const handleTextChange = (id: string, value: string) => {
     setCustomTexts((prev) => ({ ...prev, [id]: value }));
@@ -246,11 +248,33 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
           )}
 
           {activeTab === 'text' && (
-            <TextEditor
-              textElements={template.textElements}
-              customTexts={customTexts}
-              onChangeText={handleTextChange}
-            />
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1.2rem' }}>
+              <TextEditor
+                textElements={template.textElements}
+                customTexts={customTexts}
+                onChangeText={handleTextChange}
+              />
+              <div style={{ background: 'var(--color-cream-bg)', padding: '0.85rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border-soft)' }}>
+                <label style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--color-neutral-sub)', display: 'block', marginBottom: '0.4rem' }}>
+                  STEMPEL TANGGAL / FOOTER TEKS:
+                </label>
+                <input
+                  type="text"
+                  value={customBottomText}
+                  onChange={(e) => setCustomBottomText(e.target.value)}
+                  placeholder="2026.08.28 • PHOTO BOOTH STUDIO"
+                  style={{
+                    width: '100%',
+                    padding: '0.55rem 0.75rem',
+                    borderRadius: 'var(--radius-md)',
+                    border: '1px solid var(--color-border)',
+                    fontSize: '0.88rem',
+                    fontFamily: 'monospace',
+                    boxSizing: 'border-box',
+                  }}
+                />
+              </div>
+            </div>
           )}
 
           {activeTab === 'stickers' && (
