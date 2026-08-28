@@ -36,6 +36,8 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
   const [customTexts, setCustomTexts] = useState<Record<string, string>>({});
   const [customBottomText, setCustomBottomText] = useState<string>('2026.08.28 • PHOTO BOOTH STUDIO');
   const [placedStickers, setPlacedStickers] = useState<PlacedSticker[]>([]);
+  const [skinSmoothness, setSkinSmoothness] = useState<number>(50);
+  const [beautyBrightness, setBeautyBrightness] = useState<number>(50);
 
   // Live Canvas Rendering State
   const [livePreviewUrl, setLivePreviewUrl] = useState<string>('');
@@ -67,7 +69,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
     return () => {
       isCancelled = true;
     };
-  }, [template, capturedPhotos, selectedFilter, backgroundColor, customTexts, customBottomText, placedStickers]);
+  }, [template, capturedPhotos, selectedFilter, backgroundColor, customTexts, customBottomText, placedStickers, skinSmoothness, beautyBrightness]);
 
   const handleTextChange = (id: string, value: string) => {
     setCustomTexts((prev) => ({ ...prev, [id]: value }));
@@ -204,7 +206,14 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
 
           {/* Active Tab Content */}
           {activeTab === 'filter' && (
-            <FilterPicker selectedFilter={selectedFilter} onSelectFilter={setSelectedFilter} />
+            <FilterPicker
+              selectedFilter={selectedFilter}
+              onSelectFilter={setSelectedFilter}
+              skinSmoothness={skinSmoothness}
+              onSkinSmoothnessChange={setSkinSmoothness}
+              beautyBrightness={beautyBrightness}
+              onBeautyBrightnessChange={setBeautyBrightness}
+            />
           )}
 
           {activeTab === 'color' && (
