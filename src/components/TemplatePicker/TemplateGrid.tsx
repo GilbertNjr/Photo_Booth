@@ -5,6 +5,7 @@ import { FrameCard } from '../FramePreview/FrameCard';
 interface TemplateGridProps {
   templates: TemplateData[];
   favorites: string[];
+  selectedTemplateId?: string | null;
   onToggleFavorite: (id: string, e: React.MouseEvent) => void;
   onSelectTemplate: (template: TemplateData) => void;
   isShowingFavoritesOnly?: boolean;
@@ -13,6 +14,7 @@ interface TemplateGridProps {
 export const TemplateGrid: React.FC<TemplateGridProps> = ({
   templates,
   favorites,
+  selectedTemplateId,
   onToggleFavorite,
   onSelectTemplate,
   isShowingFavoritesOnly = false,
@@ -59,6 +61,7 @@ export const TemplateGrid: React.FC<TemplateGridProps> = ({
           key={template.id}
           template={template}
           isFavorite={favorites.includes(template.id)}
+          isSelected={selectedTemplateId === template.id}
           onToggleFavorite={onToggleFavorite}
           onSelect={onSelectTemplate}
         />

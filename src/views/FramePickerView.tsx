@@ -52,92 +52,59 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
     return result;
   }, [searchQuery, selectedCategory, isShowingFavoritesOnly, favorites]);
 
+  const [activeSelectedFrame, setActiveSelectedFrame] = useState<TemplateData | null>(null);
+
+  useEffect(() => {
+    if (filteredTemplates.length > 0 && !activeSelectedFrame) {
+      setActiveSelectedFrame(filteredTemplates[0]);
+    }
+  }, [filteredTemplates, activeSelectedFrame]);
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Hero Header matching PixBooth design */}
-      <div style={{ textAlign: 'center', margin: '1rem 0 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', position: 'relative', paddingBottom: '90px' }}>
+      {/* Header section matching "Choose Your Frame ✦" */}
+      <div style={{ textAlign: 'center', margin: '0.5rem 0 1rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+        <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
+          <span style={{ fontSize: '0.9rem', color: 'var(--color-neutral-sub)', fontWeight: 600, cursor: 'pointer' }}>
+            ← Back
+          </span>
+          <span
+            onClick={() => {
+              const defaultTemplate = activeSelectedFrame || filteredTemplates[0] || TemplateService.getAllTemplates()[0];
+              if (defaultTemplate) onSelectFrame(defaultTemplate);
+            }}
+            style={{ fontSize: '0.88rem', color: 'var(--color-neutral-sub)', fontWeight: 700, cursor: 'pointer' }}
+          >
+            Skip
+          </span>
+        </div>
+
         <h1
           style={{
-            fontFamily: 'var(--font-serif)',
-            fontSize: '2.75rem',
+            fontFamily: 'var(--font-heading)',
+            fontSize: '2.4rem',
             fontWeight: 800,
             color: 'var(--color-burgundy-deep)',
-            lineHeight: 1.25,
+            lineHeight: 1.2,
             letterSpacing: '-0.02em',
-            marginBottom: '0.85rem',
+            marginBottom: '0.35rem',
           }}
         >
-          {isShowingFavoritesOnly ? (
-            'Bingkai Favorit Saya ♡'
-          ) : (
-            <>
-              Capture the Moment, <br />
-              Keep the Memory ✦
-            </>
-          )}
+          Choose Your Frame ✦
         </h1>
 
         <p
           style={{
             color: 'var(--color-neutral-sub)',
-            fontSize: '1.02rem',
+            fontSize: '0.96rem',
             maxWidth: '520px',
-            margin: '0 auto 1.5rem',
-            lineHeight: 1.6,
+            margin: '0 auto 1rem',
+            lineHeight: 1.5,
             fontWeight: 400,
           }}
         >
-          Create your own aesthetic photo memories. High-quality digital booth experience right from your device.
+          Pick a style that matches your moment.
         </p>
-
-        {/* Start Taking Photos Red Pill Button */}
-        <button
-          onClick={() => {
-            const defaultTemplate = filteredTemplates[0] || TemplateService.getAllTemplates()[0];
-            if (defaultTemplate) onSelectFrame(defaultTemplate);
-          }}
-          style={{
-            background: 'var(--color-pink-primary)',
-            color: '#ffffff',
-            padding: '0.85rem 2.25rem',
-            borderRadius: 'var(--radius-full)',
-            fontSize: '1rem',
-            fontWeight: 700,
-            border: 'none',
-            boxShadow: '0 8px 24px rgba(211, 47, 47, 0.22)',
-            cursor: 'pointer',
-            transition: 'transform 0.2s ease, background 0.2s ease',
-            marginBottom: '1rem',
-          }}
-        >
-          Start Taking Photos
-        </button>
-
-        {/* Aesthetic Quick Tags */}
-        <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.5rem' }}>
-          {[
-            { icon: '✨', label: 'Aesthetic & Cute' },
-            { icon: '🖼️', label: 'Multi-Slot Strip' },
-            { icon: '🎨', label: 'Filter Foto Realtime' },
-            { icon: '🖨️', label: 'Cetak High DPI' },
-          ].map((tag, idx) => (
-            <span
-              key={idx}
-              style={{
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                color: 'var(--color-neutral-dark)',
-                background: '#ffffff',
-                border: '1px solid var(--color-border)',
-                padding: '0.25rem 0.75rem',
-                borderRadius: 'var(--radius-full)',
-                boxShadow: 'var(--shadow-sm)',
-              }}
-            >
-              {tag.icon} {tag.label}
-            </span>
-          ))}
-        </div>
       </div>
 
       {/* Controls: Search & Category Filters */}
@@ -165,10 +132,55 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
       <TemplateGrid
         templates={filteredTemplates}
         favorites={favorites}
+        selectedTemplateId={activeSelectedFrame?.id}
         onToggleFavorite={handleToggleFavorite}
-        onSelectTemplate={(template) => setSelectedTemplateForModal(template)}
+        onSelectTemplate={(template) => {
+          setActiveSelectedFrame(template);
+          setSelectedTemplateForModal(template);
+        }}
         isShowingFavoritesOnly={isShowingFavoritesOnly}
       />
+
+      {/* Floating Sticky Bottom "Apply Frame →" Button */}
+      {activeSelectedFrame && (
+        <div
+          style={{
+            position: 'fixed',
+            bottom: '76px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 1010,
+            width: 'calc(100% - 32px)',
+            maxWidth: '380px',
+            display: 'flex',
+            justifyContent: 'center',
+          }}
+        >
+          <button
+            onClick={() => onSelectFrame(activeSelectedFrame)}
+            style={{
+              width: '100%',
+              background: 'var(--color-burgundy-deep)',
+              color: '#ffffff',
+              padding: '0.95rem 1.75rem',
+              borderRadius: '9999px',
+              fontSize: '1.02rem',
+              fontWeight: 800,
+              border: 'none',
+              boxShadow: '0 10px 30px rgba(92, 6, 18, 0.35)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.6rem',
+              transition: 'transform 0.2s ease, background 0.2s ease',
+            }}
+          >
+            <span>Apply Frame</span>
+            <span style={{ fontSize: '1.15rem' }}>➔</span>
+          </button>
+        </div>
+      )}
 
       {/* Template Inspection Modal */}
       <FrameModal

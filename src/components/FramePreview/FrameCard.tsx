@@ -7,6 +7,7 @@ import { FrameRender } from './FrameRender';
 interface FrameCardProps {
   template: TemplateData;
   isFavorite: boolean;
+  isSelected?: boolean;
   onToggleFavorite: (id: string, e: React.MouseEvent) => void;
   onSelect: (template: TemplateData) => void;
 }
@@ -14,11 +15,43 @@ interface FrameCardProps {
 export const FrameCard: React.FC<FrameCardProps> = ({
   template,
   isFavorite,
+  isSelected = false,
   onToggleFavorite,
   onSelect,
 }) => {
   return (
-    <div className="frame-card" onClick={() => onSelect(template)}>
+    <div
+      className={`frame-card ${isSelected ? 'selected' : ''}`}
+      onClick={() => onSelect(template)}
+      style={{
+        border: isSelected ? '2px solid var(--color-burgundy-deep)' : '1px solid var(--color-border)',
+        boxShadow: isSelected ? '0 8px 24px rgba(92, 6, 18, 0.15)' : '0 4px 16px rgba(0, 0, 0, 0.04)',
+      }}
+    >
+      {/* Selected Checkmark Badge */}
+      {isSelected && (
+        <div
+          style={{
+            position: 'absolute',
+            top: '-8px',
+            right: '-8px',
+            width: '26px',
+            height: '26px',
+            borderRadius: '50%',
+            background: 'var(--color-pink-primary)',
+            color: '#ffffff',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            fontSize: '0.85rem',
+            fontWeight: 900,
+            zIndex: 10,
+            boxShadow: '0 2px 8px rgba(211, 47, 47, 0.4)',
+          }}
+        >
+          ✓
+        </div>
+      )}
       <div className="frame-card-badges">
         <Badge variant="slot">
           <ImageIcon size={12} />
