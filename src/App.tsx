@@ -26,37 +26,61 @@ export function App() {
     setFavoritesCount(StorageService.getFavorites().length);
   }, [isShowingFavoritesOnly, currentStep]);
 
+  // Browser Back Button (popstate) Step-by-Step Navigation
+  useEffect(() => {
+    // Set initial history state if empty
+    if (!window.history.state?.step) {
+      window.history.replaceState({ step: 'picker' }, '');
+    }
+
+    const handlePopState = (event: PopStateEvent) => {
+      if (event.state?.step) {
+        setCurrentStep(event.state.step as Step);
+      } else {
+        setCurrentStep('picker');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    return () => window.removeEventListener('popstate', handlePopState);
+  }, []);
+
+  const navigateToStep = (newStep: Step) => {
+    setCurrentStep(newStep);
+    window.history.pushState({ step: newStep }, '');
+  };
+
   const handleSelectFrame = (template: TemplateData) => {
     setSelectedFrame(template);
-    setCurrentStep('camera');
+    navigateToStep('camera');
   };
 
   const handlePhotosCaptured = (photos: string[]) => {
     setCapturedPhotos(photos);
-    setCurrentStep('customize');
+    navigateToStep('customize');
   };
 
   const handleApplyCustomization = (imageDataUrl: string) => {
     setFinalImageDataUrl(imageDataUrl);
-    setCurrentStep('final');
+    navigateToStep('final');
   };
 
   const handleNewSession = () => {
     setSelectedFrame(null);
     setCapturedPhotos([]);
     setFinalImageDataUrl('');
-    setCurrentStep('picker');
+    navigateToStep('picker');
   };
 
   const handleStepClick = (stepId: StepId) => {
     if (stepId === 'picker') {
-      setCurrentStep('picker');
+      navigateToStep('picker');
     } else if (stepId === 'camera' && selectedFrame) {
-      setCurrentStep('camera');
+      navigateToStep('camera');
     } else if (stepId === 'customize' && capturedPhotos.length > 0 && selectedFrame) {
-      setCurrentStep('customize');
+      navigateToStep('customize');
     } else if (stepId === 'final' && finalImageDataUrl) {
-      setCurrentStep('final');
+      navigateToStep('final');
     }
   };
 
@@ -77,7 +101,7 @@ export function App() {
   };
 
   return (
-    <div className="app-container" style={{ position: 'relative', overflow: 'hidden' }}>
+    <div className="app-container" style={{ position: 'relative', overflowX: 'clip' }}>
       {/* Aesthetic Ambient Glow Effects */}
       <div
         style={{
