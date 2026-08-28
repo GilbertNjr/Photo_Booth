@@ -25,9 +25,13 @@ export class CameraService {
 
     try {
       const constraints: MediaStreamConstraints = {
-        video: deviceId
-          ? { deviceId: { exact: deviceId } }
-          : { width: { ideal: 1920 }, height: { ideal: 1080 }, facingMode },
+        video: {
+          deviceId: deviceId ? { exact: deviceId } : undefined,
+          width: { ideal: 3840, min: 1920 },
+          height: { ideal: 2160, min: 1080 },
+          facingMode: deviceId ? undefined : facingMode,
+          frameRate: { ideal: 60, min: 30 },
+        },
         audio: false,
       };
 
@@ -37,8 +41,20 @@ export class CameraService {
       await videoElement.play();
       return true;
     } catch (error) {
-      console.error('Camera initialization failed:', error);
-      return false;
+      console.warn('4K UHD camera constraints fallback to standard HD...', error);
+      try {
+        const fallbackStream = await navigator.mediaDevices.getUserMedia({
+          video: deviceId ? { deviceId: { exact: deviceId } } : { facingMode: 'user' },
+          audio: false,
+        });
+        this.activeStream = fallbackStream;
+        videoElement.srcObject = fallbackStream;
+        await videoElement.play();
+        return true;
+      } catch (fallbackErr) {
+        console.error('Camera initialization failed:', fallbackErr);
+        return false;
+      }
     }
   }
 

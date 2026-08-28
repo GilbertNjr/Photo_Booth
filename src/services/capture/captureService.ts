@@ -84,23 +84,39 @@ export class CaptureService {
    * Capture a single frame from video element as base64 JPEG with auto studio portrait enhancement
    */
   static captureFrame(videoElement: HTMLVideoElement, mirror: boolean = true): string {
-    const canvas = document.createElement('canvas');
-    canvas.width = videoElement.videoWidth || 1280;
-    canvas.height = videoElement.videoHeight || 720;
-    const ctx = canvas.getContext('2d');
+    try {
+      const canvas = document.createElement('canvas');
+      const w = videoElement.videoWidth || 1920;
+      const h = videoElement.videoHeight || 1080;
+      canvas.width = w;
+      canvas.height = h;
+      const ctx = canvas.getContext('2d');
 
-    if (ctx) {
-      if (mirror) {
-        ctx.translate(canvas.width, 0);
-        ctx.scale(-1, 1);
+      if (ctx) {
+        if (mirror) {
+          ctx.translate(canvas.width, 0);
+          ctx.scale(-1, 1);
+        }
+
+        // Apply Auto Studio Lighting Enhancement (Brightness boost, skin warmth & contrast sharpening)
+        ctx.filter = 'brightness(1.08) contrast(1.06) saturate(1.08)';
+        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+        ctx.filter = 'none';
       }
 
-      // Apply Auto Studio Lighting Enhancement (Brightness boost, skin warmth & contrast sharpening)
-      ctx.filter = 'brightness(1.08) contrast(1.06) saturate(1.08)';
-      ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
-      ctx.filter = 'none';
+      return canvas.toDataURL('image/jpeg', 0.96);
+    } catch (e) {
+      console.error('Frame capture fallback error:', e);
+      // Fail-safe fallback canvas
+      const fallbackCanvas = document.createElement('canvas');
+      fallbackCanvas.width = 1280;
+      fallbackCanvas.height = 720;
+      const fCtx = fallbackCanvas.getContext('2d');
+      if (fCtx) {
+        fCtx.fillStyle = '#1e1e24';
+        fCtx.fillRect(0, 0, 1280, 720);
+      }
+      return fallbackCanvas.toDataURL('image/jpeg', 0.8);
     }
-
-    return canvas.toDataURL('image/jpeg', 0.96);
   }
 }

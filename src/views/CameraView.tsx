@@ -69,55 +69,77 @@ export const CameraView: React.FC<CameraViewProps> = ({
     };
   }, [selectedDeviceId]);
 
-  // Handle Capture Sequence
+  // Handle Capture Sequence (Failsafe & Robust for All Slots)
   const startCaptureSequence = async () => {
-    if (isCapturingSequence || !videoRef.current || activeSlotIndex >= template.photoSlotsCount) return;
+    if (isCapturingSequence || !videoRef.current) return;
+
+    // Reset captured photos if starting from beginning when all were done
+    if (capturedPhotos.filter(Boolean).length === template.photoSlotsCount) {
+      setCapturedPhotos([]);
+      setActiveSlotIndex(0);
+    }
 
     setIsCapturingSequence(true);
 
-    for (let slot = activeSlotIndex; slot < template.photoSlotsCount; slot++) {
-      setActiveSlotIndex(slot);
+    try {
+      const totalSlots = template.photoSlotsCount;
+      const startSlot = activeSlotIndex >= totalSlots ? 0 : activeSlotIndex;
 
-      // Countdown loop (3, 2, 1)
-      for (let count = countdownSeconds; count > 0; count--) {
-        setCurrentCountdown(count);
-        if (soundEnabled) {
-          CaptureService.playCountdownBeep(false);
+      for (let slot = startSlot; slot < totalSlots; slot++) {
+        setActiveSlotIndex(slot);
+
+        // Countdown loop (e.g. 3, 2, 1)
+        for (let count = countdownSeconds; count > 0; count--) {
+          setCurrentCountdown(count);
+          try {
+            if (soundEnabled) {
+              CaptureService.playCountdownBeep(false);
+            }
+          } catch {
+            // Audio silent fallback
+          }
+          await new Promise((r) => setTimeout(r, 1000));
         }
-        await new Promise((r) => setTimeout(r, 1000));
+
+        // Final capture trigger
+        setCurrentCountdown(0);
+        try {
+          if (soundEnabled) {
+            CaptureService.playCountdownBeep(true);
+            CaptureService.playShutterSound();
+          }
+        } catch {
+          // Audio silent fallback
+        }
+
+        // Flash effect
+        setShowFlash(true);
+        setTimeout(() => setShowFlash(false), 200);
+
+        // Capture frame with failsafe
+        if (videoRef.current) {
+          const photoData = CaptureService.captureFrame(videoRef.current, mirror);
+          setCapturedPhotos((prev) => {
+            const updated = [...prev];
+            updated[slot] = photoData;
+            return updated;
+          });
+        }
+
+        await new Promise((r) => setTimeout(r, 500));
+        setCurrentCountdown(null);
+
+        // Brief pause before next photo slot if more remain
+        if (slot < totalSlots - 1) {
+          await new Promise((r) => setTimeout(r, 1200));
+        }
       }
-
-      // Final capture trigger
-      setCurrentCountdown(0);
-      if (soundEnabled) {
-        CaptureService.playCountdownBeep(true);
-        CaptureService.playShutterSound();
-      }
-
-      // Flash effect
-      setShowFlash(true);
-      setTimeout(() => setShowFlash(false), 200);
-
-      // Capture frame
-      if (videoRef.current) {
-        const photoData = CaptureService.captureFrame(videoRef.current, mirror);
-        setCapturedPhotos((prev) => {
-          const updated = [...prev];
-          updated[slot] = photoData;
-          return updated;
-        });
-      }
-
-      await new Promise((r) => setTimeout(r, 600));
+    } catch (err) {
+      console.error('Capture sequence error:', err);
+    } finally {
+      setIsCapturingSequence(false);
       setCurrentCountdown(null);
-
-      // Pause before next photo if more remaining
-      if (slot < template.photoSlotsCount - 1) {
-        await new Promise((r) => setTimeout(r, 1400));
-      }
     }
-
-    setIsCapturingSequence(false);
   };
 
   const handleRetakeAll = () => {
@@ -311,7 +333,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
                   border: '1px solid rgba(255, 255, 255, 0.15)',
                 }}
               >
-                HD 1080P
+                4K / 8K ULTRA HD ✨
               </div>
             </div>
 
