@@ -355,48 +355,55 @@ export const CameraView: React.FC<CameraViewProps> = ({
 
               <div
                 style={{
-                  background: 'rgba(0, 0, 0, 0.6)',
-                  backdropFilter: 'blur(8px)',
-                  color: 'white',
-                  padding: '0.35rem 0.85rem',
+                  color: 'var(--color-neutral-dark)',
+                  background: '#ffffff',
+                  padding: '0.4rem 1rem',
                   borderRadius: 'var(--radius-full)',
-                  fontSize: '0.78rem',
+                  fontSize: '0.85rem',
+                  fontWeight: 800,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
+                }}
+              >
+                <span>Photo {activeSlotIndex + 1} of {template.photoSlotsCount}</span>
+              </div>
+
+              {/* 4-Dot Sequence Indicator */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', margin: '0.35rem 0' }}>
+                {Array.from({ length: template.photoSlotsCount }).map((_, i) => (
+                  <div
+                    key={i}
+                    style={{
+                      width: i === activeSlotIndex ? '10px' : '8px',
+                      height: i === activeSlotIndex ? '10px' : '8px',
+                      borderRadius: '50%',
+                      background: i === activeSlotIndex ? '#ffffff' : 'rgba(255, 255, 255, 0.4)',
+                      transition: 'all 0.2s ease',
+                    }}
+                  />
+                ))}
+              </div>
+
+              {/* Strike a pose! Translucent Badge */}
+              <div
+                style={{
+                  background: 'rgba(0, 0, 0, 0.55)',
+                  backdropFilter: 'blur(8px)',
+                  WebkitBackdropFilter: 'blur(8px)',
+                  color: '#ffffff',
+                  padding: '0.45rem 1.25rem',
+                  borderRadius: 'var(--radius-full)',
+                  fontSize: '0.9rem',
                   fontWeight: 700,
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
                   display: 'flex',
                   alignItems: 'center',
                   gap: '0.4rem',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
                 }}
               >
-                <div
-                  style={{
-                    width: '8px',
-                    height: '8px',
-                    borderRadius: '50%',
-                    background: isCapturingSequence ? '#ff3b30' : '#10b981',
-                    boxShadow: isCapturingSequence ? '0 0 8px #ff3b30' : '0 0 8px #10b981',
-                  }}
-                />
-                <span>
-                  {isAllPhotosDone
-                    ? 'SELESAI'
-                    : `LIVE - FOTO ${activeSlotIndex + 1} / ${template.photoSlotsCount}`}
-                </span>
-              </div>
-
-              <div
-                style={{
-                  background: 'rgba(0, 0, 0, 0.5)',
-                  backdropFilter: 'blur(6px)',
-                  color: 'rgba(255, 255, 255, 0.85)',
-                  padding: '0.25rem 0.65rem',
-                  borderRadius: 'var(--radius-full)',
-                  fontSize: '0.7rem',
-                  fontWeight: 700,
-                  border: '1px solid rgba(255, 255, 255, 0.15)',
-                }}
-              >
-                4K UHD • 120/90 FPS ✨
+                <span>Strike a pose! ✦</span>
               </div>
             </div>
 
@@ -477,38 +484,110 @@ export const CameraView: React.FC<CameraViewProps> = ({
             )}
           </div>
 
-          {/* Shutter Action Button below Camera Viewport */}
-          <div style={{ display: 'flex', gap: '0.75rem' }}>
-            {!isAllPhotosDone ? (
-              <Button
-                variant="primary"
-                onClick={startCaptureSequence}
-                disabled={isCapturingSequence || !isCameraReady}
+          {/* Shutter Action Control Bar matching PixBooth Camera UI */}
+          <div
+            style={{
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'space-around',
+              padding: '0.75rem 1rem',
+              background: 'var(--color-cream-card)',
+              borderRadius: 'var(--radius-xl)',
+              boxShadow: 'var(--shadow-sm)',
+              border: '1px solid var(--color-border)',
+              marginTop: '0.75rem',
+            }}
+          >
+            {/* Left Button: Frame Preview Icon */}
+            <button
+              onClick={() => onBackToFrames()}
+              title="Ganti Frame"
+              style={{
+                width: '44px',
+                height: '44px',
+                borderRadius: '12px',
+                background: 'var(--color-cream-dark)',
+                border: '1px solid var(--color-border)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                cursor: 'pointer',
+                color: 'var(--color-neutral-dark)',
+              }}
+            >
+              <Grid size={22} />
+            </button>
+
+            {/* Center Button: Big Crimson Round Shutter Button */}
+            <button
+              onClick={startCaptureSequence}
+              disabled={isCapturingSequence || !isCameraReady}
+              style={{
+                width: '68px',
+                height: '68px',
+                borderRadius: '50%',
+                background: isCapturingSequence ? '#991b1b' : 'var(--color-burgundy-deep)',
+                border: '4px solid #ffffff',
+                boxShadow: '0 8px 24px rgba(92, 6, 18, 0.35)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#ffffff',
+                cursor: isCapturingSequence || !isCameraReady ? 'not-allowed' : 'pointer',
+                transition: 'transform 0.15s ease',
+              }}
+            >
+              <CameraIcon size={28} />
+            </button>
+
+            {/* Right Buttons: Flip & Grid Controls */}
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <button
+                onClick={() => {
+                  if (cameraDevices.length > 1) {
+                    const currentIndex = cameraDevices.findIndex((d) => d.deviceId === selectedDeviceId);
+                    const nextIndex = (currentIndex + 1) % cameraDevices.length;
+                    setSelectedDeviceId(cameraDevices[nextIndex].deviceId);
+                  } else {
+                    setMirror(!mirror);
+                  }
+                }}
+                title="Ganti / Cermin Kamera"
                 style={{
-                  flex: 1,
-                  padding: '1.1rem',
-                  fontSize: '1.1rem',
-                  boxShadow: '0 10px 25px rgba(255, 117, 151, 0.4)',
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  background: 'var(--color-cream-dark)',
+                  border: '1px solid var(--color-border)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  color: 'var(--color-neutral-dark)',
                 }}
               >
-                <CameraIcon size={22} />
-                <span>
-                  {isCapturingSequence
-                    ? `Mengambil Foto ${activeSlotIndex + 1}...`
-                    : 'Ambil Foto Sekarang 📸'}
-                </span>
-              </Button>
-            ) : (
-              <Button
-                variant="secondary"
-                onClick={handleRetakeAll}
-                disabled={isCapturingSequence}
-                style={{ flex: 1, padding: '1rem', fontSize: '1rem' }}
+                <FlipHorizontal size={20} />
+              </button>
+
+              <button
+                onClick={() => setShowGridLines(!showGridLines)}
+                title="Grid Lines"
+                style={{
+                  width: '40px',
+                  height: '40px',
+                  borderRadius: '50%',
+                  background: showGridLines ? 'var(--color-burgundy-deep)' : 'var(--color-cream-dark)',
+                  border: '1px solid var(--color-border)',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  cursor: 'pointer',
+                  color: showGridLines ? '#ffffff' : 'var(--color-neutral-dark)',
+                }}
               >
-                <RotateCcw size={18} />
-                <span>Foto Ulang Semua</span>
-              </Button>
-            )}
+                <Focus size={20} />
+              </button>
+            </div>
           </div>
         </div>
 
