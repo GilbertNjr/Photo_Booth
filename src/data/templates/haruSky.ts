@@ -20,10 +20,10 @@ export const haruSky01: TemplateData = {
   textColor: '#0369a1',
   colorPalettes: ['#e0f2fe', '#bae6fd', '#7dd3fc', '#0284c7', '#0369a1'],
   photoSlots: [
-    { id: 'slot-1', x: 8, y: 5, width: 84, height: 19.5, borderRadius: 8, aspectRatio: 4 / 3 },
-    { id: 'slot-2', x: 8, y: 27, width: 84, height: 19.5, borderRadius: 8, aspectRatio: 4 / 3 },
-    { id: 'slot-3', x: 8, y: 49, width: 84, height: 19.5, borderRadius: 8, aspectRatio: 4 / 3 },
-    { id: 'slot-4', x: 8, y: 71, width: 84, height: 19.5, borderRadius: 8, aspectRatio: 4 / 3 },
+    { id: 'slot-1', x: 10, y: 4.5, width: 80, height: 20, borderRadius: 12, aspectRatio: 3 / 4 },
+    { id: 'slot-2', x: 10, y: 26.5, width: 80, height: 20, borderRadius: 12, aspectRatio: 3 / 4 },
+    { id: 'slot-3', x: 10, y: 48.5, width: 80, height: 20, borderRadius: 12, aspectRatio: 3 / 4 },
+    { id: 'slot-4', x: 10, y: 70.5, width: 80, height: 20, borderRadius: 12, aspectRatio: 3 / 4 },
   ],
   decorativeElements: [
     { id: 'cloud-1', type: 'sticker', content: '☁️', x: 86, y: 4, rotation: 10, fontSize: 44 },

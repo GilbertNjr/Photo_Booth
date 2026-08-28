@@ -20,9 +20,9 @@ export const cutePink01: TemplateData = {
   textColor: '#f4f1de',
   colorPalettes: ['#26201c', '#2d2621', '#e07a5f', '#f4f1de', '#3d405b'],
   photoSlots: [
-    { id: 'slot-1', x: 10, y: 8, width: 78, height: 26, rotation: -5, frameStyle: 'polaroid', aspectRatio: 4 / 3 },
-    { id: 'slot-2', x: 12, y: 36, width: 78, height: 26, rotation: 4, frameStyle: 'polaroid', aspectRatio: 4 / 3 },
-    { id: 'slot-3', x: 10, y: 64, width: 78, height: 26, rotation: -3, frameStyle: 'polaroid', aspectRatio: 4 / 3 },
+    { id: 'slot-1', x: 10, y: 6, width: 80, height: 42, rotation: -3, frameStyle: 'polaroid', aspectRatio: 3 / 4 },
+    { id: 'slot-2', x: 8, y: 52, width: 40, height: 26, rotation: 4, frameStyle: 'polaroid', aspectRatio: 1 / 1 },
+    { id: 'slot-3', x: 52, y: 52, width: 40, height: 26, rotation: -2, frameStyle: 'polaroid', aspectRatio: 1 / 1 },
   ],
   decorativeElements: [
     { id: 'mushroom-top', type: 'sticker', content: '🍄', x: 10, y: 6, rotation: -15, fontSize: 52 },

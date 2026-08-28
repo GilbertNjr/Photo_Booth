@@ -19,10 +19,10 @@ export const polaroid01: TemplateData = {
   textColor: '#f8fafc',
   colorPalettes: ['#0f172a', '#1e293b', '#d97706', '#f59e0b', '#f8fafc'],
   photoSlots: [
-    { id: 'slot-1', x: 16, y: 14, width: 68, height: 16, borderRadius: 8, aspectRatio: 4 / 3 },
-    { id: 'slot-2', x: 16, y: 33, width: 68, height: 16, borderRadius: 8, aspectRatio: 4 / 3 },
-    { id: 'slot-3', x: 16, y: 52, width: 68, height: 16, borderRadius: 8, aspectRatio: 4 / 3 },
-    { id: 'slot-4', x: 16, y: 71, width: 68, height: 16, borderRadius: 8, aspectRatio: 4 / 3 },
+    { id: 'slot-1', x: 12, y: 12, width: 76, height: 18.5, borderRadius: 12, shape: 'arch', aspectRatio: 3 / 4 },
+    { id: 'slot-2', x: 12, y: 32, width: 76, height: 18.5, borderRadius: 12, shape: 'arch', aspectRatio: 3 / 4 },
+    { id: 'slot-3', x: 12, y: 52, width: 76, height: 18.5, borderRadius: 12, shape: 'arch', aspectRatio: 3 / 4 },
+    { id: 'slot-4', x: 12, y: 72, width: 76, height: 18.5, borderRadius: 12, shape: 'arch', aspectRatio: 3 / 4 },
   ],
   decorativeElements: [
     { id: 'sticker-cap', type: 'sticker', content: '🎓', x: 50, y: 6, fontSize: 52, rotation: -8 },
