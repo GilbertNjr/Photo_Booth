@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import type { TemplateData } from '../types/template';
 import { CameraService } from '../services/camera/cameraService';
 import { CaptureService } from '../services/capture/captureService';
+import { GestureService } from '../services/ai/gestureService';
+import { FILM_PRESETS } from '../services/filters/colorShaderService';
+import type { FilmGradeType } from '../services/filters/colorShaderService';
 import { CameraFrameOverlay } from '../components/Camera/CameraFrameOverlay';
 import { Button } from '../components/Common/Button';
 import {
@@ -16,6 +19,7 @@ import {
   Grid,
   Focus,
   Sparkles,
+  Bot,
 } from 'lucide-react';
 
 interface CameraViewProps {
@@ -38,6 +42,8 @@ export const CameraView: React.FC<CameraViewProps> = ({
   const [countdownSeconds, setCountdownSeconds] = useState<number>(3);
   const [showFaceGuide, setShowFaceGuide] = useState(true);
   const [showGridLines, setShowGridLines] = useState(false);
+  const [selectedFilmPreset, setSelectedFilmPreset] = useState<FilmGradeType>('original');
+  const [aiStatusText, setAiStatusText] = useState('AI Pose Active 🤖 (Senyum / ✌️)');
 
   // Capture State
   const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
@@ -45,6 +51,18 @@ export const CameraView: React.FC<CameraViewProps> = ({
   const [isCapturingSequence, setIsCapturingSequence] = useState(false);
   const [currentCountdown, setCurrentCountdown] = useState<number | null>(null);
   const [showFlash, setShowFlash] = useState(false);
+
+  // AI Pose Gesture Analysis Loop
+  useEffect(() => {
+    if (!isCameraReady || isCapturingSequence) return;
+    const interval = setInterval(() => {
+      if (videoRef.current && !isCapturingSequence) {
+        const res = GestureService.detectGesture(videoRef.current);
+        setAiStatusText(res.label);
+      }
+    }, 900);
+    return () => clearInterval(interval);
+  }, [isCameraReady, isCapturingSequence]);
 
   // Initialize Camera
   useEffect(() => {
@@ -253,9 +271,35 @@ export const CameraView: React.FC<CameraViewProps> = ({
             title="Toggle Sound"
             style={{ padding: '0.45rem 0.6rem' }}
           >
-            {soundEnabled ? <Volume2 size={16} color="#ff7597" /> : <VolumeX size={16} />}
+            {soundEnabled ? <Volume2 size={16} color="#6366f1" /> : <VolumeX size={16} />}
           </button>
         </div>
+      </div>
+
+      {/* Film Grade Preset Selector Bar */}
+      <div
+        style={{
+          display: 'flex',
+          alignItems: 'center',
+          gap: '0.5rem',
+          overflowX: 'auto',
+          padding: '0.5rem 0',
+          marginBottom: '1rem',
+        }}
+      >
+        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-neutral-sub)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+          <Sparkles size={14} color="#6366f1" /> Film Grade:
+        </span>
+        {FILM_PRESETS.map((preset) => (
+          <button
+            key={preset.id}
+            onClick={() => setSelectedFilmPreset(preset.id)}
+            className={`category-pill ${selectedFilmPreset === preset.id ? 'active' : ''}`}
+            style={{ padding: '0.3rem 0.75rem', fontSize: '0.75rem', whiteSpace: 'nowrap' }}
+          >
+            <span>{preset.name}</span>
+          </button>
+        ))}
       </div>
 
       {/* Main Workspace Layout (Left: Live Camera View, Right: Card Panel Sidebar) */}
@@ -272,7 +316,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
               className="camera-live-video"
               style={{
                 transform: mirror ? 'scaleX(-1)' : 'none',
-                filter: 'brightness(1.08) contrast(1.05) saturate(1.1)',
+                filter: FILM_PRESETS.find((p) => p.id === selectedFilmPreset)?.filterCss || 'brightness(1.08)',
               }}
             />
 
@@ -286,10 +330,29 @@ export const CameraView: React.FC<CameraViewProps> = ({
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'space-between',
-                zIndex: 20,
-                pointerEvents: 'none',
+                zIndex: 10,
               }}
             >
+              <div
+                style={{
+                  background: 'rgba(15, 23, 42, 0.75)',
+                  backdropFilter: 'blur(8px)',
+                  color: '#ffffff',
+                  padding: '0.35rem 0.85rem',
+                  borderRadius: 'var(--radius-full)',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                }}
+              >
+                <Bot size={15} color="#38bdf8" className="animate-pulse" />
+                <span>{aiStatusText}</span>
+              </div>
+
               <div
                 style={{
                   background: 'rgba(0, 0, 0, 0.6)',

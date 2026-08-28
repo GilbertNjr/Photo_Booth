@@ -1,7 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Button } from '../components/Common/Button';
 import { Modal } from '../components/Common/Modal';
 import { PrintService } from '../services/printing/printService';
+import { CloudStorageService } from '../services/cloud/cloudStorageService';
+import type { CloudUploadResponse } from '../services/cloud/cloudStorageService';
 import type { PrintLayoutType } from '../services/printing/printService';
 import {
   Download,
@@ -29,10 +31,19 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
   const [isQrModalOpen, setIsQrModalOpen] = useState(false);
   const [selectedPrintLayout, setSelectedPrintLayout] = useState<PrintLayoutType>('4x6');
   const [copiedLink, setCopiedLink] = useState(false);
+  const [cloudData, setCloudData] = useState<CloudUploadResponse | null>(null);
+
+  useEffect(() => {
+    async function syncToCloud() {
+      const resp = await CloudStorageService.uploadSessionData(finalImageDataUrl);
+      setCloudData(resp);
+    }
+    syncToCloud();
+  }, [finalImageDataUrl]);
 
   const handleDownload = () => {
     const link = document.createElement('a');
-    link.download = `photo-booth-memory-${Date.now()}.png`;
+    link.download = `photo-booth-studio-${Date.now()}.png`;
     link.href = finalImageDataUrl;
     link.click();
   };
@@ -43,7 +54,8 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
   };
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(window.location.href);
+    const url = cloudData?.qrCodeDataUrl || window.location.href;
+    navigator.clipboard.writeText(url);
     setCopiedLink(true);
     setTimeout(() => setCopiedLink(false), 2000);
   };
