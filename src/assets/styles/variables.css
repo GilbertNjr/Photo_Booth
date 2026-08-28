@@ -1,18 +1,20 @@
 :root {
-  /* Brand Color Tokens (PixBooth Luxury Crimson & Warm Ivory Edition) */
-  --color-pink-primary: #d32f2f;
-  --color-pink-soft: #fcf5f2;
-  --color-pink-hover: #b71c1c;
+  /* Brand Color Tokens (Official PixBooth Design System) */
+  --color-pink-primary: #800020;    /* Primary Color (#800020 Deep Burgundy) */
+  --color-pink-soft: #F4C2C2;       /* Secondary Color (#F4C2C2 Soft Blush Pink) */
+  --color-pink-hover: #5c0017;      /* Primary Dark Hover */
   
-  --color-burgundy-deep: #5c0612;
-  --color-burgundy-medium: #881337;
+  --color-tertiary-crimson: #D22B2B;/* Tertiary Color (#D22B2B Crimson Red) */
   
-  --color-cream-bg: #fffdfa;
+  --color-burgundy-deep: #800020;   /* Primary Burgundy */
+  --color-burgundy-medium: #a01532;
+  
+  --color-cream-bg: #FDFBF7;        /* Neutral Background (#FDFBF7 Warm Ivory) */
   --color-cream-card: #ffffff;
-  --color-cream-dark: #f8f3ec;
+  --color-cream-dark: #f5f0e6;
   
-  --color-lavender-primary: #d32f2f;
-  --color-lavender-soft: #fdf2f2;
+  --color-lavender-primary: #800020;
+  --color-lavender-soft: #F4C2C2;
   
   --color-mint-primary: #10b981;
   --color-mint-soft: #e6f4ea;
@@ -20,20 +22,20 @@
   --color-butter-yellow: #f59e0b;
   --color-butter-soft: #fffbe6;
   
-  --color-vintage-brown: #5c0612;
+  --color-vintage-brown: #800020;
   --color-vintage-gold: #d4af37;
   
-  --color-neutral-dark: #5c0612;
-  --color-neutral-sub: #6b635b;
-  --color-neutral-muted: #a8a096;
-  --color-border: #f0e8df;
-  --color-border-soft: #f7f2eb;
+  --color-neutral-dark: #212121;     /* Inverted Dark Neutral */
+  --color-neutral-sub: #524b45;
+  --color-neutral-muted: #9c9388;
+  --color-border: #eee7dd;
+  --color-border-soft: #f7f2ea;
   
   /* Status Colors */
-  --color-favorite: #d32f2f;
+  --color-favorite: #D22B2B;
 
-  /* Typography */
-  --font-heading: 'Outfit', 'Playfair Display', -apple-system, BlinkMacSystemFont, sans-serif;
+  /* Typography System (Official Styleguide: Plus Jakarta Sans) */
+  --font-heading: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-handwritten: 'Caveat', cursive, sans-serif;
   --font-serif: 'Playfair Display', Georgia, serif;
