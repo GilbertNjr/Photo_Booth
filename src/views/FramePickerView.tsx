@@ -6,7 +6,6 @@ import { CategoryFilter } from '../components/TemplatePicker/CategoryFilter';
 import { SearchBar } from '../components/TemplatePicker/SearchBar';
 import { TemplateGrid } from '../components/TemplatePicker/TemplateGrid';
 import { FrameModal } from '../components/FramePreview/FrameModal';
-import { Sparkles } from 'lucide-react';
 
 interface FramePickerViewProps {
   onSelectFrame: (template: TemplateData) => void;
@@ -55,57 +54,64 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
-      {/* Hero Header */}
-      <div style={{ textAlign: 'center', margin: '0.25rem 0 1.25rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div
-          style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            gap: '0.5rem',
-            background: 'linear-gradient(135deg, rgba(255, 117, 151, 0.15), rgba(139, 92, 246, 0.15))',
-            color: 'var(--color-pink-primary)',
-            padding: '0.4rem 1.1rem',
-            borderRadius: 'var(--radius-full)',
-            fontSize: '0.82rem',
-            fontWeight: 800,
-            marginBottom: '0.85rem',
-            border: '1px solid rgba(255, 117, 151, 0.3)',
-            boxShadow: '0 4px 12px rgba(255, 117, 151, 0.1)',
-            letterSpacing: '0.04em',
-          }}
-        >
-          <Sparkles size={15} />
-          <span>KOREAN PHOTO BOOTH KIOSK 📸 • HIGH DPI PRINT</span>
-        </div>
-
+      {/* Hero Header matching PixBooth design */}
+      <div style={{ textAlign: 'center', margin: '1rem 0 2rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
         <h1
           style={{
-            fontFamily: 'var(--font-heading)',
+            fontFamily: 'var(--font-serif)',
             fontSize: '2.75rem',
-            fontWeight: 900,
-            letterSpacing: '-0.025em',
-            background: 'linear-gradient(135deg, #1e1e24 20%, var(--color-pink-primary) 100%)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
-            lineHeight: 1.15,
-            marginBottom: '0.4rem',
+            fontWeight: 800,
+            color: 'var(--color-burgundy-deep)',
+            lineHeight: 1.25,
+            letterSpacing: '-0.02em',
+            marginBottom: '0.85rem',
           }}
         >
-          {isShowingFavoritesOnly ? 'Bingkai Favorit Saya ♡' : 'Pilih Frame Photobooth ✨'}
+          {isShowingFavoritesOnly ? (
+            'Bingkai Favorit Saya ♡'
+          ) : (
+            <>
+              Capture the Moment, <br />
+              Keep the Memory ✦
+            </>
+          )}
         </h1>
 
         <p
           style={{
             color: 'var(--color-neutral-sub)',
-            fontSize: '1.08rem',
-            maxWidth: '600px',
-            margin: '0 auto 1.25rem',
-            lineHeight: 1.5,
-            fontWeight: 500,
+            fontSize: '1.02rem',
+            maxWidth: '520px',
+            margin: '0 auto 1.5rem',
+            lineHeight: 1.6,
+            fontWeight: 400,
           }}
         >
-          Koleksi bingkai scrapbook aesthetic, polaroid & digicam. Bebas pilih gaya, hias stiker lucu, filter warna & caption tulisan tangan!
+          Create your own aesthetic photo memories. High-quality digital booth experience right from your device.
         </p>
+
+        {/* Start Taking Photos Red Pill Button */}
+        <button
+          onClick={() => {
+            const defaultTemplate = filteredTemplates[0] || TemplateService.getAllTemplates()[0];
+            if (defaultTemplate) onSelectFrame(defaultTemplate);
+          }}
+          style={{
+            background: 'var(--color-pink-primary)',
+            color: '#ffffff',
+            padding: '0.85rem 2.25rem',
+            borderRadius: 'var(--radius-full)',
+            fontSize: '1rem',
+            fontWeight: 700,
+            border: 'none',
+            boxShadow: '0 8px 24px rgba(211, 47, 47, 0.22)',
+            cursor: 'pointer',
+            transition: 'transform 0.2s ease, background 0.2s ease',
+            marginBottom: '1rem',
+          }}
+        >
+          Start Taking Photos
+        </button>
 
         {/* Aesthetic Quick Tags */}
         <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'center', gap: '0.5rem' }}>
@@ -121,8 +127,8 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
                 fontSize: '0.78rem',
                 fontWeight: 700,
                 color: 'var(--color-neutral-dark)',
-                background: 'rgba(255, 255, 255, 0.85)',
-                border: '1px solid var(--color-border-soft)',
+                background: '#ffffff',
+                border: '1px solid var(--color-border)',
                 padding: '0.25rem 0.75rem',
                 borderRadius: 'var(--radius-full)',
                 boxShadow: 'var(--shadow-sm)',

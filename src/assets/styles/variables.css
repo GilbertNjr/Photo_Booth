@@ -1,51 +1,54 @@
 :root {
-  /* Brand Color Tokens (Modern Royal Indigo, Violet & Cool Slate Edition) */
-  --color-pink-primary: #6366f1;
-  --color-pink-soft: #eef2ff;
-  --color-pink-hover: #4f46e5;
+  /* Brand Color Tokens (PixBooth Luxury Crimson & Warm Ivory Edition) */
+  --color-pink-primary: #d32f2f;
+  --color-pink-soft: #fcf5f2;
+  --color-pink-hover: #b71c1c;
   
-  --color-cream-bg: #f8fafc;
+  --color-burgundy-deep: #5c0612;
+  --color-burgundy-medium: #881337;
+  
+  --color-cream-bg: #fffdfa;
   --color-cream-card: #ffffff;
-  --color-cream-dark: #f1f5f9;
+  --color-cream-dark: #f8f3ec;
   
-  --color-lavender-primary: #8b5cf6;
-  --color-lavender-soft: #f3e8ff;
+  --color-lavender-primary: #d32f2f;
+  --color-lavender-soft: #fdf2f2;
   
   --color-mint-primary: #10b981;
   --color-mint-soft: #e6f4ea;
   
-  --color-butter-yellow: #38bdf8;
-  --color-butter-soft: #f0f9ff;
+  --color-butter-yellow: #f59e0b;
+  --color-butter-soft: #fffbe6;
   
-  --color-vintage-brown: #334155;
+  --color-vintage-brown: #5c0612;
   --color-vintage-gold: #d4af37;
   
-  --color-neutral-dark: #0f172a;
-  --color-neutral-sub: #475569;
-  --color-neutral-muted: #94a3b8;
-  --color-border: #e2e8f0;
-  --color-border-soft: #f1f5f9;
+  --color-neutral-dark: #5c0612;
+  --color-neutral-sub: #6b635b;
+  --color-neutral-muted: #a8a096;
+  --color-border: #f0e8df;
+  --color-border-soft: #f7f2eb;
   
   /* Status Colors */
-  --color-favorite: #6366f1;
+  --color-favorite: #d32f2f;
 
   /* Typography */
-  --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-heading: 'Outfit', 'Playfair Display', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-body: 'Plus Jakarta Sans', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-handwritten: 'Caveat', cursive, sans-serif;
   --font-serif: 'Playfair Display', Georgia, serif;
   --font-bubbly: 'Fredoka', cursive, sans-serif;
 
   /* Shadows & Glassmorphism */
-  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 8px 24px rgba(99, 102, 241, 0.08);
-  --shadow-lg: 0 16px 36px rgba(99, 102, 241, 0.15);
-  --shadow-hover: 0 20px 40px rgba(99, 102, 241, 0.22);
-  --shadow-polaroid: 0 10px 30px rgba(0, 0, 0, 0.12);
+  --shadow-sm: 0 2px 8px rgba(92, 6, 18, 0.04);
+  --shadow-md: 0 8px 24px rgba(211, 47, 47, 0.08);
+  --shadow-lg: 0 16px 36px rgba(92, 6, 18, 0.12);
+  --shadow-hover: 0 20px 40px rgba(211, 47, 47, 0.18);
+  --shadow-polaroid: 0 10px 30px rgba(92, 6, 18, 0.1);
   
-  --glass-bg: rgba(255, 255, 255, 0.88);
-  --glass-border: rgba(255, 255, 255, 0.6);
-  --glass-blur: blur(12px);
+  --glass-bg: rgba(255, 253, 250, 0.94);
+  --glass-border: rgba(240, 232, 223, 0.8);
+  --glass-blur: blur(14px);
 
   /* Border Radii */
   --radius-xs: 6px;

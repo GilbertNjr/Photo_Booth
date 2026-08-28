@@ -20,16 +20,20 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   return (
     <header className="navbar">
-      <div className="navbar-brand" onClick={onGoToStudio} style={{ cursor: 'pointer' }}>
-        <div className="navbar-logo-icon">
-          <Camera size={22} />
-        </div>
-        <div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <span className="navbar-title">PhotoBooth ✨</span>
-            <span className="navbar-badge">STUDIO</span>
-          </div>
-        </div>
+      <div className="navbar-brand" onClick={onGoToStudio} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+        <span style={{ fontSize: '1.4rem', color: 'var(--color-pink-primary)', fontWeight: 900 }}>✦</span>
+        <span
+          className="navbar-title"
+          style={{
+            fontFamily: 'var(--font-heading)',
+            fontSize: '1.6rem',
+            fontWeight: 800,
+            color: 'var(--color-burgundy-deep)',
+            letterSpacing: '-0.03em',
+          }}
+        >
+          PixBooth
+        </span>
       </div>
 
       <nav className="navbar-nav">

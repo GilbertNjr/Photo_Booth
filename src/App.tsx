@@ -10,6 +10,8 @@ import { FinalPreviewView } from './views/FinalPreviewView';
 import type { TemplateData } from './types/template';
 import { StorageService } from './services/storage/storageService';
 
+import { BottomNav } from './components/Layout/BottomNav';
+
 type Step = 'picker' | 'camera' | 'customize' | 'final';
 
 export function App() {
@@ -21,6 +23,7 @@ export function App() {
   const [isShowingFavoritesOnly, setIsShowingFavoritesOnly] = useState(false);
   const [isKioskMode, setIsKioskMode] = useState(false);
   const [favoritesCount, setFavoritesCount] = useState(0);
+  const [activeBottomTab, setActiveBottomTab] = useState<'home' | 'gallery' | 'about'>('home');
 
   useEffect(() => {
     setFavoritesCount(StorageService.getFavorites().length);
@@ -161,6 +164,22 @@ export function App() {
       </main>
 
       <Footer />
+
+      <BottomNav
+        currentTab={activeBottomTab}
+        onChangeTab={(tab) => {
+          setActiveBottomTab(tab);
+          if (tab === 'home') {
+            setIsShowingFavoritesOnly(false);
+            navigateToStep('picker');
+          } else if (tab === 'gallery') {
+            setIsShowingFavoritesOnly(true);
+            navigateToStep('picker');
+          } else if (tab === 'about') {
+            alert('PixBooth Studio v2.0 • Ultra-High DPI Commercial Photo Booth System 📸✨');
+          }
+        }}
+      />
     </div>
   );
 }
