@@ -5,7 +5,6 @@ import {
   Camera,
   Gift,
   GraduationCap,
-  Sun,
   Smile,
   LayoutGrid,
 } from 'lucide-react';
@@ -18,15 +17,15 @@ interface CategoryFilterProps {
 }
 
 export const CATEGORIES: { id: FrameCategory | 'all'; label: string; icon: React.ReactNode }[] = [
-  { id: 'all', label: 'Semua Frame', icon: <LayoutGrid size={16} /> },
+  { id: 'all', label: 'All', icon: <LayoutGrid size={16} /> },
   { id: 'cute', label: 'Cute', icon: <Sparkles size={16} /> },
-  { id: 'minimal', label: 'Minimal', icon: <Camera size={16} /> },
+  { id: 'romantic', label: 'Scrapbook', icon: <Sparkles size={16} /> },
+  { id: 'minimal', label: 'Film', icon: <Camera size={16} /> },
   { id: 'vintage', label: 'Vintage', icon: <Camera size={16} /> },
   { id: 'romantic', label: 'Romantic', icon: <Heart size={16} /> },
-  { id: 'friendship', label: 'Friendship', icon: <Smile size={16} /> },
+  { id: 'friendship', label: 'Bestie', icon: <Smile size={16} /> },
   { id: 'birthday', label: 'Birthday', icon: <Gift size={16} /> },
   { id: 'graduation', label: 'Graduation', icon: <GraduationCap size={16} /> },
-  { id: 'seasonal', label: 'Seasonal', icon: <Sun size={16} /> },
 ];
 
 export const CategoryFilter: React.FC<CategoryFilterProps> = ({

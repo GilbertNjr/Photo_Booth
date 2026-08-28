@@ -1,5 +1,19 @@
 import type { TemplateData } from '../../types/template';
 import {
+  cardScrapbook,
+  cardPolaroid,
+  cardFilmStrip,
+  cardTicket,
+  cardNewspaper,
+  cardCuteSticker,
+  cardRetroCamera,
+  cardMinimalLuxury,
+  cardY2K,
+  cardPostcard,
+  cardRomanticFlower,
+  cardPhotoboothClassic,
+} from './twelveCards';
+import {
   nusantaraPostcard,
   jakartaLife4cuts,
   baliPolaroid,
@@ -26,6 +40,18 @@ import {
 } from './globalCountry';
 
 export const TEMPLATES: TemplateData[] = [
+  cardScrapbook,
+  cardPolaroid,
+  cardFilmStrip,
+  cardTicket,
+  cardNewspaper,
+  cardCuteSticker,
+  cardRetroCamera,
+  cardMinimalLuxury,
+  cardY2K,
+  cardPostcard,
+  cardRomanticFlower,
+  cardPhotoboothClassic,
   nusantaraPostcard,
   jakartaLife4cuts,
   baliPolaroid,
@@ -49,6 +75,7 @@ export const TEMPLATES: TemplateData[] = [
   seasonalSummer01,
 ];
 
+export * from './twelveCards';
 export * from './indonesiaTemplates';
 export * from './cute';
 export * from './haruSky';

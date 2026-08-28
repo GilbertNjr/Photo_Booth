@@ -103,7 +103,7 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
             fontWeight: 400,
           }}
         >
-          Pick a style that matches your moment.
+          Pick a style and make your memories yours.
         </p>
       </div>
 
