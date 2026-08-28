@@ -74,16 +74,17 @@ export const Navbar: React.FC<NavbarProps> = ({
             display: 'flex',
             alignItems: 'center',
             gap: '0.35rem',
-            background: 'var(--color-pink-soft)',
+            background: '#f8fafc',
+            border: '1px solid var(--color-border)',
             padding: '0.45rem 0.85rem',
             borderRadius: 'var(--radius-full)',
-            color: 'var(--color-pink-primary)',
-            fontSize: '0.8rem',
+            color: 'var(--color-neutral-dark)',
+            fontSize: '0.78rem',
             fontWeight: 700,
           }}
         >
-          <Sparkles size={14} />
-          <span>Aesthetic & Cute</span>
+          <Sparkles size={14} color="#6366f1" />
+          <span>Studio Edition 2026</span>
         </div>
       </nav>
     </header>

@@ -102,47 +102,6 @@ export function App() {
 
   return (
     <div className="app-container" style={{ position: 'relative', overflowX: 'clip' }}>
-      {/* Aesthetic Ambient Glow Effects */}
-      <div
-        style={{
-          position: 'fixed',
-          top: '-150px',
-          left: '-150px',
-          width: '500px',
-          height: '500px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(255, 117, 151, 0.15) 0%, rgba(255, 235, 238, 0) 70%)',
-          pointerEvents: 'none',
-          zIndex: 0,
-        }}
-      />
-      <div
-        style={{
-          position: 'fixed',
-          top: '20%',
-          right: '-200px',
-          width: '600px',
-          height: '600px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(139, 92, 246, 0.12) 0%, rgba(243, 232, 255, 0) 70%)',
-          pointerEvents: 'none',
-          zIndex: 0,
-        }}
-      />
-      <div
-        style={{
-          position: 'fixed',
-          bottom: '-150px',
-          left: '30%',
-          width: '550px',
-          height: '550px',
-          borderRadius: '50%',
-          background: 'radial-gradient(circle, rgba(254, 240, 138, 0.18) 0%, rgba(254, 252, 232, 0) 70%)',
-          pointerEvents: 'none',
-          zIndex: 0,
-        }}
-      />
-
       <Navbar
         favoritesCount={favoritesCount}
         onGoToStudio={() => {
