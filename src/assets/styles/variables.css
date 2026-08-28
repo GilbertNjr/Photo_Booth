@@ -1,12 +1,12 @@
 :root {
-  /* Brand Color Tokens (Korean/Japanese Aesthetic & Soft Pastels) */
-  --color-pink-primary: #ff7597;
-  --color-pink-soft: #ffebee;
-  --color-pink-hover: #ff527b;
+  /* Brand Color Tokens (Modern Royal Indigo, Violet & Cool Slate Edition) */
+  --color-pink-primary: #6366f1;
+  --color-pink-soft: #eef2ff;
+  --color-pink-hover: #4f46e5;
   
-  --color-cream-bg: #faf6f0;
+  --color-cream-bg: #f8fafc;
   --color-cream-card: #ffffff;
-  --color-cream-dark: #f0e8dd;
+  --color-cream-dark: #f1f5f9;
   
   --color-lavender-primary: #8b5cf6;
   --color-lavender-soft: #f3e8ff;
@@ -14,20 +14,20 @@
   --color-mint-primary: #10b981;
   --color-mint-soft: #e6f4ea;
   
-  --color-butter-yellow: #fef08a;
-  --color-butter-soft: #fffbeb;
+  --color-butter-yellow: #38bdf8;
+  --color-butter-soft: #f0f9ff;
   
-  --color-vintage-brown: #5c4033;
+  --color-vintage-brown: #334155;
   --color-vintage-gold: #d4af37;
   
-  --color-neutral-dark: #1e1e24;
-  --color-neutral-sub: #52525b;
-  --color-neutral-muted: #9ca3af;
-  --color-border: #e5e7eb;
-  --color-border-soft: #f3f4f6;
+  --color-neutral-dark: #0f172a;
+  --color-neutral-sub: #475569;
+  --color-neutral-muted: #94a3b8;
+  --color-border: #e2e8f0;
+  --color-border-soft: #f1f5f9;
   
   /* Status Colors */
-  --color-favorite: #f43f5e;
+  --color-favorite: #6366f1;
 
   /* Typography */
   --font-heading: 'Outfit', -apple-system, BlinkMacSystemFont, sans-serif;
@@ -38,13 +38,13 @@
 
   /* Shadows & Glassmorphism */
   --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.04);
-  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.06);
-  --shadow-lg: 0 16px 36px rgba(255, 117, 151, 0.15);
-  --shadow-hover: 0 20px 40px rgba(255, 117, 151, 0.22);
+  --shadow-md: 0 8px 24px rgba(99, 102, 241, 0.08);
+  --shadow-lg: 0 16px 36px rgba(99, 102, 241, 0.15);
+  --shadow-hover: 0 20px 40px rgba(99, 102, 241, 0.22);
   --shadow-polaroid: 0 10px 30px rgba(0, 0, 0, 0.12);
   
-  --glass-bg: rgba(255, 255, 255, 0.85);
-  --glass-border: rgba(255, 255, 255, 0.5);
+  --glass-bg: rgba(255, 255, 255, 0.88);
+  --glass-border: rgba(255, 255, 255, 0.6);
   --glass-blur: blur(12px);
 
   /* Border Radii */
