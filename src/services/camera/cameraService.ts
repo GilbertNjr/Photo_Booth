@@ -6,6 +6,9 @@ export class CameraService {
    */
   static async getCameraDevices(): Promise<MediaDeviceInfo[]> {
     try {
+      if (typeof navigator === 'undefined' || !navigator.mediaDevices?.enumerateDevices) {
+        return [];
+      }
       const devices = await navigator.mediaDevices.enumerateDevices();
       return devices.filter((device) => device.kind === 'videoinput');
     } catch {
@@ -23,33 +26,41 @@ export class CameraService {
   ): Promise<boolean> {
     this.stopCamera();
 
+    if (typeof navigator === 'undefined' || !navigator.mediaDevices?.getUserMedia) {
+      console.warn('getUserMedia is not supported in this browser context');
+      return false;
+    }
+
     try {
+      // Mobile-friendly constraints without strict min resolutions or frameRates
+      const videoConstraints: MediaTrackConstraints = deviceId && deviceId !== ''
+        ? { deviceId: { exact: deviceId } }
+        : {
+            facingMode: { ideal: facingMode },
+            width: { ideal: 1920 },
+            height: { ideal: 1080 },
+          };
+
       const constraints: MediaStreamConstraints = {
-        video: {
-          deviceId: deviceId ? { exact: deviceId } : undefined,
-          width: { ideal: 3840, min: 1920 },
-          height: { ideal: 2160, min: 1080 },
-          facingMode: deviceId ? undefined : facingMode,
-          frameRate: { ideal: 120, min: 60 },
-        },
+        video: videoConstraints,
         audio: false,
       };
 
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
       this.activeStream = stream;
       videoElement.srcObject = stream;
-      await videoElement.play();
+      await videoElement.play().catch(() => {});
       return true;
     } catch (error) {
-      console.warn('4K UHD camera constraints fallback to standard HD...', error);
+      console.warn('Standard camera constraints fallback...', error);
       try {
         const fallbackStream = await navigator.mediaDevices.getUserMedia({
-          video: deviceId ? { deviceId: { exact: deviceId } } : { facingMode: 'user' },
+          video: true,
           audio: false,
         });
         this.activeStream = fallbackStream;
         videoElement.srcObject = fallbackStream;
-        await videoElement.play();
+        await videoElement.play().catch(() => {});
         return true;
       } catch (fallbackErr) {
         console.error('Camera initialization failed:', fallbackErr);
@@ -63,7 +74,11 @@ export class CameraService {
    */
   static stopCamera(): void {
     if (this.activeStream) {
-      this.activeStream.getTracks().forEach((track) => track.stop());
+      try {
+        this.activeStream.getTracks().forEach((track) => track.stop());
+      } catch {
+        // Ignore track stop errors
+      }
       this.activeStream = null;
     }
   }
@@ -82,4 +97,3 @@ export class CameraService {
     return this.activeStream;
   }
 }
-

@@ -12,7 +12,7 @@ export class GestureService {
    * Uses lightweight canvas pixel & motion edge density algorithms for instant client-side detection.
    */
   static detectGesture(videoElement: HTMLVideoElement): AIGestureResult {
-    if (!videoElement || videoElement.readyState < 2) {
+    if (!videoElement || videoElement.readyState < 2 || !videoElement.videoWidth) {
       return { gesture: 'none', confidence: 0, label: 'Kamera Siap' };
     }
 

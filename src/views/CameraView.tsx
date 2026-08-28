@@ -473,13 +473,26 @@ export const CameraView: React.FC<CameraViewProps> = ({
                   gap: '1rem',
                   zIndex: 50,
                   color: 'white',
+                  padding: '2rem',
+                  textAlign: 'center',
                 }}
               >
                 <RefreshCw size={38} className="animate-pulse" color="#ff7597" />
-                <p style={{ fontWeight: 600, fontSize: '1.05rem' }}>Menghubungkan Kamera...</p>
-                <span style={{ fontSize: '0.8rem', opacity: 0.7 }}>
-                  Izinkan akses kamera di peramban browser Anda.
+                <p style={{ fontWeight: 700, fontSize: '1.1rem' }}>Menghubungkan Kamera...</p>
+                <span style={{ fontSize: '0.85rem', opacity: 0.8, maxWidth: '320px', lineHeight: 1.5 }}>
+                  Pastikan Anda memberikan izin (Allow) akses kamera pada browser Anda.
                 </span>
+                <button
+                  className="btn-primary"
+                  onClick={() => {
+                    if (videoRef.current) {
+                      CameraService.startCamera(videoRef.current, selectedDeviceId).then(setIsCameraReady);
+                    }
+                  }}
+                  style={{ marginTop: '0.5rem', padding: '0.65rem 1.4rem', fontSize: '0.85rem' }}
+                >
+                  <span>Coba Hubungkan Kamera 🔄</span>
+                </button>
               </div>
             )}
           </div>
