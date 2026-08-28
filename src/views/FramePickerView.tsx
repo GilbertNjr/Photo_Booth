@@ -146,7 +146,7 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
         <div
           style={{
             position: 'fixed',
-            bottom: '76px',
+            bottom: '86px',
             left: '50%',
             transform: 'translateX(-50%)',
             zIndex: 1010,
@@ -154,6 +154,7 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
             maxWidth: '380px',
             display: 'flex',
             justifyContent: 'center',
+            filter: 'drop-shadow(0 12px 28px rgba(92, 6, 18, 0.35))',
           }}
         >
           <button
@@ -162,12 +163,12 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
               width: '100%',
               background: 'var(--color-burgundy-deep)',
               color: '#ffffff',
-              padding: '0.95rem 1.75rem',
+              padding: '0.9rem 1.75rem',
               borderRadius: '9999px',
               fontSize: '1.02rem',
               fontWeight: 800,
-              border: 'none',
-              boxShadow: '0 10px 30px rgba(92, 6, 18, 0.35)',
+              border: '2px solid rgba(255, 255, 255, 0.25)',
+              boxShadow: '0 8px 24px rgba(92, 6, 18, 0.3)',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
