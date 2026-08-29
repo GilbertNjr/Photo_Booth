@@ -47,15 +47,7 @@ export const TemplateGrid: React.FC<TemplateGridProps> = ({
   }
 
   return (
-    <div
-      className="frame-card-grid"
-      style={{
-        display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fill, minmax(270px, 1fr))',
-        gap: '1.75rem',
-        margin: '1.5rem 0',
-      }}
-    >
+    <div className="frame-card-grid">
       {templates.map((template) => (
         <FrameCard
           key={template.id}

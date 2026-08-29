@@ -95,6 +95,37 @@
   color: var(--color-neutral-sub);
 }
 
+/* Frame Card Grid & Responsive Layout (2x2 Grid for Mobile Devices) */
+.frame-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 1.5rem;
+  margin: 1.5rem 0;
+  width: 100%;
+}
+
+@media (max-width: 1200px) {
+  .frame-card-grid {
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1.25rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .frame-card-grid {
+    grid-template-columns: repeat(2, 1fr) !important; /* 2x2 Grid on Mobile Phones & Tablets */
+    gap: 0.85rem;
+    margin: 1rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .frame-card-grid {
+    grid-template-columns: repeat(2, 1fr) !important; /* 2 Columns Grid for Mobile */
+    gap: 0.65rem;
+  }
+}
+
 /* Frame Card Styles (Clean Premium Photobooth Card Aesthetic) */
 .frame-card {
   position: relative;
