@@ -5,6 +5,8 @@ interface NavbarProps {
   favoritesCount?: number;
   onFilterFavorites?: () => void;
   onGoToStudio?: () => void;
+  onGoToHowToUse?: () => void;
+  onGoToAbout?: () => void;
   isShowingFavoritesOnly?: boolean;
 }
 
@@ -12,6 +14,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   favoritesCount = 0,
   onFilterFavorites,
   onGoToStudio,
+  onGoToHowToUse,
+  onGoToAbout,
   isShowingFavoritesOnly = false,
 }) => {
   return (
@@ -31,13 +35,13 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button className="nav-link-item" onClick={onGoToStudio}>
             Pilih Frame
           </button>
-          <button className="nav-link-item" onClick={() => alert('Fitur Cara Pakai: Pilih frame, ambil foto dengan kamera web, dan simpan hasilnya!')}>
+          <button className="nav-link-item" onClick={onGoToHowToUse || onGoToStudio}>
             Cara Pakai
           </button>
           <button className="nav-link-item" onClick={() => alert('PixBooth Studio 100% GRATIS & Bebas Digunakan!')}>
             Harga
           </button>
-          <button className="nav-link-item" onClick={() => alert('PixBooth Studio adalah aplikasi photo booth digital estetik!')}>
+          <button className="nav-link-item" onClick={onGoToAbout || onGoToStudio}>
             Tentang
           </button>
         </nav>

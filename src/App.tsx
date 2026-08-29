@@ -13,6 +13,7 @@ import { StorageService } from './services/storage/storageService';
 
 import { GalleryView } from './views/GalleryView';
 import { AboutView } from './views/AboutView';
+import { HowToUseView } from './views/HowToUseView';
 
 import { BottomNav } from './components/Layout/BottomNav';
 
@@ -25,6 +26,7 @@ export function App() {
   const [finalImageDataUrl, setFinalImageDataUrl] = useState<string>('');
 
   const [isShowingFavoritesOnly, setIsShowingFavoritesOnly] = useState(false);
+  const [isShowingHowToUse, setIsShowingHowToUse] = useState(false);
 
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [activeBottomTab, setActiveBottomTab] = useState<'home' | 'gallery' | 'about'>('home');
@@ -99,10 +101,22 @@ export function App() {
         onGoToStudio={() => {
           setCurrentStep('picker');
           setIsShowingFavoritesOnly(false);
+          setIsShowingHowToUse(false);
+          setActiveBottomTab('home');
         }}
         onFilterFavorites={() => {
           setCurrentStep('picker');
           setIsShowingFavoritesOnly(true);
+          setIsShowingHowToUse(false);
+        }}
+        onGoToHowToUse={() => {
+          setCurrentStep('picker');
+          setIsShowingHowToUse(true);
+        }}
+        onGoToAbout={() => {
+          setCurrentStep('picker');
+          setIsShowingHowToUse(false);
+          setActiveBottomTab('about');
         }}
         isShowingFavoritesOnly={isShowingFavoritesOnly}
       />
@@ -117,11 +131,15 @@ export function App() {
           hasFinalImage={!!finalImageDataUrl}
         />
 
-        {currentStep === 'picker' && activeBottomTab === 'about' && (
+        {currentStep === 'picker' && isShowingHowToUse && (
+          <HowToUseView onBack={() => setIsShowingHowToUse(false)} />
+        )}
+
+        {currentStep === 'picker' && !isShowingHowToUse && activeBottomTab === 'about' && (
           <AboutView />
         )}
 
-        {currentStep === 'picker' && activeBottomTab === 'gallery' && (
+        {currentStep === 'picker' && !isShowingHowToUse && activeBottomTab === 'gallery' && (
           <GalleryView
             onSelectFrame={handleSelectFrame}
             onGoToCamera={() => {
@@ -132,7 +150,7 @@ export function App() {
           />
         )}
 
-        {currentStep === 'picker' && activeBottomTab === 'home' && (
+        {currentStep === 'picker' && !isShowingHowToUse && activeBottomTab === 'home' && (
           <FramePickerView
             onSelectFrame={handleSelectFrame}
             isShowingFavoritesOnly={isShowingFavoritesOnly}
