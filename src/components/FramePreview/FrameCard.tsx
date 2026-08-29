@@ -218,32 +218,63 @@ export const FrameCard: React.FC<FrameCardProps> = ({
       </div>
 
       {/* Card Info Footer */}
-      <div className="frame-card-info" style={{ color: textColor, paddingTop: '0.15rem' }}>
-        <h3
-          className="frame-card-title"
-          style={{
-            color: textColor,
-            fontFamily: 'var(--font-heading)',
-            fontSize: '1.02rem',
-            fontWeight: 800,
-            margin: 0,
-          }}
-        >
-          {template.name}
-        </h3>
+      <div className="frame-card-info" style={{ color: textColor, paddingTop: '0.15rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+        <div>
+          <h3
+            className="frame-card-title"
+            style={{
+              color: textColor,
+              fontFamily: 'var(--font-heading)',
+              fontSize: '1.02rem',
+              fontWeight: 800,
+              margin: 0,
+            }}
+          >
+            {template.name}
+          </h3>
 
-        <p
-          className="frame-card-subtitle"
+          <p
+            className="frame-card-subtitle"
+            style={{
+              color: isFilm || isCamera || isClassic ? 'rgba(255,255,255,0.75)' : 'var(--color-neutral-sub)',
+              fontSize: '0.82rem',
+              fontWeight: 600,
+              textTransform: 'capitalize',
+              margin: '0.15rem 0 0 0',
+            }}
+          >
+            {template.category} • {template.photoSlotsCount} Foto
+          </p>
+        </div>
+
+        {/* Clean "Pakai Bingkai" Button under each card */}
+        <button
+          className="use-frame-card-btn"
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect(template);
+          }}
           style={{
-            color: isFilm || isCamera || isClassic ? 'rgba(255,255,255,0.75)' : 'var(--color-neutral-sub)',
+            width: '100%',
+            padding: '0.55rem 0.85rem',
+            borderRadius: '12px',
+            background: isSelected ? 'var(--color-burgundy-deep)' : '#800020',
+            color: '#ffffff',
+            border: 'none',
+            fontWeight: 700,
             fontSize: '0.82rem',
-            fontWeight: 600,
-            textTransform: 'capitalize',
-            margin: '0.15rem 0 0 0',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            gap: '0.35rem',
+            boxShadow: '0 4px 12px rgba(128, 0, 32, 0.2)',
+            transition: 'transform 0.15s ease, background 0.15s ease',
           }}
         >
-          {template.category} • {template.photoSlotsCount} Foto
-        </p>
+          <span>Pakai Bingkai</span>
+          <span style={{ fontSize: '0.9rem' }}>➔</span>
+        </button>
       </div>
     </div>
   );

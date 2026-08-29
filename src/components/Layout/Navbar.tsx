@@ -38,9 +38,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button className="nav-link-item" onClick={onGoToHowToUse || onGoToStudio}>
             Cara Pakai
           </button>
-          <button className="nav-link-item" onClick={() => alert('PixBooth Studio 100% GRATIS & Bebas Digunakan!')}>
-            Harga
-          </button>
           <button className="nav-link-item" onClick={onGoToAbout || onGoToStudio}>
             Tentang
           </button>

@@ -162,22 +162,11 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
           selectedTemplateId={activeSelectedFrame?.id}
           onToggleFavorite={handleToggleFavorite}
           onSelectTemplate={(template) => {
-            setActiveSelectedFrame(template);
-            setSelectedTemplateForModal(template);
+            onSelectFrame(template);
           }}
           isShowingFavoritesOnly={isShowingFavoritesOnly}
         />
       </section>
-
-      {/* Sticky Bottom "Gunakan Bingkai ➔" Button */}
-      {activeSelectedFrame && (
-        <div className="sticky-apply-bar">
-          <button className="sticky-apply-btn" onClick={() => onSelectFrame(activeSelectedFrame)}>
-            <span>Gunakan Bingkai Ini ({activeSelectedFrame.name})</span>
-            <span style={{ fontSize: '1.2rem' }}>➔</span>
-          </button>
-        </div>
-      )}
 
       {/* Template Inspection Modal */}
       <FrameModal

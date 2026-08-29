@@ -1,262 +1,265 @@
 import React from 'react';
-import { Camera, Smile, Image, Heart } from 'lucide-react';
+import { ArrowLeft, Sparkles, LayoutGrid, Wand2, Camera, ShieldCheck, Mail } from 'lucide-react';
 
-export const AboutView: React.FC = () => {
+interface AboutViewProps {
+  onBack?: () => void;
+}
+
+export const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '2.5rem', paddingBottom: '100px', width: '100%', maxWidth: '960px', margin: '0 auto' }}>
-      {/* Top Section: Our Story */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))',
-          gap: '2rem',
-          alignItems: 'center',
-          marginTop: '1rem',
-        }}
-      >
-        {/* Left Column: Text */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-            <Heart size={32} color="#f43f5e" fill="#fda4af" />
-          </div>
-
-          <h1
-            style={{
-              fontFamily: 'var(--font-heading)',
-              fontSize: '2.8rem',
-              fontWeight: 800,
-              color: 'var(--color-burgundy-deep)',
-              lineHeight: 1.15,
-              margin: 0,
-            }}
-          >
-            Our Story
-          </h1>
-
-          <p
-            style={{
-              color: 'var(--color-neutral-sub)',
-              fontSize: '1.05rem',
-              lineHeight: 1.6,
-              margin: 0,
-            }}
-          >
-            We believe every moment is worth keeping. PixBooth brings the classic, playful experience of a photo booth right to your device, blending modern technology with a nostalgic scrapbook aesthetic.
-          </p>
-        </div>
-
-        {/* Right Column: Hero Vintage Card Illustration */}
-        <div
-          style={{
-            position: 'relative',
-            background: '#ffffff',
-            borderRadius: 'var(--radius-xl)',
-            padding: '1.75rem',
-            boxShadow: '0 16px 40px rgba(92, 6, 18, 0.08)',
-            border: '1px solid var(--color-border-soft)',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-          }}
-        >
-          <div
-            style={{
-              background: '#fcf6f0',
-              padding: '1.25rem',
-              borderRadius: 'var(--radius-md)',
-              boxShadow: '0 8px 24px rgba(0,0,0,0.1)',
-              transform: 'rotate(-2deg)',
-            }}
-          >
-            {/* SVG Vintage Photo Strip Mockup */}
-            <div
-              style={{
-                width: '180px',
-                background: '#ffffff',
-                padding: '12px 12px 28px',
-                boxShadow: '0 4px 16px rgba(0,0,0,0.15)',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '8px',
-              }}
-            >
-              {[
-                'https://images.unsplash.com/photo-1517841905240-472988babdf9?w=300&auto=format&fit=crop&q=80',
-                'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=300&auto=format&fit=crop&q=80',
-                'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?w=300&auto=format&fit=crop&q=80',
-              ].map((url, i) => (
-                <div
-                  key={i}
-                  style={{
-                    width: '100%',
-                    height: '80px',
-                    background: '#f3ece7',
-                    overflow: 'hidden',
-                  }}
-                >
-                  <img src={url} alt="Memory strip sample" style={{ width: '100%', height: '100%', objectFit: 'cover', filter: 'sepia(0.2)' }} />
-                </div>
-              ))}
-              <span style={{ fontSize: '0.65rem', color: '#881337', textAlign: 'center', fontWeight: 800, marginTop: '4px', letterSpacing: '0.05em' }}>
-                PIXBOOTH • 2026
-              </span>
-            </div>
-          </div>
-
-          {/* Floating Camera Sticker Badge */}
-          <div
+    <div
+      style={{
+        width: '100%',
+        maxWidth: '720px',
+        margin: '0 auto',
+        padding: '1.5rem 1rem 4rem',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '2rem',
+        animation: 'fadeIn 0.3s ease-in-out',
+      }}
+    >
+      {/* Top Header */}
+      <div style={{ position: 'relative', textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
+        {onBack && (
+          <button
+            onClick={onBack}
             style={{
               position: 'absolute',
-              bottom: '-12px',
-              right: '-12px',
-              width: '46px',
-              height: '46px',
+              left: 0,
+              top: '4px',
+              background: '#ffffff',
+              border: '1px solid var(--color-border)',
               borderRadius: '50%',
-              background: '#ffe4e6',
-              border: '2px solid #f43f5e',
+              width: '40px',
+              height: '40px',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              boxShadow: '0 4px 12px rgba(244, 63, 94, 0.25)',
-              color: '#e11d48',
+              cursor: 'pointer',
+              color: 'var(--color-burgundy-deep)',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.05)',
+              transition: 'transform 0.2s ease',
+            }}
+            title="Kembali"
+          >
+            <ArrowLeft size={20} />
+          </button>
+        )}
+
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          <h1
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontSize: '2.2rem',
+              fontWeight: 800,
+              color: 'var(--color-burgundy-deep)',
+              margin: 0,
+              lineHeight: 1.2,
+            }}
+          >
+            Tentang
+          </h1>
+          <Sparkles size={24} color="#F43F5E" fill="#FECDD3" />
+        </div>
+      </div>
+
+      {/* Main App Description Card */}
+      <div
+        style={{
+          background: '#ffffff',
+          borderRadius: '24px',
+          padding: '1.5rem',
+          border: '1px solid #F3ECE6',
+          boxShadow: '0 8px 24px rgba(92, 6, 18, 0.04)',
+          display: 'flex',
+          gap: '1.25rem',
+          alignItems: 'flex-start',
+        }}
+      >
+        {/* Pink Camera App Icon */}
+        <div
+          style={{
+            width: '68px',
+            height: '68px',
+            borderRadius: '20px',
+            background: 'linear-gradient(135deg, #FFE4E6 0%, #FECDD3 100%)',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#E11D48',
+            flexShrink: 0,
+            boxShadow: '0 6px 16px rgba(244, 63, 94, 0.18)',
+            border: '2px solid #ffffff',
+          }}
+        >
+          <Camera size={34} />
+        </div>
+
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+          <div style={{ display: 'flex', alignItems: 'baseline', gap: '0.6rem' }}>
+            <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.4rem', fontWeight: 800, color: 'var(--color-burgundy-deep)', margin: 0 }}>
+              PixBooth
+            </h2>
+            <span style={{ fontSize: '0.85rem', color: '#A1A1AA', fontWeight: 600 }}>v1.0.0</span>
+          </div>
+
+          <p style={{ fontSize: '0.92rem', color: 'var(--color-neutral-sub)', lineHeight: 1.6, margin: 0 }}>
+            <strong style={{ color: 'var(--color-neutral-dark)' }}>PixBooth</strong> adalah aplikasi web photobooth yang membantu kamu mengabadikan setiap momen berharga dengan berbagai frame aesthetic, lucu, dan customizable.
+          </p>
+        </div>
+      </div>
+
+      {/* 4 Feature Columns Grid */}
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+          gap: '1rem',
+          width: '100%',
+        }}
+      >
+        {/* Item 1: Frame Unik */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '0.5rem' }}>
+          <div
+            style={{
+              width: '52px',
+              height: '52px',
+              borderRadius: '50%',
+              background: '#FFF1F2',
+              border: '1px solid #FECDD3',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#E11D48',
+            }}
+          >
+            <LayoutGrid size={22} />
+          </div>
+          <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-neutral-dark)', margin: 0 }}>
+            Frame Unik
+          </h4>
+          <p style={{ fontSize: '0.78rem', color: 'var(--color-neutral-sub)', margin: 0, lineHeight: 1.35 }}>
+            Banyak pilihan frame menarik
+          </p>
+        </div>
+
+        {/* Item 2: Kustomisasi */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '0.5rem' }}>
+          <div
+            style={{
+              width: '52px',
+              height: '52px',
+              borderRadius: '50%',
+              background: '#FFF1F2',
+              border: '1px solid #FECDD3',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#E11D48',
+            }}
+          >
+            <Wand2 size={22} />
+          </div>
+          <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-neutral-dark)', margin: 0 }}>
+            Kustomisasi
+          </h4>
+          <p style={{ fontSize: '0.78rem', color: 'var(--color-neutral-sub)', margin: 0, lineHeight: 1.35 }}>
+            Teks, stiker, filter & warna
+          </p>
+        </div>
+
+        {/* Item 3: Kualitas Tinggi */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '0.5rem' }}>
+          <div
+            style={{
+              width: '52px',
+              height: '52px',
+              borderRadius: '50%',
+              background: '#FFF1F2',
+              border: '1px solid #FECDD3',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#E11D48',
             }}
           >
             <Camera size={22} />
           </div>
+          <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-neutral-dark)', margin: 0 }}>
+            Kualitas Tinggi
+          </h4>
+          <p style={{ fontSize: '0.78rem', color: 'var(--color-neutral-sub)', margin: 0, lineHeight: 1.35 }}>
+            Hasil foto jernih dan tajam
+          </p>
+        </div>
+
+        {/* Item 4: Privasi Aman */}
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center', gap: '0.5rem' }}>
+          <div
+            style={{
+              width: '52px',
+              height: '52px',
+              borderRadius: '50%',
+              background: '#FFF1F2',
+              border: '1px solid #FECDD3',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: '#E11D48',
+            }}
+          >
+            <ShieldCheck size={22} />
+          </div>
+          <h4 style={{ fontSize: '0.95rem', fontWeight: 800, color: 'var(--color-neutral-dark)', margin: 0 }}>
+            Privasi Aman
+          </h4>
+          <p style={{ fontSize: '0.78rem', color: 'var(--color-neutral-sub)', margin: 0, lineHeight: 1.35 }}>
+            Foto kamu aman dan terlindungi
+          </p>
         </div>
       </div>
 
-      {/* Middle Section: Why PixBooth? */}
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '1.75rem', marginTop: '1rem' }}>
-        <h2
-          style={{
-            fontFamily: 'var(--font-heading)',
-            fontSize: '2.2rem',
-            fontWeight: 800,
-            color: 'var(--color-burgundy-deep)',
-            textAlign: 'center',
-            margin: 0,
-          }}
-        >
-          Why PixBooth?
-        </h2>
+      {/* Bottom Feedback Box */}
+      <div
+        style={{
+          background: '#FFF7ED',
+          border: '1px solid #FFEDD5',
+          borderRadius: '22px',
+          padding: '1.25rem 1.5rem',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+          gap: '1rem',
+          boxShadow: '0 6px 16px rgba(251, 146, 60, 0.06)',
+        }}
+      >
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem' }}>
+          <span style={{ fontSize: '0.92rem', color: '#9A3412', fontWeight: 700 }}>
+            Punya saran atau masukan?
+          </span>
+          <span style={{ fontSize: '0.88rem', color: 'var(--color-neutral-sub)' }}>
+            Kirim ke: <strong style={{ color: 'var(--color-burgundy-deep)', fontWeight: 800 }}>support@pixbooth.com</strong>
+          </span>
+        </div>
 
-        {/* 3 Feature Cards Grid */}
+        {/* Cute Love Letter Graphic */}
         <div
           style={{
-            display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
-            gap: '1.25rem',
-            width: '100%',
+            width: '46px',
+            height: '46px',
+            borderRadius: '50%',
+            background: '#FFE4E6',
+            border: '1px solid #FECDD3',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: '#E11D48',
+            fontSize: '1.3rem',
+            flexShrink: 0,
           }}
         >
-          {/* Card 1 */}
-          <div
-            style={{
-              background: '#faf5f2',
-              borderRadius: 'var(--radius-xl)',
-              padding: '2rem 1.5rem',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              textAlign: 'center',
-              gap: '1rem',
-              border: '1px solid rgba(92, 6, 18, 0.05)',
-            }}
-          >
-            <div
-              style={{
-                width: '56px',
-                height: '56px',
-                borderRadius: '50%',
-                background: '#fecdd3',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#881337',
-              }}
-            >
-              <Camera size={26} />
-            </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-burgundy-deep)', margin: 0 }}>
-              Aesthetic Frames
-            </h3>
-            <p style={{ fontSize: '0.92rem', color: 'var(--color-neutral-sub)', lineHeight: 1.5, margin: 0 }}>
-              Choose from dozens of high-fidelity, Life4Cuts inspired frames to perfectly border your memories.
-            </p>
-          </div>
-
-          {/* Card 2 */}
-          <div
-            style={{
-              background: '#faf5f2',
-              borderRadius: 'var(--radius-xl)',
-              padding: '2rem 1.5rem',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              textAlign: 'center',
-              gap: '1rem',
-              border: '1px solid rgba(92, 6, 18, 0.05)',
-            }}
-          >
-            <div
-              style={{
-                width: '56px',
-                height: '56px',
-                borderRadius: '50%',
-                background: '#fecdd3',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#881337',
-              }}
-            >
-              <Smile size={26} />
-            </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-burgundy-deep)', margin: 0 }}>
-              Custom Stickers
-            </h3>
-            <p style={{ fontSize: '0.92rem', color: 'var(--color-neutral-sub)', lineHeight: 1.5, margin: 0 }}>
-              Decorate your strips with our signature hand-drawn doodles, ribbons, and sparkling accents.
-            </p>
-          </div>
-
-          {/* Card 3 */}
-          <div
-            style={{
-              background: '#faf5f2',
-              borderRadius: 'var(--radius-xl)',
-              padding: '2rem 1.5rem',
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-              textAlign: 'center',
-              gap: '1rem',
-              border: '1px solid rgba(92, 6, 18, 0.05)',
-            }}
-          >
-            <div
-              style={{
-                width: '56px',
-                height: '56px',
-                borderRadius: '50%',
-                background: '#fecdd3',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#881337',
-              }}
-            >
-              <Image size={26} />
-            </div>
-            <h3 style={{ fontSize: '1.25rem', fontWeight: 800, color: 'var(--color-burgundy-deep)', margin: 0 }}>
-              Instant Memories
-            </h3>
-            <p style={{ fontSize: '0.92rem', color: 'var(--color-neutral-sub)', lineHeight: 1.5, margin: 0 }}>
-              Save, share, or print high-resolution digital strips instantly. Your memories, beautifully preserved.
-            </p>
-          </div>
+          <Mail size={22} color="#E11D48" />
         </div>
       </div>
     </div>

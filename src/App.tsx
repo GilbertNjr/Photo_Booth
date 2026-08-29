@@ -136,7 +136,7 @@ export function App() {
         )}
 
         {currentStep === 'picker' && !isShowingHowToUse && activeBottomTab === 'about' && (
-          <AboutView />
+          <AboutView onBack={() => setActiveBottomTab('home')} />
         )}
 
         {currentStep === 'picker' && !isShowingHowToUse && activeBottomTab === 'gallery' && (
