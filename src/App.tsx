@@ -25,7 +25,7 @@ export function App() {
   const [finalImageDataUrl, setFinalImageDataUrl] = useState<string>('');
 
   const [isShowingFavoritesOnly, setIsShowingFavoritesOnly] = useState(false);
-  const [isKioskMode, setIsKioskMode] = useState(false);
+
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [activeBottomTab, setActiveBottomTab] = useState<'home' | 'gallery' | 'about'>('home');
 
@@ -91,21 +91,6 @@ export function App() {
     }
   };
 
-  const toggleKioskMode = () => {
-    const nextState = !isKioskMode;
-    setIsKioskMode(nextState);
-    if (nextState) {
-      document.body.classList.add('kiosk-mode');
-      if (document.documentElement.requestFullscreen) {
-        document.documentElement.requestFullscreen().catch(() => {});
-      }
-    } else {
-      document.body.classList.remove('kiosk-mode');
-      if (document.fullscreenElement && document.exitFullscreen) {
-        document.exitFullscreen().catch(() => {});
-      }
-    }
-  };
 
   return (
     <div className="app-container" style={{ position: 'relative', overflowX: 'clip' }}>
@@ -120,8 +105,6 @@ export function App() {
           setIsShowingFavoritesOnly(true);
         }}
         isShowingFavoritesOnly={isShowingFavoritesOnly}
-        onToggleKiosk={toggleKioskMode}
-        isKioskMode={isKioskMode}
       />
 
       <main className="main-content" style={{ position: 'relative', zIndex: 1 }}>

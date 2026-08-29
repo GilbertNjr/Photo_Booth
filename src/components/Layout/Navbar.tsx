@@ -1,13 +1,11 @@
 import React from 'react';
-import { Camera, Heart, Monitor } from 'lucide-react';
+import { Camera, Heart } from 'lucide-react';
 
 interface NavbarProps {
   favoritesCount?: number;
   onFilterFavorites?: () => void;
   onGoToStudio?: () => void;
   isShowingFavoritesOnly?: boolean;
-  onToggleKiosk?: () => void;
-  isKioskMode?: boolean;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -15,8 +13,6 @@ export const Navbar: React.FC<NavbarProps> = ({
   onFilterFavorites,
   onGoToStudio,
   isShowingFavoritesOnly = false,
-  onToggleKiosk,
-  isKioskMode,
 }) => {
   return (
     <header className="navbar-mockup">
@@ -60,16 +56,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
           )}
 
-          {onToggleKiosk && (
-            <button
-              onClick={onToggleKiosk}
-              className={`nav-action-pill desktop-only ${isKioskMode ? 'active' : ''}`}
-              title="Mode Kiosk"
-            >
-              <Monitor size={15} />
-              <span>{isKioskMode ? 'Kiosk Active' : 'Kiosk'}</span>
-            </button>
-          )}
+
 
           <button
             className="nav-action-pill history-pill"
