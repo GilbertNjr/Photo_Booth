@@ -33,10 +33,10 @@ export const FrameCard: React.FC<FrameCardProps> = ({
   const isRomantic = cardId.includes('romantic') || cardId.includes('flower');
   const isClassic = cardId.includes('classic') || cardId.includes('photobooth');
 
-  // Dynamic Card Background & Style based on Card Personality
-  let cardBg = '#ffffff';
-  let cardBorder = isSelected ? '2px solid var(--color-burgundy-deep)' : '1px solid var(--color-border)';
-  let cardShadow = isSelected ? '0 12px 28px rgba(92, 6, 18, 0.2)' : '0 6px 20px rgba(0, 0, 0, 0.05)';
+  // Dynamic Card Background & Border Style based on Card Personality
+  let cardBg = '#FFFDF9';
+  let cardBorder = isSelected ? '2px solid var(--color-burgundy-deep)' : '1px solid #EBE5DB';
+  let cardShadow = isSelected ? '0 12px 28px rgba(92, 6, 18, 0.2)' : '0 6px 20px rgba(92, 6, 18, 0.05)';
 
   if (isScrapbook) {
     cardBg = '#FFFDF9';
@@ -76,7 +76,7 @@ export const FrameCard: React.FC<FrameCardProps> = ({
     cardBorder = isSelected ? '2px solid #FFFFFF' : '1px solid #5C0612';
   }
 
-  const textColor = isFilm || isCamera || isClassic ? '#FFFFFF' : 'inherit';
+  const textColor = isFilm || isCamera || isClassic ? '#FFFFFF' : 'var(--color-neutral-dark)';
 
   return (
     <div
@@ -87,9 +87,13 @@ export const FrameCard: React.FC<FrameCardProps> = ({
         background: cardBg,
         border: cardBorder,
         boxShadow: cardShadow,
-        borderRadius: isTicket ? '16px' : isFilm ? '6px' : '14px',
+        borderRadius: isTicket ? '16px' : isFilm ? '8px' : '22px',
+        padding: '1rem',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '0.75rem',
         overflow: 'visible',
-        transition: 'transform 0.25s ease, box-shadow 0.25s ease',
+        transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)',
       }}
     >
       {/* Selected Checkmark Badge */}
@@ -117,7 +121,7 @@ export const FrameCard: React.FC<FrameCardProps> = ({
         </div>
       )}
 
-      {/* Decorative Washi Tape / Notches / Stamps based on Card Style */}
+      {/* Decorative Washi Tape / Stamps */}
       {isScrapbook && (
         <div
           style={{
@@ -133,105 +137,78 @@ export const FrameCard: React.FC<FrameCardProps> = ({
           }}
         />
       )}
-      {isTicket && (
-        <>
-          <div style={{ position: 'absolute', left: '-10px', top: '50%', width: '20px', height: '20px', background: 'var(--color-bg-primary)', borderRadius: '50%', zIndex: 15 }} />
-          <div style={{ position: 'absolute', right: '-10px', top: '50%', width: '20px', height: '20px', background: 'var(--color-bg-primary)', borderRadius: '50%', zIndex: 15 }} />
-        </>
-      )}
       {isCute && (
         <div style={{ position: 'absolute', top: '-12px', right: '12px', fontSize: '24px', zIndex: 25, filter: 'drop-shadow(0 2px 4px rgba(0,0,0,0.15))' }}>
           🧸
         </div>
       )}
-      {isPostcard && (
-        <div style={{ position: 'absolute', top: '10px', right: '12px', fontSize: '26px', zIndex: 20 }}>
-          📮
-        </div>
-      )}
-      {isFilm && (
-        <div style={{ position: 'absolute', top: '6px', left: '10px', fontSize: '10px', fontFamily: 'monospace', color: '#F59E0B', zIndex: 20 }}>
-          35MM KODAK #01
-        </div>
-      )}
-      {isY2K && (
-        <div style={{ position: 'absolute', top: '8px', left: '12px', fontSize: '11px', fontWeight: 800, color: '#EF4444', zIndex: 20 }}>
-          🔴 REC
-        </div>
-      )}
 
-      {/* Badges Header */}
-      <div className="frame-card-badges" style={{ zIndex: 15 }}>
+      {/* Badges & Favorite Header Row */}
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', zIndex: 15 }}>
         <Badge variant="slot">
-          <ImageIcon size={12} />
+          <ImageIcon size={13} />
           <span>{template.photoSlotsCount} Foto</span>
         </Badge>
 
-        <button
-          className={`favorite-btn ${isFavorite ? 'active' : ''}`}
-          onClick={(e) => onToggleFavorite(template.id, e)}
-          title={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
-        >
-          <Heart size={18} fill={isFavorite ? 'currentColor' : 'none'} />
-        </button>
-      </div>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+          {template.isPopular && (
+            <span
+              style={{
+                background: '#F97316',
+                color: '#FFFFFF',
+                fontSize: '0.65rem',
+                fontWeight: 800,
+                padding: '0.18rem 0.55rem',
+                borderRadius: '9999px',
+                letterSpacing: '0.04em',
+                boxShadow: '0 2px 6px rgba(249, 115, 22, 0.3)',
+              }}
+            >
+              POPULER
+            </span>
+          )}
+          {template.isNew && (
+            <span
+              style={{
+                background: '#EF4444',
+                color: '#FFFFFF',
+                fontSize: '0.65rem',
+                fontWeight: 800,
+                padding: '0.18rem 0.55rem',
+                borderRadius: '9999px',
+                letterSpacing: '0.04em',
+                boxShadow: '0 2px 6px rgba(239, 68, 68, 0.3)',
+              }}
+            >
+              NEW
+            </span>
+          )}
 
-      {/* Frame Preview Container */}
-      <div className="frame-card-preview-wrapper" style={{ transform: isScrapbook ? 'rotate(-1.5deg)' : isPolaroid ? 'rotate(1deg)' : 'none' }}>
-        <FrameRender template={template} />
-        <div className="frame-card-hover-overlay">
-          <button className="btn-primary" style={{ padding: '0.65rem 1.25rem', fontSize: '0.85rem', boxShadow: '0 8px 20px rgba(255, 117, 151, 0.4)' }}>
-            <span>Pilih Bingkai ✨</span>
+          <button
+            className={`favorite-btn ${isFavorite ? 'active' : ''}`}
+            onClick={(e) => onToggleFavorite(template.id, e)}
+            title={isFavorite ? 'Hapus dari Favorit' : 'Tambah ke Favorit'}
+            style={{
+              width: '32px',
+              height: '32px',
+              borderRadius: '50%',
+              background: '#ffffff',
+              border: '1px solid var(--color-border)',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              cursor: 'pointer',
+              color: isFavorite ? '#D22B2B' : '#A1A1AA',
+              boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
+            }}
+          >
+            <Heart size={16} fill={isFavorite ? 'currentColor' : 'none'} color={isFavorite ? '#D22B2B' : '#A1A1AA'} />
           </button>
         </div>
       </div>
 
-      {/* Top Badges (NEW / POPULER) */}
-      <div
-        style={{
-          position: 'absolute',
-          top: '12px',
-          right: '12px',
-          zIndex: 6,
-          display: 'flex',
-          gap: '0.4rem',
-        }}
-      >
-        {template.isPopular && (
-          <span
-            style={{
-              background: '#F97316',
-              color: '#FFFFFF',
-              fontSize: '0.68rem',
-              fontWeight: 800,
-              padding: '0.2rem 0.6rem',
-              borderRadius: '9999px',
-              letterSpacing: '0.05em',
-              boxShadow: '0 4px 10px rgba(249, 115, 22, 0.35)',
-            }}
-          >
-            POPULER
-          </span>
-        )}
-        {template.isNew && (
-          <span
-            style={{
-              background: '#EF4444',
-              color: '#FFFFFF',
-              fontSize: '0.68rem',
-              fontWeight: 800,
-              padding: '0.2rem 0.6rem',
-              borderRadius: '9999px',
-              letterSpacing: '0.05em',
-              boxShadow: '0 4px 10px rgba(239, 68, 68, 0.35)',
-            }}
-          >
-            NEW
-          </span>
-        )}
-      </div>
-
-      <div className="frame-card-preview-wrapper" style={{ transform: isScrapbook ? 'rotate(-1deg)' : 'none' }}>
+      {/* Frame Preview Container (EXACTLY 1 PREVIEW IMAGE PER CARD CONTAINER) */}
+      <div className="frame-card-preview-wrapper">
         <FrameRender template={template} />
         <div className="frame-card-hover-overlay">
           <button className="btn-primary" style={{ padding: '0.65rem 1.25rem', fontSize: '0.85rem', boxShadow: '0 8px 20px rgba(128, 0, 32, 0.4)' }}>
@@ -240,42 +217,21 @@ export const FrameCard: React.FC<FrameCardProps> = ({
         </div>
       </div>
 
-      {/* Card Info Section Matching Mockup */}
-      <div className="frame-card-info" style={{ color: textColor, paddingTop: '0.25rem' }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-          <h3
-            className="frame-card-title"
-            style={{
-              color: textColor,
-              fontFamily: 'var(--font-heading)',
-              fontSize: '1.02rem',
-              fontWeight: 800,
-            }}
-          >
-            {template.name}
-          </h3>
+      {/* Card Info Footer */}
+      <div className="frame-card-info" style={{ color: textColor, paddingTop: '0.15rem' }}>
+        <h3
+          className="frame-card-title"
+          style={{
+            color: textColor,
+            fontFamily: 'var(--font-heading)',
+            fontSize: '1.02rem',
+            fontWeight: 800,
+            margin: 0,
+          }}
+        >
+          {template.name}
+        </h3>
 
-          {/* Heart Favorite Button */}
-          <button
-            onClick={(e) => onToggleFavorite(template.id, e)}
-            style={{
-              background: 'none',
-              border: 'none',
-              cursor: 'pointer',
-              padding: '0.2rem',
-              display: 'inline-flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              color: isFavorite ? '#D22B2B' : 'var(--color-neutral-muted)',
-              transition: 'transform 0.2s ease',
-            }}
-            title={isFavorite ? 'Hapus dari Favorit' : 'Tambah ke Favorit'}
-          >
-            <Heart size={18} fill={isFavorite ? 'currentColor' : 'none'} color={isFavorite ? '#D22B2B' : '#A1A1AA'} />
-          </button>
-        </div>
-
-        {/* Subtitle matching Mockup "Category • X Foto" */}
         <p
           className="frame-card-subtitle"
           style={{
@@ -283,7 +239,7 @@ export const FrameCard: React.FC<FrameCardProps> = ({
             fontSize: '0.82rem',
             fontWeight: 600,
             textTransform: 'capitalize',
-            margin: 0,
+            margin: '0.15rem 0 0 0',
           }}
         >
           {template.category} • {template.photoSlotsCount} Foto
@@ -292,4 +248,3 @@ export const FrameCard: React.FC<FrameCardProps> = ({
     </div>
   );
 };
-
