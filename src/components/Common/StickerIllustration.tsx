@@ -214,6 +214,78 @@ export const StickerIllustration: React.FC<StickerIllustrationProps> = ({
         </svg>
       );
 
+    // 🍓 Strawberry
+    case '🍓':
+      return (
+        <svg width={size} height={size} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 16C18 16 12 28 16 46C20 60 32 62 32 62C32 62 44 60 48 46C52 28 46 16 32 16Z" fill="#D90429" stroke="#800020" strokeWidth="3"/>
+          <path d="M32 16C26 8 20 12 18 14M32 16C38 8 44 12 46 14M32 16V8" stroke="#2D6A4F" strokeWidth="4" strokeLinecap="round"/>
+          <circle cx="24" cy="28" r="1.5" fill="#FFB703"/>
+          <circle cx="36" cy="26" r="1.5" fill="#FFB703"/>
+          <circle cx="28" cy="38" r="1.5" fill="#FFB703"/>
+          <circle cx="40" cy="36" r="1.5" fill="#FFB703"/>
+          <circle cx="22" cy="48" r="1.5" fill="#FFB703"/>
+          <circle cx="34" cy="48" r="1.5" fill="#FFB703"/>
+        </svg>
+      );
+
+    // 🦋 Butterfly
+    case '🦋':
+      return (
+        <svg width={size} height={size} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 30C22 14 6 22 14 36C22 48 32 34 32 34Z" fill="#C9184A" stroke="#500A14" strokeWidth="2"/>
+          <path d="M32 30C42 14 58 22 50 36C42 48 32 34 32 34Z" fill="#D90429" stroke="#500A14" strokeWidth="2"/>
+          <path d="M32 34C24 38 12 50 20 56C28 60 32 40 32 40Z" fill="#800020" stroke="#500A14" strokeWidth="2"/>
+          <path d="M32 34C40 38 52 50 44 56C36 60 32 40 32 40Z" fill="#900C3F" stroke="#500A14" strokeWidth="2"/>
+          <line x1="32" y1="20" x2="32" y2="44" stroke="#1A1817" strokeWidth="4" strokeLinecap="round"/>
+        </svg>
+      );
+
+    // 🌷 Tulips
+    case '🌷':
+      return (
+        <svg width={size} height={size} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 60V32" stroke="#2D6A4F" strokeWidth="4" strokeLinecap="round"/>
+          <path d="M32 32C22 26 18 10 32 16C46 10 42 26 32 32Z" fill="#C9184A" stroke="#800020" strokeWidth="3"/>
+          <path d="M26 30C22 20 28 12 32 16C36 12 42 20 38 30" fill="#D90429"/>
+        </svg>
+      );
+
+    // 🍷 Wine / Cocktail Glass
+    case '🍷':
+      return (
+        <svg width={size} height={size} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 12L32 36L52 12H12Z" fill="#800020" stroke="#FFFFFF" strokeWidth="3" strokeLinejoin="round"/>
+          <line x1="32" y1="36" x2="32" y2="56" stroke="#FFFFFF" strokeWidth="4"/>
+          <line x1="20" y1="56" x2="44" y2="56" stroke="#FFFFFF" strokeWidth="4" strokeLinecap="round"/>
+        </svg>
+      );
+
+    // 🎟️ Ticket To Anywhere
+    case '🎟️':
+      return (
+        <svg width={size * 1.5} height={size * 0.9} viewBox="0 0 90 54" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="90" height="54" rx="8" fill="#E8DFD1" stroke="#8C684D" strokeWidth="3"/>
+          <circle cx="0" cy="27" r="8" fill="#7A1C28"/>
+          <circle cx="90" cy="27" r="8" fill="#7A1C28"/>
+          <line x1="24" y1="8" x2="24" y2="46" stroke="#8C684D" strokeWidth="2" strokeDasharray="3 3"/>
+          <text x="32" y="24" fill="#4A3324" fontSize="9" fontFamily="Outfit" fontWeight="bold">TICKET TO</text>
+          <text x="32" y="36" fill="#7A1C28" fontSize="10" fontFamily="Playfair Display" fontWeight="bold">Anywhere ✨</text>
+        </svg>
+      );
+
+    // 📼 Retro Cassette Tape
+    case '📼':
+      return (
+        <svg width={size * 1.4} height={size} viewBox="0 0 80 50" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect width="80" height="50" rx="6" fill="#27272A" stroke="#52525B" strokeWidth="3"/>
+          <rect x="12" y="10" width="56" height="20" rx="3" fill="#E4E4E7"/>
+          <circle cx="28" cy="20" r="6" fill="#18181B" stroke="#A1A1AA" strokeWidth="2"/>
+          <circle cx="52" cy="20" r="6" fill="#18181B" stroke="#A1A1AA" strokeWidth="2"/>
+          <path d="M20 38H60L54 44H26L20 38Z" fill="#3F3F46"/>
+        </svg>
+      );
+
     // 🎓 Graduation Cap
     case '🎓':
       return (
