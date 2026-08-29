@@ -207,14 +207,9 @@ export const FrameCard: React.FC<FrameCardProps> = ({
         </div>
       </div>
 
-      {/* Frame Preview Container (EXACTLY 1 PREVIEW IMAGE PER CARD CONTAINER) */}
+      {/* Frame Preview Container */}
       <div className="frame-card-preview-wrapper" style={{ width: '100%', minWidth: 0 }}>
         <FrameRender template={template} />
-        <div className="frame-card-hover-overlay">
-          <button className="btn-primary" style={{ padding: '0.65rem 1.25rem', fontSize: '0.85rem', boxShadow: '0 8px 20px rgba(128, 0, 32, 0.4)' }}>
-            <span>Pilih Bingkai ✦</span>
-          </button>
-        </div>
       </div>
 
       {/* Card Info Footer */}
