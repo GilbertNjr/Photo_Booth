@@ -107,14 +107,14 @@ export const FrameRender: React.FC<FrameRenderProps> = ({
           }}
         />
       )}
-      {template.backgroundTexture === 'gingham' && (
+      {(template.backgroundTexture === 'gingham' || template.backgroundTexture === 'gingham-red') && (
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            opacity: 0.15,
-            backgroundImage: 'linear-gradient(90deg, rgba(0,0,0,.1) 50%, transparent 50%), linear-gradient(rgba(0,0,0,.1) 50%, transparent 50%)',
-            backgroundSize: '20px 20px',
+            opacity: 0.25,
+            backgroundImage: 'linear-gradient(90deg, rgba(255,255,255,0.25) 50%, transparent 50%), linear-gradient(rgba(255,255,255,0.25) 50%, transparent 50%)',
+            backgroundSize: '24px 24px',
             pointerEvents: 'none',
             zIndex: 1,
           }}

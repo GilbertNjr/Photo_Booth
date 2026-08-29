@@ -2,7 +2,8 @@ import React, { useState } from 'react';
 import type { TemplateData } from '../types/template';
 import { TemplateService } from '../services/template/templateService';
 import { StorageService } from '../services/storage/storageService';
-import { Search, Heart, Camera, Sparkles } from 'lucide-react';
+import { FrameCard } from '../components/FramePreview/FrameCard';
+import { Search, Camera } from 'lucide-react';
 
 interface GalleryViewProps {
   onSelectFrame: (template: TemplateData) => void;
@@ -109,188 +110,17 @@ export const GalleryView: React.FC<GalleryViewProps> = ({
         })}
       </div>
 
-      {/* Dual Column Masonry Card Gallery Grid */}
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(auto-fill, minmax(210px, 1fr))',
-          gap: '1.25rem',
-          marginTop: '0.5rem',
-        }}
-      >
-        {filteredTemplates.map((template: TemplateData, index: number) => {
-          const isFav = favorites.includes(template.id);
-          const sampleImg = template.samplePhotos?.[0];
-          // Extract flag emoji if available in name
-          const flagMatch = template.name.match(/^[\uD83C-\uDBFF\uDC00-\uDFFF]{2}/);
-          const flagEmoji = flagMatch ? flagMatch[0] : '✦';
-          const cleanTitle = template.name.replace(/^[\uD83C-\uDBFF\uDC00-\uDFFF]{2}\s*/, '');
-
-          return (
-            <div
-              key={template.id}
-              onClick={() => onSelectFrame(template)}
-              style={{
-                position: 'relative',
-                background: '#ffffff',
-                borderRadius: 'var(--radius-xl)',
-                padding: '0.9rem',
-                border: '1.5px solid var(--color-border-soft)',
-                boxShadow: '0 12px 32px rgba(92, 6, 18, 0.09)',
-                cursor: 'pointer',
-                display: 'flex',
-                flexDirection: 'column',
-                gap: '0.65rem',
-                transition: 'all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1)',
-              }}
-            >
-              {/* Paper Washi Tape Overlay Decor */}
-              <div
-                style={{
-                  position: 'absolute',
-                  top: '-12px',
-                  left: '50%',
-                  transform: `translateX(-50%) rotate(${index % 2 === 0 ? '-3deg' : '4deg'})`,
-                  width: '60px',
-                  height: '18px',
-                  background: 'rgba(244, 194, 194, 0.65)',
-                  borderLeft: '2px dashed rgba(255,255,255,0.8)',
-                  borderRight: '2px dashed rgba(255,255,255,0.8)',
-                  zIndex: 3,
-                  boxShadow: '0 2px 6px rgba(0,0,0,0.05)',
-                }}
-              />
-
-              {/* Star Accent on alternating cards */}
-              {index % 2 === 0 && (
-                <span
-                  style={{
-                    position: 'absolute',
-                    top: '-10px',
-                    left: '12px',
-                    fontSize: '1.25rem',
-                    color: 'var(--color-pink-soft)',
-                    zIndex: 4,
-                  }}
-                >
-                  ★
-                </span>
-              )}
-
-              {/* Card Image Preview with Styled Frame Border */}
-              <div
-                style={{
-                  width: '100%',
-                  aspectRatio: template.aspectRatio === '2:3' ? '2/3' : '1/1',
-                  background: template.backgroundColor || '#f5ebe6',
-                  borderRadius: 'var(--radius-md)',
-                  overflow: 'hidden',
-                  position: 'relative',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  boxShadow: 'inset 0 0 12px rgba(0,0,0,0.08)',
-                  border: `2px solid ${template.frameBorderColor || '#ffffff'}`,
-                }}
-              >
-                {sampleImg ? (
-                  <img
-                    src={sampleImg}
-                    alt={template.name}
-                    style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                  />
-                ) : (
-                  <div style={{ textAlign: 'center', padding: '0.75rem', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.4rem' }}>
-                    <Sparkles size={28} color="var(--color-burgundy-deep)" />
-                    <span style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-burgundy-deep)' }}>
-                      {cleanTitle}
-                    </span>
-                    <span style={{ fontSize: '0.7rem', color: 'var(--color-neutral-sub)' }}>
-                      {template.photoSlotsCount} Frame Slots
-                    </span>
-                  </div>
-                )}
-
-                {/* Country Flag Badge Tag */}
-                {flagMatch && (
-                  <div
-                    style={{
-                      position: 'absolute',
-                      bottom: '8px',
-                      left: '8px',
-                      background: 'rgba(255, 255, 255, 0.92)',
-                      backdropFilter: 'blur(6px)',
-                      padding: '0.2rem 0.5rem',
-                      borderRadius: 'var(--radius-full)',
-                      fontSize: '0.85rem',
-                      boxShadow: '0 2px 8px rgba(0,0,0,0.12)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      gap: '0.25rem',
-                    }}
-                  >
-                    <span>{flagEmoji}</span>
-                    <span style={{ fontSize: '0.68rem', fontWeight: 800, color: 'var(--color-neutral-dark)', textTransform: 'uppercase' }}>
-                      {template.category}
-                    </span>
-                  </div>
-                )}
-
-                {/* Heart Favorite Button */}
-                <button
-                  onClick={(e) => toggleFavorite(template.id, e)}
-                  style={{
-                    position: 'absolute',
-                    top: '8px',
-                    right: '8px',
-                    width: '32px',
-                    height: '32px',
-                    borderRadius: '50%',
-                    background: 'rgba(255, 255, 255, 0.9)',
-                    backdropFilter: 'blur(4px)',
-                    border: 'none',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                    cursor: 'pointer',
-                    color: isFav ? '#D22B2B' : 'var(--color-neutral-sub)',
-                    boxShadow: '0 4px 10px rgba(0,0,0,0.12)',
-                  }}
-                >
-                  <Heart size={16} fill={isFav ? '#D22B2B' : 'none'} />
-                </button>
-              </div>
-
-              {/* Card Footer Details */}
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem', padding: '0.2rem 0.2rem 0' }}>
-                <h3
-                  style={{
-                    fontFamily: 'var(--font-heading)',
-                    fontSize: '0.98rem',
-                    fontWeight: 800,
-                    color: 'var(--color-burgundy-deep)',
-                    margin: 0,
-                    lineHeight: 1.2,
-                    whiteSpace: 'nowrap',
-                    overflow: 'hidden',
-                    textOverflow: 'ellipsis',
-                  }}
-                >
-                  {template.name}
-                </h3>
-                <span
-                  style={{
-                    fontSize: '0.75rem',
-                    color: 'var(--color-neutral-sub)',
-                    fontWeight: 600,
-                  }}
-                >
-                  {template.photoSlotsCount} Photo Slots • {template.style}
-                </span>
-              </div>
-            </div>
-          );
-        })}
+      {/* Gallery Frame Card Grid using 3D FrameCard Renderers */}
+      <div className="frame-card-grid">
+        {filteredTemplates.map((template: TemplateData) => (
+          <FrameCard
+            key={template.id}
+            template={template}
+            isFavorite={favorites.includes(template.id)}
+            onToggleFavorite={toggleFavorite}
+            onSelect={onSelectFrame}
+          />
+        ))}
       </div>
 
       {/* Floating Red Round Camera Action Button */}

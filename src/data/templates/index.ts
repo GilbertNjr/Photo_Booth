@@ -1,4 +1,5 @@
 import type { TemplateData } from '../../types/template';
+import { cardBurgundyGinghamScrapbook } from './burgundyScrapbook';
 import {
   cardScrapbook,
   cardPolaroid,
@@ -40,6 +41,7 @@ import {
 } from './globalCountry';
 
 export const TEMPLATES: TemplateData[] = [
+  cardBurgundyGinghamScrapbook,
   cardScrapbook,
   cardPolaroid,
   cardFilmStrip,
@@ -88,3 +90,4 @@ export * from './birthday';
 export * from './graduation';
 export * from './seasonal';
 export * from './globalCountry';
+export * from './burgundyScrapbook';

@@ -72,7 +72,7 @@ export interface TemplateData {
   
   // Visual properties
   backgroundColor: string; // hex or CSS background
-  backgroundTexture?: 'none' | 'paper' | 'film-grain' | 'grid' | 'dots' | 'vintage-paper' | 'gingham' | 'leica';
+  backgroundTexture?: 'none' | 'paper' | 'film-grain' | 'grid' | 'dots' | 'vintage-paper' | 'gingham' | 'gingham-red' | 'leica';
   backgroundGradient?: string;
   frameBorderColor: string;
   frameBorderWidth: number;

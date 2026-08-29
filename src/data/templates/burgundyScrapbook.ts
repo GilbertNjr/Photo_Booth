@@ -1,0 +1,42 @@
+import type { TemplateData } from '../../types/template';
+
+export const cardBurgundyGinghamScrapbook: TemplateData = {
+  id: 'card-13-burgundy-gingham-scrapbook',
+  name: 'Nusantara Burgundy Gingham Scrapbook',
+  subtitle: 'Rich burgundy background, red & white gingham plaid, polaroids, ribbon bow & cute stickers',
+  category: 'cute',
+  style: 'scrapbook',
+  photoSlotsCount: 3,
+  aspectRatio: '2:6',
+  canvasWidth: 600,
+  canvasHeight: 1800,
+  backgroundColor: '#7A1C28',
+  backgroundTexture: 'gingham-red',
+  frameBorderColor: '#800020',
+  frameBorderWidth: 5,
+  frameBorderRadius: 14,
+  accentColor: '#D90429',
+  textColor: '#FFFFFF',
+  colorPalettes: ['#7A1C28', '#FFFFFF', '#D90429', '#F4A261'],
+  photoSlots: [
+    { id: 'slot-1', x: 10, y: 8, width: 80, height: 26, rotation: -4, borderRadius: 6, frameStyle: 'polaroid' },
+    { id: 'slot-2', x: 6, y: 36, width: 80, height: 26, rotation: 3, borderRadius: 6, frameStyle: 'polaroid' },
+    { id: 'slot-3', x: 12, y: 64, width: 80, height: 26, rotation: -2, borderRadius: 6, frameStyle: 'polaroid' },
+  ],
+  decorativeElements: [
+    { id: 'deco-cat', type: 'sticker', content: '🐱', x: 8, y: 6, rotation: -12, fontSize: 44 },
+    { id: 'deco-moth', type: 'sticker', content: '🦋', x: 90, y: 7, rotation: 12, fontSize: 38 },
+    { id: 'deco-cherries', type: 'sticker', content: '🍒', x: 6, y: 34, rotation: -8, fontSize: 42 },
+    { id: 'deco-starfish-white', type: 'sticker', content: '🐚', x: 92, y: 46, rotation: 15, fontSize: 44 },
+    { id: 'deco-flower', type: 'sticker', content: '🌺', x: 60, y: 62, rotation: 5, fontSize: 36 },
+    { id: 'deco-star-red', type: 'sticker', content: '⭐', x: 8, y: 88, rotation: -10, fontSize: 46 },
+    { id: 'deco-ribbon-bow', type: 'sticker', content: '🎀', x: 88, y: 89, rotation: 10, fontSize: 52 },
+  ],
+  textElements: [
+    { id: 'text-head', defaultText: 'kenangan manis kita ♡', placeholder: 'Header', x: 50, y: 4, fontFamily: 'Caveat', fontSize: 26, color: '#FFFFFF', align: 'center', isEditable: true },
+    { id: 'text-foot', defaultText: 'our sweet album • 2026', placeholder: 'Footer', x: 50, y: 94, fontFamily: 'Caveat', fontSize: 24, color: '#F4E2D8', align: 'center', isEditable: true },
+  ],
+  tags: ['burgundy', 'gingham', 'scrapbook', 'polaroid', 'cat', 'ribbon', 'aesthetic'],
+  isPopular: true,
+  isNew: true,
+};
