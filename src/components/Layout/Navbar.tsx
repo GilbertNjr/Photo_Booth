@@ -1,5 +1,5 @@
 import React from 'react';
-import { Camera, Heart, Sparkles, Monitor } from 'lucide-react';
+import { Camera, Heart, Monitor } from 'lucide-react';
 
 interface NavbarProps {
   favoritesCount?: number;
@@ -19,78 +19,68 @@ export const Navbar: React.FC<NavbarProps> = ({
   isKioskMode,
 }) => {
   return (
-    <header className="navbar">
-      <div className="navbar-brand" onClick={onGoToStudio} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-        <span style={{ fontSize: '1.4rem', color: 'var(--color-pink-primary)', fontWeight: 900 }}>✦</span>
-        <span
-          className="navbar-title"
-          style={{
-            fontFamily: 'var(--font-heading)',
-            fontSize: '1.6rem',
-            fontWeight: 800,
-            color: 'var(--color-burgundy-deep)',
-            letterSpacing: '-0.03em',
-          }}
-        >
-          PixBooth
-        </span>
-      </div>
-
-      <nav className="navbar-nav">
-        {onGoToStudio && (
-          <button
-            onClick={onGoToStudio}
-            className={`category-pill ${!isShowingFavoritesOnly ? 'active' : ''}`}
-            style={{ padding: '0.45rem 1rem' }}
-          >
-            <Camera size={16} />
-            <span>Studio</span>
-          </button>
-        )}
-
-        {onFilterFavorites && (
-          <button
-            onClick={onFilterFavorites}
-            className={`category-pill ${isShowingFavoritesOnly ? 'active' : ''}`}
-            style={{ padding: '0.45rem 1rem' }}
-          >
-            <Heart size={16} fill={isShowingFavoritesOnly ? 'currentColor' : 'none'} color={isShowingFavoritesOnly ? 'white' : '#f43f5e'} />
-            <span>Favorit</span>
-            {favoritesCount > 0 && <span className="category-count">{favoritesCount}</span>}
-          </button>
-        )}
-
-        {onToggleKiosk && (
-          <button
-            onClick={onToggleKiosk}
-            className={`category-pill desktop-only ${isKioskMode ? 'active' : ''}`}
-            title="Toggle Touchscreen Kiosk Mode"
-            style={{ padding: '0.45rem 1rem' }}
-          >
-            <Monitor size={16} />
-            <span>{isKioskMode ? 'Kiosk Active' : 'Kiosk Mode'}</span>
-          </button>
-        )}
-
-        <div
-          className="desktop-only"
-          style={{
-            display: 'flex',
-            alignItems: 'center',
-            gap: '0.35rem',
-            background: '#f8fafc',
-            border: '1px solid var(--color-border)',
-            padding: '0.45rem 0.85rem',
-            borderRadius: 'var(--radius-full)',
-            color: 'var(--color-neutral-dark)',
-            fontSize: '0.78rem',
-            fontWeight: 700,
-          }}
-        >
-          <Sparkles size={14} color="#6366f1" />
-          <span>Studio Edition 2026</span>
+    <header className="navbar-mockup">
+      <div className="navbar-container">
+        {/* Brand Logo */}
+        <div className="navbar-brand-box" onClick={onGoToStudio} style={{ cursor: 'pointer' }}>
+          <span className="brand-logo-text">PIXBOOTH</span>
+          <span className="brand-camera-badge">📷</span>
         </div>
-      </nav>
+
+        {/* Center Nav Links (Desktop) */}
+        <nav className="navbar-center-links desktop-only">
+          <button className={`nav-link-item ${!isShowingFavoritesOnly ? 'active' : ''}`} onClick={onGoToStudio}>
+            Beranda
+          </button>
+          <button className="nav-link-item" onClick={onGoToStudio}>
+            Pilih Frame
+          </button>
+          <button className="nav-link-item" onClick={() => alert('Fitur Cara Pakai: Pilih frame, ambil foto dengan kamera web, dan simpan hasilnya!')}>
+            Cara Pakai
+          </button>
+          <button className="nav-link-item" onClick={() => alert('PixBooth Studio 100% GRATIS & Bebas Digunakan!')}>
+            Harga
+          </button>
+          <button className="nav-link-item" onClick={() => alert('PixBooth Studio adalah aplikasi photo booth digital estetik!')}>
+            Tentang
+          </button>
+        </nav>
+
+        {/* Right Actions */}
+        <div className="navbar-right-actions">
+          {onFilterFavorites && (
+            <button
+              onClick={onFilterFavorites}
+              className={`nav-action-pill ${isShowingFavoritesOnly ? 'active' : ''}`}
+              title="Koleksi Favorit"
+            >
+              <Heart size={16} fill={isShowingFavoritesOnly ? 'currentColor' : 'none'} color={isShowingFavoritesOnly ? 'white' : '#800020'} />
+              <span className="desktop-only">Favorit</span>
+              {favoritesCount > 0 && <span className="action-badge-count">{favoritesCount}</span>}
+            </button>
+          )}
+
+          {onToggleKiosk && (
+            <button
+              onClick={onToggleKiosk}
+              className={`nav-action-pill desktop-only ${isKioskMode ? 'active' : ''}`}
+              title="Mode Kiosk"
+            >
+              <Monitor size={15} />
+              <span>{isKioskMode ? 'Kiosk Active' : 'Kiosk'}</span>
+            </button>
+          )}
+
+          <button
+            className="nav-action-pill history-pill"
+            onClick={onFilterFavorites}
+            title="Riwayat Foto Studio"
+          >
+            <Camera size={15} />
+            <span>Riwayat Foto</span>
+          </button>
+        </div>
+      </div>
     </header>
   );
 };
