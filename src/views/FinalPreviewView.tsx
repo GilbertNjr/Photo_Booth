@@ -41,10 +41,52 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
   }, [finalImageDataUrl]);
 
   const handleDownload = () => {
-    const link = document.createElement('a');
-    link.download = `photo-booth-studio-${Date.now()}.png`;
-    link.href = finalImageDataUrl;
-    link.click();
+    if (!finalImageDataUrl) return;
+
+    try {
+      // 1. Convert Data URL to Blob for seamless mobile & desktop downloading
+      const parts = finalImageDataUrl.split(';');
+      const contentType = parts[0].split(':')[1] || 'image/png';
+      const raw = atob(parts[1].split(',')[1]);
+      const rawLength = raw.length;
+      const uInt8Array = new Uint8Array(rawLength);
+
+      for (let i = 0; i < rawLength; ++i) {
+        uInt8Array[i] = raw.charCodeAt(i);
+      }
+
+      const blob = new Blob([uInt8Array], { type: contentType });
+      const blobUrl = URL.createObjectURL(blob);
+      const fileName = `pixbooth-strip-${Date.now()}.png`;
+
+      // 2. Trigger anchor download safely
+      const link = document.createElement('a');
+      link.href = blobUrl;
+      link.download = fileName;
+      link.style.display = 'none';
+      document.body.appendChild(link);
+      link.click();
+
+      setTimeout(() => {
+        if (document.body.contains(link)) {
+          document.body.removeChild(link);
+        }
+        URL.revokeObjectURL(blobUrl);
+      }, 500);
+    } catch (err) {
+      console.warn('Blob conversion fallback to direct link download:', err);
+      const link = document.createElement('a');
+      link.href = finalImageDataUrl;
+      link.download = `pixbooth-strip-${Date.now()}.png`;
+      link.target = '_blank';
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        if (document.body.contains(link)) {
+          document.body.removeChild(link);
+        }
+      }, 500);
+    }
   };
 
   const handlePrint = () => {
