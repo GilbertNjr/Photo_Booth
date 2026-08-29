@@ -1,4 +1,11 @@
 import type { TemplateData } from '../../types/template';
+import {
+  templateSweetMoment,
+  templateSpecialDay,
+  templateFilmStory,
+  templateMovieLove,
+  templateBetterTogether,
+} from './masterTemplates';
 import { cardBurgundyGinghamScrapbook } from './burgundyScrapbook';
 import {
   cardFavoritePersonScrapbook,
@@ -38,7 +45,14 @@ import {
 } from './globalCountry';
 
 export const TEMPLATES: TemplateData[] = [
-  // 🌟 Featured Asset Frame Cards from User Images
+  // 🌟 5 Master Curated Graphic Art Photobooth Templates
+  templateSweetMoment,
+  templateSpecialDay,
+  templateFilmStory,
+  templateMovieLove,
+  templateBetterTogether,
+
+  // 🎨 Featured Asset Frame Cards
   cardFavoritePersonScrapbook,
   cardDarkRomanceCherries,
   cardSilverDigicamGingham,
@@ -74,6 +88,7 @@ export const TEMPLATES: TemplateData[] = [
   nusantaraBatik,
 ];
 
+export * from './masterTemplates';
 export * from './twelveCards';
 export * from './indonesiaTemplates';
 export * from './globalCountry';

@@ -80,7 +80,7 @@ export const FrameRender: React.FC<FrameRenderProps> = ({
         }}
       />
 
-      {/* Texture Overlays */}
+      {/* Texture & Paper Grain Overlays */}
       {template.backgroundTexture === 'dots' && (
         <div
           style={{
@@ -93,15 +93,29 @@ export const FrameRender: React.FC<FrameRenderProps> = ({
           }}
         />
       )}
-      {template.backgroundTexture === 'paper' && (
+      {(template.backgroundTexture === 'paper' || template.backgroundTexture === 'vintage-paper') && (
         <div
           style={{
             position: 'absolute',
             inset: 0,
-            opacity: 0.1,
+            opacity: 0.12,
             backgroundColor: '#000',
             backgroundImage: 'repeating-linear-gradient(45deg, #000 0, #000 1px, transparent 0, transparent 50%)',
-            backgroundSize: '8px 8px',
+            backgroundSize: '6px 6px',
+            pointerEvents: 'none',
+            zIndex: 1,
+          }}
+        />
+      )}
+      {template.backgroundTexture === 'film-grain' && (
+        <div
+          style={{
+            position: 'absolute',
+            inset: 0,
+            opacity: 0.15,
+            backgroundImage: 'radial-gradient(#fff 1px, transparent 1px), radial-gradient(#000 1px, transparent 1px)',
+            backgroundSize: '4px 4px, 6px 6px',
+            backgroundPosition: '0 0, 2px 2px',
             pointerEvents: 'none',
             zIndex: 1,
           }}
@@ -119,6 +133,98 @@ export const FrameRender: React.FC<FrameRenderProps> = ({
             zIndex: 1,
           }}
         />
+      )}
+
+      {/* 35mm Film Strip Side Perforations & Frame Numbers */}
+      {(template.style === 'film-strip' || template.id.includes('film')) && (
+        <>
+          {/* Left & Right Sprocket Holes */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '4%',
+              bottom: '4%',
+              left: '3%',
+              width: '6%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              zIndex: 18,
+              pointerEvents: 'none',
+            }}
+          >
+            {[...Array(10)].map((_, i) => (
+              <div key={i} style={{ width: '100%', height: '14px', borderRadius: '3px', background: '#000000', border: '1px solid rgba(255,255,255,0.15)' }} />
+            ))}
+          </div>
+          <div
+            style={{
+              position: 'absolute',
+              top: '4%',
+              bottom: '4%',
+              right: '3%',
+              width: '6%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+              zIndex: 18,
+              pointerEvents: 'none',
+            }}
+          >
+            {[...Array(10)].map((_, i) => (
+              <div key={i} style={{ width: '100%', height: '14px', borderRadius: '3px', background: '#000000', border: '1px solid rgba(255,255,255,0.15)' }} />
+            ))}
+          </div>
+        </>
+      )}
+
+      {/* Ticket Cutout Notches & Dashed Perforated Line */}
+      {(template.style === 'ticket' || template.id.includes('ticket')) && (
+        <>
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '12%',
+              left: '8%',
+              right: '8%',
+              height: '1px',
+              borderTop: '2px dashed rgba(122, 28, 40, 0.45)',
+              zIndex: 18,
+              pointerEvents: 'none',
+            }}
+          />
+          {/* Circular Ticket Side Cutout Notches */}
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '12%',
+              left: '-10px',
+              transform: 'translateY(-50%)',
+              width: '20px',
+              height: '20px',
+              borderRadius: '50%',
+              background: '#FFFDF9',
+              zIndex: 22,
+              pointerEvents: 'none',
+              boxShadow: 'inset -2px 0 4px rgba(0,0,0,0.15)',
+            }}
+          />
+          <div
+            style={{
+              position: 'absolute',
+              bottom: '12%',
+              right: '-10px',
+              transform: 'translateY(-50%)',
+              width: '20px',
+              height: '20px',
+              borderRadius: '50%',
+              background: '#FFFDF9',
+              zIndex: 22,
+              pointerEvents: 'none',
+              boxShadow: 'inset 2px 0 4px rgba(0,0,0,0.15)',
+            }}
+          />
+        </>
       )}
 
       {/* Render Photo Slots */}

@@ -167,6 +167,66 @@ export class CanvasEngine {
         ctx.fillRect(0, y, width, 30);
       }
       ctx.restore();
+    } else if (template.backgroundTexture === 'paper' || template.backgroundTexture === 'vintage-paper') {
+      ctx.save();
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+      for (let y = 0; y < height; y += 8) {
+        ctx.fillRect(0, y, width, 1);
+      }
+      ctx.restore();
+    } else if (template.backgroundTexture === 'film-grain') {
+      ctx.save();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.05)';
+      for (let i = 0; i < 500; i++) {
+        const rx = Math.random() * width;
+        const ry = Math.random() * height;
+        ctx.fillRect(rx, ry, 2, 2);
+      }
+      ctx.restore();
+    }
+
+    // 1c. Draw 35mm Film Strip Sprocket Perforations in Canvas Output
+    if (template.style === 'film-strip' || template.id.includes('film')) {
+      ctx.save();
+      ctx.fillStyle = '#000000';
+      const pWidth = width * 0.05;
+      const pHeight = height * 0.015;
+      const pLeft = width * 0.03;
+      const pRight = width * 0.92;
+
+      for (let y = height * 0.04; y < height * 0.96; y += height * 0.08) {
+        this.roundRectPath(ctx, pLeft, y, pWidth, pHeight, 4);
+        ctx.fill();
+        this.roundRectPath(ctx, pRight, y, pWidth, pHeight, 4);
+        ctx.fill();
+      }
+      ctx.restore();
+    }
+
+    // 1d. Draw Ticket Stub Dashed Cutout Line & Side Notches in Canvas Output
+    if (template.style === 'ticket' || template.id.includes('ticket')) {
+      ctx.save();
+      ctx.strokeStyle = template.textColor || '#7A1C28';
+      ctx.lineWidth = 3;
+      ctx.setLineDash([12, 12]);
+      const lineY = height * 0.88;
+
+      ctx.beginPath();
+      ctx.moveTo(width * 0.08, lineY);
+      ctx.lineTo(width * 0.92, lineY);
+      ctx.stroke();
+      ctx.restore();
+
+      // Notch cutouts
+      ctx.save();
+      ctx.fillStyle = '#FAF5EE';
+      ctx.beginPath();
+      ctx.arc(0, lineY, width * 0.04, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.beginPath();
+      ctx.arc(width, lineY, width * 0.04, 0, Math.PI * 2);
+      ctx.fill();
+      ctx.restore();
     }
 
     // 2. Draw Frame Border if specified
