@@ -97,29 +97,31 @@ export const FrameCard: React.FC<FrameCardProps> = ({
       }}
     >
       {/* Selected Checkmark Badge */}
-      {isSelected && (
-        <div
-          style={{
-            position: 'absolute',
-            top: '-8px',
-            right: '-8px',
-            width: '28px',
-            height: '28px',
-            borderRadius: '50%',
-            background: 'var(--color-pink-primary)',
-            color: '#ffffff',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            fontSize: '0.9rem',
-            fontWeight: 900,
-            zIndex: 30,
-            boxShadow: '0 4px 10px rgba(211, 47, 47, 0.4)',
-          }}
-        >
-          ✓
-        </div>
-      )}
+      <div
+        style={{
+          position: 'absolute',
+          top: '-8px',
+          right: '-8px',
+          width: '28px',
+          height: '28px',
+          borderRadius: '50%',
+          background: 'var(--color-pink-primary)',
+          color: '#ffffff',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          fontSize: '0.9rem',
+          fontWeight: 900,
+          zIndex: 30,
+          boxShadow: '0 4px 10px rgba(128, 0, 32, 0.4)',
+          opacity: isSelected ? 1 : 0,
+          transform: isSelected ? 'scale(1)' : 'scale(0.7)',
+          pointerEvents: 'none',
+          transition: 'opacity var(--motion-fast), transform var(--motion-fast)',
+        }}
+      >
+        ✓
+      </div>
 
       {/* Decorative Washi Tape / Stamps */}
       {isScrapbook && (

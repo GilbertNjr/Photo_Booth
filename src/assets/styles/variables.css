@@ -60,8 +60,14 @@
   --radius-xl: 32px;
   --radius-full: 9999px;
 
-  /* Transitions */
+  /* Transitions & Motion Tokens */
   --transition-fast: 0.15s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-normal: 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   --transition-bounce: 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+  /* PixBooth Smooth Motion System Tokens */
+  --motion-fast: 150ms cubic-bezier(0.25, 1, 0.5, 1);
+  --motion-normal: 220ms cubic-bezier(0.25, 1, 0.5, 1);
+  --motion-slow: 320ms cubic-bezier(0.25, 1, 0.5, 1);
+  --ease-smooth: cubic-bezier(0.25, 1, 0.5, 1);
 }

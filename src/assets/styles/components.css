@@ -126,7 +126,7 @@
   }
 }
 
-/* Frame Card Styles (Clean Premium Photobooth Card Aesthetic) */
+/* Frame Card Styles (Smooth Interaction System) */
 .frame-card {
   position: relative;
   background: #ffffff;
@@ -134,12 +134,14 @@
   padding: 1.15rem;
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
   border: 1px solid var(--color-border);
-  transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+  transition: transform var(--motion-normal), box-shadow var(--motion-normal), border-color var(--motion-normal), background var(--motion-normal);
   display: flex;
   flex-direction: column;
   gap: 0.9rem;
   cursor: pointer;
   overflow: hidden;
+  will-change: transform;
+  scroll-snap-align: start;
 }
 
 .frame-card::before {
@@ -149,14 +151,20 @@
   border-radius: var(--radius-xl);
   border: 2px solid var(--color-pink-hover);
   opacity: 0;
-  transition: opacity 0.25s ease;
+  transition: opacity var(--motion-fast);
   pointer-events: none;
 }
 
 .frame-card:hover {
-  transform: translateY(-6px);
-  box-shadow: 0 16px 32px rgba(15, 23, 42, 0.08);
-  border-color: transparent;
+  transform: translateY(-3px) scale(1.01);
+  box-shadow: 0 12px 28px rgba(128, 0, 32, 0.12);
+  border-color: rgba(128, 0, 32, 0.3);
+}
+
+.frame-card.selected {
+  border-color: var(--color-pink-primary) !important;
+  box-shadow: 0 8px 24px rgba(128, 0, 32, 0.18) !important;
+  transform: scale(1.01);
 }
 
 .frame-card:hover::before {
@@ -320,6 +328,8 @@
     flex-wrap: nowrap;
     overflow-x: auto;
     scroll-behavior: smooth;
+    scroll-snap-type: x mandatory;
+    overscroll-behavior-x: contain;
     -webkit-overflow-scrolling: touch;
     padding-bottom: 0.5rem;
   }
@@ -342,8 +352,10 @@
   color: var(--color-neutral-sub);
   white-space: nowrap;
   flex-shrink: 0;
-  transition: all 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+  transition: transform var(--motion-fast), background var(--motion-fast), color var(--motion-fast), border-color var(--motion-fast);
   box-shadow: var(--shadow-sm);
+  will-change: transform;
+  scroll-snap-align: start;
 }
 
 .category-pill:hover {
@@ -2262,5 +2274,15 @@
 
   .how-to-illustration {
     transform: scale(0.85);
+  }
+}
+
+/* Accessibility: Reduce Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
   }
 }
