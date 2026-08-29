@@ -144,39 +144,39 @@ export const FrameCard: React.FC<FrameCardProps> = ({
       )}
 
       {/* Badges & Favorite Header Row */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', minWidth: 0, zIndex: 15, flexWrap: 'wrap', gap: '0.25rem' }}>
+      <div className="frame-card-header-row" style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', minWidth: 0, zIndex: 15, flexWrap: 'wrap', gap: '0.2rem' }}>
         <Badge variant="slot">
-          <ImageIcon size={12} />
+          <ImageIcon size={11} />
           <span>{template.photoSlotsCount} Foto</span>
         </Badge>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', flexWrap: 'wrap' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', flexWrap: 'wrap' }}>
           {template.isPopular && (
             <span
               style={{
                 background: '#F97316',
                 color: '#FFFFFF',
-                fontSize: '0.6rem',
+                fontSize: '0.55rem',
                 fontWeight: 800,
-                padding: '0.15rem 0.45rem',
+                padding: '0.12rem 0.35rem',
                 borderRadius: '9999px',
-                letterSpacing: '0.03em',
+                letterSpacing: '0.02em',
                 boxShadow: '0 2px 6px rgba(249, 115, 22, 0.3)',
               }}
             >
               POPULER
             </span>
           )}
-          {template.isNew && (
+          {template.isNew && !template.isPopular && (
             <span
               style={{
                 background: '#EF4444',
                 color: '#FFFFFF',
-                fontSize: '0.6rem',
+                fontSize: '0.55rem',
                 fontWeight: 800,
-                padding: '0.15rem 0.45rem',
+                padding: '0.12rem 0.35rem',
                 borderRadius: '9999px',
-                letterSpacing: '0.03em',
+                letterSpacing: '0.02em',
                 boxShadow: '0 2px 6px rgba(239, 68, 68, 0.3)',
               }}
             >
@@ -189,8 +189,8 @@ export const FrameCard: React.FC<FrameCardProps> = ({
             onClick={(e) => onToggleFavorite(template.id, e)}
             title={isFavorite ? 'Hapus dari Favorit' : 'Tambah ke Favorit'}
             style={{
-              width: '28px',
-              height: '28px',
+              width: '24px',
+              height: '24px',
               borderRadius: '50%',
               background: '#ffffff',
               border: '1px solid var(--color-border)',
@@ -202,7 +202,7 @@ export const FrameCard: React.FC<FrameCardProps> = ({
               boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
             }}
           >
-            <Heart size={14} fill={isFavorite ? 'currentColor' : 'none'} color={isFavorite ? '#D22B2B' : '#A1A1AA'} />
+            <Heart size={12} fill={isFavorite ? 'currentColor' : 'none'} color={isFavorite ? '#D22B2B' : '#A1A1AA'} />
           </button>
         </div>
       </div>
