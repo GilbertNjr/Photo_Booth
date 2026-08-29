@@ -76,7 +76,7 @@ export const BottomNav: React.FC<BottomNavProps> = ({ currentTab, onChangeTab })
         }}
       >
         <GalleryIcon size={18} />
-        <span>Gallery</span>
+        <span>Frame</span>
       </button>
 
       {/* About Tab */}

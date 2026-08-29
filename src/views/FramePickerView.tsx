@@ -133,17 +133,16 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
         </section>
       )}
 
-      {/* 🖼️ 2. FRAME SHOWCASE SECTION ("Pilih Gaya Bingkai Favoritmu ✦") */}
+      {/* 🖼️ 2. FRAME SHOWCASE SECTION ("Pilih Bingkai Anda ✦") */}
       <section ref={showcaseRef} className="frame-showcase-section">
         {/* Section Header */}
-        <div className="showcase-header-row">
+        <div className="showcase-header-centered">
           <h2 className="showcase-title">
-            {isShowingFavoritesOnly ? 'Bingkai Favorit Saya ✦' : 'Pilih Gaya Bingkai Favoritmu ✦'}
+            {isShowingFavoritesOnly ? 'Bingkai Favorit Saya ✦' : 'Pilih Bingkai Anda ✦'}
           </h2>
-          <button className="showcase-view-all" onClick={() => setSelectedCategory('all')}>
-            <Grid size={15} />
-            <span>Lihat Semua</span>
-          </button>
+          <p className="showcase-subtitle">
+            Pilih gaya dan jadikan kenangan Anda milik Anda sendiri.
+          </p>
         </div>
 
         {/* Search & Category Filter Pills */}

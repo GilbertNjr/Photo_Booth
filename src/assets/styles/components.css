@@ -1352,19 +1352,28 @@
   box-shadow: 0 8px 24px rgba(92, 6, 18, 0.03);
 }
 
-.showcase-header-row {
+.showcase-header-centered {
   display: flex;
+  flex-direction: column;
   align-items: center;
-  justify-content: space-between;
-  gap: 1rem;
+  text-align: center;
+  gap: 0.35rem;
+  margin-bottom: 0.5rem;
 }
 
 .showcase-title {
   font-family: var(--font-serif);
-  font-size: 1.85rem;
+  font-size: 2.2rem;
   font-weight: 800;
   color: var(--color-burgundy-deep);
   letter-spacing: -0.02em;
+}
+
+.showcase-subtitle {
+  font-size: 0.95rem;
+  color: var(--color-neutral-sub);
+  line-height: 1.4;
+  margin: 0;
 }
 
 .showcase-view-all {

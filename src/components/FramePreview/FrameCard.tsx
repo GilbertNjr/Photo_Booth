@@ -186,57 +186,108 @@ export const FrameCard: React.FC<FrameCardProps> = ({
         </div>
       </div>
 
-      {/* Card Info Section */}
-      <div className="frame-card-info" style={{ color: textColor }}>
-        <div className="frame-card-header">
-          <h3 className="frame-card-title" style={{ color: textColor, fontFamily: isNewspaper || isMinimal ? 'Playfair Display, serif' : 'inherit' }}>
-            {template.name}
-          </h3>
-          {template.isNew && (
-            <Badge variant="new">NEW</Badge>
-          )}
-        </div>
-
-        {template.subtitle && (
-          <p className="frame-card-subtitle" style={{ color: isFilm || isCamera || isClassic ? 'rgba(255,255,255,0.75)' : 'var(--color-neutral-sub)' }}>
-            {template.subtitle}
-          </p>
-        )}
-
-        <div className="frame-card-tags" style={{ justifyContent: 'space-between', alignItems: 'center' }}>
-          <div style={{ display: 'flex', gap: '0.4rem', alignItems: 'center' }}>
-            <Badge variant={template.category}>{template.category.toUpperCase()}</Badge>
-            <span
-              style={{
-                fontSize: '0.72rem',
-                color: isFilm || isCamera || isClassic ? '#ffffff' : 'var(--color-neutral-sub)',
-                background: isFilm || isCamera || isClassic ? 'rgba(255,255,255,0.15)' : 'var(--color-cream-dark)',
-                padding: '0.2rem 0.55rem',
-                borderRadius: 'var(--radius-full)',
-                textTransform: 'capitalize',
-              }}
-            >
-              {template.style.replace('-', ' ')}
-            </span>
-          </div>
-
-          <button
+      {/* Top Badges (NEW / POPULER) */}
+      <div
+        style={{
+          position: 'absolute',
+          top: '12px',
+          right: '12px',
+          zIndex: 6,
+          display: 'flex',
+          gap: '0.4rem',
+        }}
+      >
+        {template.isPopular && (
+          <span
             style={{
-              padding: '0.35rem 0.75rem',
-              fontSize: '0.78rem',
-              fontWeight: 700,
-              color: '#ffffff',
-              background: isFilm || isCamera ? '#F59E0B' : 'var(--color-pink-primary)',
-              border: 'none',
-              borderRadius: 'var(--radius-full)',
-              cursor: 'pointer',
-              boxShadow: '0 4px 10px rgba(128, 0, 32, 0.25)',
-              transition: 'transform 0.2s ease',
+              background: '#F97316',
+              color: '#FFFFFF',
+              fontSize: '0.68rem',
+              fontWeight: 800,
+              padding: '0.2rem 0.6rem',
+              borderRadius: '9999px',
+              letterSpacing: '0.05em',
+              boxShadow: '0 4px 10px rgba(249, 115, 22, 0.35)',
             }}
           >
-            Pilih ➔
+            POPULER
+          </span>
+        )}
+        {template.isNew && (
+          <span
+            style={{
+              background: '#EF4444',
+              color: '#FFFFFF',
+              fontSize: '0.68rem',
+              fontWeight: 800,
+              padding: '0.2rem 0.6rem',
+              borderRadius: '9999px',
+              letterSpacing: '0.05em',
+              boxShadow: '0 4px 10px rgba(239, 68, 68, 0.35)',
+            }}
+          >
+            NEW
+          </span>
+        )}
+      </div>
+
+      <div className="frame-card-preview-wrapper" style={{ transform: isScrapbook ? 'rotate(-1deg)' : 'none' }}>
+        <FrameRender template={template} />
+        <div className="frame-card-hover-overlay">
+          <button className="btn-primary" style={{ padding: '0.65rem 1.25rem', fontSize: '0.85rem', boxShadow: '0 8px 20px rgba(128, 0, 32, 0.4)' }}>
+            <span>Pilih Bingkai ✦</span>
           </button>
         </div>
+      </div>
+
+      {/* Card Info Section Matching Mockup */}
+      <div className="frame-card-info" style={{ color: textColor, paddingTop: '0.25rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+          <h3
+            className="frame-card-title"
+            style={{
+              color: textColor,
+              fontFamily: 'var(--font-heading)',
+              fontSize: '1.02rem',
+              fontWeight: 800,
+            }}
+          >
+            {template.name}
+          </h3>
+
+          {/* Heart Favorite Button */}
+          <button
+            onClick={(e) => onToggleFavorite(template.id, e)}
+            style={{
+              background: 'none',
+              border: 'none',
+              cursor: 'pointer',
+              padding: '0.2rem',
+              display: 'inline-flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              color: isFavorite ? '#D22B2B' : 'var(--color-neutral-muted)',
+              transition: 'transform 0.2s ease',
+            }}
+            title={isFavorite ? 'Hapus dari Favorit' : 'Tambah ke Favorit'}
+          >
+            <Heart size={18} fill={isFavorite ? 'currentColor' : 'none'} color={isFavorite ? '#D22B2B' : '#A1A1AA'} />
+          </button>
+        </div>
+
+        {/* Subtitle matching Mockup "Category • X Foto" */}
+        <p
+          className="frame-card-subtitle"
+          style={{
+            color: isFilm || isCamera || isClassic ? 'rgba(255,255,255,0.75)' : 'var(--color-neutral-sub)',
+            fontSize: '0.82rem',
+            fontWeight: 600,
+            textTransform: 'capitalize',
+            margin: 0,
+          }}
+        >
+          {template.category} • {template.photoSlotsCount} Foto
+        </p>
       </div>
     </div>
   );
