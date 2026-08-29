@@ -64,20 +64,7 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', position: 'relative', paddingBottom: '90px' }}>
       {/* Header section matching "Choose Your Frame ✦" */}
       <div style={{ textAlign: 'center', margin: '0.5rem 0 1rem', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div style={{ display: 'flex', width: '100%', justifyContent: 'space-between', alignItems: 'center', marginBottom: '0.75rem' }}>
-          <span style={{ fontSize: '0.9rem', color: 'var(--color-neutral-sub)', fontWeight: 600, cursor: 'pointer' }}>
-            ← Back
-          </span>
-          <span
-            onClick={() => {
-              const defaultTemplate = activeSelectedFrame || filteredTemplates[0] || TemplateService.getAllTemplates()[0];
-              if (defaultTemplate) onSelectFrame(defaultTemplate);
-            }}
-            style={{ fontSize: '0.88rem', color: 'var(--color-neutral-sub)', fontWeight: 700, cursor: 'pointer' }}
-          >
-            Skip
-          </span>
-        </div>
+
 
         <h1
           style={{
