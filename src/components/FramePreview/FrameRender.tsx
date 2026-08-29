@@ -175,6 +175,31 @@ export const FrameRender: React.FC<FrameRenderProps> = ({
               <div key={i} style={{ width: '100%', height: '14px', borderRadius: '3px', background: '#000000', border: '1px solid rgba(255,255,255,0.15)' }} />
             ))}
           </div>
+
+          {/* Authentic 35mm Film Frame Exposure Numbers */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '4%',
+              bottom: '4%',
+              right: '10.5%',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-around',
+              zIndex: 18,
+              pointerEvents: 'none',
+              color: template.accentColor || '#F59E0B',
+              fontFamily: 'monospace',
+              fontSize: '0.52rem',
+              fontWeight: 700,
+              opacity: 0.85,
+            }}
+          >
+            <span>▶ 01A</span>
+            <span>▶ 02A</span>
+            <span>▶ 03A</span>
+            <span>▶ 04A</span>
+          </div>
         </>
       )}
 
@@ -188,7 +213,7 @@ export const FrameRender: React.FC<FrameRenderProps> = ({
               left: '8%',
               right: '8%',
               height: '1px',
-              borderTop: '2px dashed rgba(122, 28, 40, 0.45)',
+              borderTop: `2px dashed ${template.textColor}66`,
               zIndex: 18,
               pointerEvents: 'none',
             }}
@@ -203,7 +228,7 @@ export const FrameRender: React.FC<FrameRenderProps> = ({
               width: '20px',
               height: '20px',
               borderRadius: '50%',
-              background: '#FFFDF9',
+              background: template.backgroundColor || '#FFFDF9',
               zIndex: 22,
               pointerEvents: 'none',
               boxShadow: 'inset -2px 0 4px rgba(0,0,0,0.15)',
@@ -218,7 +243,7 @@ export const FrameRender: React.FC<FrameRenderProps> = ({
               width: '20px',
               height: '20px',
               borderRadius: '50%',
-              background: '#FFFDF9',
+              background: template.backgroundColor || '#FFFDF9',
               zIndex: 22,
               pointerEvents: 'none',
               boxShadow: 'inset 2px 0 4px rgba(0,0,0,0.15)',
