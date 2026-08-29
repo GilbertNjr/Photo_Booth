@@ -15,8 +15,6 @@ import { GalleryView } from './views/GalleryView';
 import { AboutView } from './views/AboutView';
 import { HowToUseView } from './views/HowToUseView';
 
-import { BottomNav } from './components/Layout/BottomNav';
-
 type Step = 'picker' | 'camera' | 'customize' | 'final';
 
 export function App() {
@@ -194,22 +192,6 @@ export function App() {
       </main>
 
       <Footer />
-
-      <BottomNav
-        currentTab={activeBottomTab}
-        onChangeTab={(tab) => {
-          setActiveBottomTab(tab);
-          if (tab === 'home') {
-            setIsShowingFavoritesOnly(false);
-            navigateToStep('picker');
-          } else if (tab === 'gallery') {
-            setIsShowingFavoritesOnly(true);
-            navigateToStep('picker');
-          } else if (tab === 'about') {
-            navigateToStep('picker');
-          }
-        }}
-      />
     </div>
   );
 }
