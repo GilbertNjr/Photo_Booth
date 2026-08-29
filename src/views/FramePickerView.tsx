@@ -12,11 +12,15 @@ import { Camera, Grid, Sparkles } from 'lucide-react';
 interface FramePickerViewProps {
   onSelectFrame: (template: TemplateData) => void;
   isShowingFavoritesOnly?: boolean;
+  isHomeView?: boolean;
+  onExploreAllFrames?: () => void;
 }
 
 export const FramePickerView: React.FC<FramePickerViewProps> = ({
   onSelectFrame,
   isShowingFavoritesOnly = false,
+  isHomeView = false,
+  onExploreAllFrames,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<FrameCategory | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
@@ -49,12 +53,18 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
   }, [isShowingFavoritesOnly, favorites]);
 
   const filteredTemplates = useMemo(() => {
+    if (isHomeView && !isShowingFavoritesOnly && !searchQuery && selectedCategory === 'all') {
+      // Show top 4 signature popular/iconic templates for Home
+      const allTpls = TemplateService.getAllTemplates();
+      const featured = allTpls.filter((t) => t.isPopular || t.isNew);
+      return featured.length >= 4 ? featured.slice(0, 4) : allTpls.slice(0, 4);
+    }
     let result = TemplateService.searchTemplates(searchQuery, selectedCategory);
     if (isShowingFavoritesOnly) {
       result = result.filter((t) => favorites.includes(t.id));
     }
     return result;
-  }, [searchQuery, selectedCategory, isShowingFavoritesOnly, favorites]);
+  }, [searchQuery, selectedCategory, isShowingFavoritesOnly, favorites, isHomeView]);
 
   const [activeSelectedFrame, setActiveSelectedFrame] = useState<TemplateData | null>(null);
 
@@ -138,22 +148,30 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
         {/* Section Header */}
         <div className="showcase-header-centered">
           <h2 className="showcase-title">
-            {isShowingFavoritesOnly ? 'Bingkai Favorit Saya ✦' : 'Pilih Bingkai Anda ✦'}
+            {isShowingFavoritesOnly
+              ? 'Bingkai Favorit Saya ✦'
+              : isHomeView
+              ? 'Bingkai Utama PixBooth ✦'
+              : 'Pilih Bingkai Anda ✦'}
           </h2>
           <p className="showcase-subtitle">
-            Pilih gaya dan jadikan kenangan Anda milik Anda sendiri.
+            {isHomeView
+              ? 'Frame ikonik pilihan terbaik untuk foto studio kamu.'
+              : 'Pilih gaya dan jadikan kenangan Anda milik Anda sendiri.'}
           </p>
         </div>
 
-        {/* Search & Category Filter Pills */}
-        <div className="showcase-controls">
-          <SearchBar value={searchQuery} onChange={setSearchQuery} />
-          <CategoryFilter
-            selectedCategory={selectedCategory}
-            onSelectCategory={setSelectedCategory}
-            categoryCounts={categoryCounts}
-          />
-        </div>
+        {/* Search & Category Filter Pills (Shown in All Frames / Search Mode) */}
+        {!isHomeView && (
+          <div className="showcase-controls">
+            <SearchBar value={searchQuery} onChange={setSearchQuery} />
+            <CategoryFilter
+              selectedCategory={selectedCategory}
+              onSelectCategory={setSelectedCategory}
+              categoryCounts={categoryCounts}
+            />
+          </div>
+        )}
 
         {/* High-Fidelity Frame Template Grid */}
         <TemplateGrid
@@ -166,6 +184,30 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
           }}
           isShowingFavoritesOnly={isShowingFavoritesOnly}
         />
+
+        {/* "Eksplor Semua Bingkai ➔" Button on Home View */}
+        {isHomeView && onExploreAllFrames && (
+          <div style={{ display: 'flex', justifyContent: 'center', marginTop: '1.75rem' }}>
+            <button
+              onClick={onExploreAllFrames}
+              className="btn-primary"
+              style={{
+                padding: '0.85rem 2.25rem',
+                borderRadius: '9999px',
+                fontSize: '0.95rem',
+                fontWeight: 800,
+                boxShadow: '0 8px 24px rgba(128, 0, 32, 0.25)',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.5rem',
+                cursor: 'pointer',
+              }}
+            >
+              <span>Eksplor Semua Bingkai</span>
+              <span style={{ fontSize: '1.1rem' }}>➔</span>
+            </button>
+          </div>
+        )}
       </section>
 
       {/* Template Inspection Modal */}

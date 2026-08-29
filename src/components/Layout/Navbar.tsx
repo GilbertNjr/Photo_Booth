@@ -5,6 +5,7 @@ interface NavbarProps {
   favoritesCount?: number;
   onFilterFavorites?: () => void;
   onGoToStudio?: () => void;
+  onGoToAllFrames?: () => void;
   onGoToHowToUse?: () => void;
   onGoToAbout?: () => void;
   isShowingFavoritesOnly?: boolean;
@@ -14,6 +15,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   favoritesCount = 0,
   onFilterFavorites,
   onGoToStudio,
+  onGoToAllFrames,
   onGoToHowToUse,
   onGoToAbout,
   isShowingFavoritesOnly = false,
@@ -32,7 +34,7 @@ export const Navbar: React.FC<NavbarProps> = ({
           <button className={`nav-link-item ${!isShowingFavoritesOnly ? 'active' : ''}`} onClick={onGoToStudio}>
             Beranda
           </button>
-          <button className="nav-link-item" onClick={onGoToStudio}>
+          <button className="nav-link-item" onClick={onGoToAllFrames || onGoToStudio}>
             Pilih Frame
           </button>
           <button className="nav-link-item" onClick={onGoToHowToUse || onGoToStudio}>

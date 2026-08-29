@@ -27,6 +27,7 @@ export function App() {
 
   const [isShowingFavoritesOnly, setIsShowingFavoritesOnly] = useState(false);
   const [isShowingHowToUse, setIsShowingHowToUse] = useState(false);
+  const [isAllFramesCatalog, setIsAllFramesCatalog] = useState(false);
 
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [activeBottomTab, setActiveBottomTab] = useState<'home' | 'gallery' | 'about'>('home');
@@ -93,7 +94,6 @@ export function App() {
     }
   };
 
-
   return (
     <div className="app-container" style={{ position: 'relative', overflowX: 'clip' }}>
       <Navbar
@@ -102,6 +102,14 @@ export function App() {
           setCurrentStep('picker');
           setIsShowingFavoritesOnly(false);
           setIsShowingHowToUse(false);
+          setIsAllFramesCatalog(false);
+          setActiveBottomTab('home');
+        }}
+        onGoToAllFrames={() => {
+          setCurrentStep('picker');
+          setIsShowingFavoritesOnly(false);
+          setIsShowingHowToUse(false);
+          setIsAllFramesCatalog(true);
           setActiveBottomTab('home');
         }}
         onFilterFavorites={() => {
@@ -154,6 +162,8 @@ export function App() {
           <FramePickerView
             onSelectFrame={handleSelectFrame}
             isShowingFavoritesOnly={isShowingFavoritesOnly}
+            isHomeView={!isAllFramesCatalog && !isShowingFavoritesOnly}
+            onExploreAllFrames={() => setIsAllFramesCatalog(true)}
           />
         )}
 
