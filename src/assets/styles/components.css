@@ -778,7 +778,7 @@
 }
 
 .step-item.disabled {
-  opacity: 0.45;
+  opacity: 0.75;
   cursor: not-allowed;
 }
 
@@ -799,24 +799,36 @@
 }
 
 .step-icon-badge {
-  width: 30px;
-  height: 30px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background: rgba(0, 0, 0, 0.05);
+  background: #EBE5DB;
+  color: #64748B;
+  border: 1px solid #D4CEC3;
   transition: var(--transition-normal);
+  flex-shrink: 0;
+}
+
+.step-item.disabled .step-icon-badge {
+  background: #EBE5DB;
+  color: #64748B;
+  border: 1px solid #D4CEC3;
 }
 
 .step-item.current .step-icon-badge {
-  background: rgba(255, 255, 255, 0.25);
-  color: white;
+  background: var(--color-burgundy-deep);
+  color: #ffffff;
+  border: 1px solid var(--color-burgundy-deep);
+  box-shadow: 0 4px 12px rgba(128, 0, 32, 0.3);
 }
 
 .step-item.completed .step-icon-badge {
-  background: var(--color-mint-primary);
-  color: white;
+  background: #10B981;
+  color: #ffffff;
+  border: 1px solid #10B981;
 }
 
 .step-text-info {
