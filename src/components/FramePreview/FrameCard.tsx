@@ -144,23 +144,23 @@ export const FrameCard: React.FC<FrameCardProps> = ({
       )}
 
       {/* Badges & Favorite Header Row */}
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', zIndex: 15 }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%', minWidth: 0, zIndex: 15, flexWrap: 'wrap', gap: '0.25rem' }}>
         <Badge variant="slot">
-          <ImageIcon size={13} />
+          <ImageIcon size={12} />
           <span>{template.photoSlotsCount} Foto</span>
         </Badge>
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem', flexWrap: 'wrap' }}>
           {template.isPopular && (
             <span
               style={{
                 background: '#F97316',
                 color: '#FFFFFF',
-                fontSize: '0.65rem',
+                fontSize: '0.6rem',
                 fontWeight: 800,
-                padding: '0.18rem 0.55rem',
+                padding: '0.15rem 0.45rem',
                 borderRadius: '9999px',
-                letterSpacing: '0.04em',
+                letterSpacing: '0.03em',
                 boxShadow: '0 2px 6px rgba(249, 115, 22, 0.3)',
               }}
             >
@@ -172,11 +172,11 @@ export const FrameCard: React.FC<FrameCardProps> = ({
               style={{
                 background: '#EF4444',
                 color: '#FFFFFF',
-                fontSize: '0.65rem',
+                fontSize: '0.6rem',
                 fontWeight: 800,
-                padding: '0.18rem 0.55rem',
+                padding: '0.15rem 0.45rem',
                 borderRadius: '9999px',
-                letterSpacing: '0.04em',
+                letterSpacing: '0.03em',
                 boxShadow: '0 2px 6px rgba(239, 68, 68, 0.3)',
               }}
             >
@@ -189,8 +189,8 @@ export const FrameCard: React.FC<FrameCardProps> = ({
             onClick={(e) => onToggleFavorite(template.id, e)}
             title={isFavorite ? 'Hapus dari Favorit' : 'Tambah ke Favorit'}
             style={{
-              width: '32px',
-              height: '32px',
+              width: '28px',
+              height: '28px',
               borderRadius: '50%',
               background: '#ffffff',
               border: '1px solid var(--color-border)',
@@ -202,13 +202,13 @@ export const FrameCard: React.FC<FrameCardProps> = ({
               boxShadow: '0 2px 6px rgba(0,0,0,0.06)',
             }}
           >
-            <Heart size={16} fill={isFavorite ? 'currentColor' : 'none'} color={isFavorite ? '#D22B2B' : '#A1A1AA'} />
+            <Heart size={14} fill={isFavorite ? 'currentColor' : 'none'} color={isFavorite ? '#D22B2B' : '#A1A1AA'} />
           </button>
         </div>
       </div>
 
       {/* Frame Preview Container (EXACTLY 1 PREVIEW IMAGE PER CARD CONTAINER) */}
-      <div className="frame-card-preview-wrapper">
+      <div className="frame-card-preview-wrapper" style={{ width: '100%', minWidth: 0 }}>
         <FrameRender template={template} />
         <div className="frame-card-hover-overlay">
           <button className="btn-primary" style={{ padding: '0.65rem 1.25rem', fontSize: '0.85rem', boxShadow: '0 8px 20px rgba(128, 0, 32, 0.4)' }}>
@@ -218,16 +218,19 @@ export const FrameCard: React.FC<FrameCardProps> = ({
       </div>
 
       {/* Card Info Footer */}
-      <div className="frame-card-info" style={{ color: textColor, paddingTop: '0.15rem', display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-        <div>
+      <div className="frame-card-info" style={{ color: textColor, paddingTop: '0.15rem', display: 'flex', flexDirection: 'column', gap: '0.5rem', width: '100%', minWidth: 0 }}>
+        <div style={{ minWidth: 0 }}>
           <h3
             className="frame-card-title"
             style={{
               color: textColor,
               fontFamily: 'var(--font-heading)',
-              fontSize: '1.02rem',
+              fontSize: '0.96rem',
               fontWeight: 800,
               margin: 0,
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
             }}
           >
             {template.name}
@@ -237,10 +240,13 @@ export const FrameCard: React.FC<FrameCardProps> = ({
             className="frame-card-subtitle"
             style={{
               color: isFilm || isCamera || isClassic ? 'rgba(255,255,255,0.75)' : 'var(--color-neutral-sub)',
-              fontSize: '0.82rem',
+              fontSize: '0.78rem',
               fontWeight: 600,
               textTransform: 'capitalize',
               margin: '0.15rem 0 0 0',
+              overflow: 'hidden',
+              textOverflow: 'ellipsis',
+              whiteSpace: 'nowrap',
             }}
           >
             {template.category} • {template.photoSlotsCount} Foto

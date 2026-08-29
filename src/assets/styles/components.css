@@ -635,17 +635,27 @@
 }
 
 
-@media (min-width: 1024px) {
+/* Frame Card Grid Layout with No-Overflow Guarantees */
+.frame-card-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+  gap: 1.25rem !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+@media (max-width: 1200px) {
   .frame-card-grid {
-    grid-template-columns: repeat(4, 1fr) !important;
-    gap: 1.25rem !important;
+    grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+    gap: 1rem !important;
   }
 }
 
-@media (min-width: 641px) and (max-width: 1023px) {
+@media (max-width: 820px) {
   .frame-card-grid {
-    grid-template-columns: repeat(3, 1fr) !important;
-    gap: 1rem !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+    gap: 0.85rem !important;
   }
 }
 
@@ -687,7 +697,7 @@
   }
 
   .frame-card-grid {
-    grid-template-columns: repeat(2, 1fr) !important;
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
     gap: 0.75rem !important;
   }
 }
@@ -1457,6 +1467,10 @@
   padding: 2rem;
   border: 1px solid var(--color-border);
   box-shadow: 0 8px 24px rgba(92, 6, 18, 0.03);
+  width: 100%;
+  max-width: 100%;
+  box-sizing: border-box;
+  overflow: hidden;
 }
 
 .showcase-header-centered {
