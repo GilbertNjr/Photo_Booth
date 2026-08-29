@@ -70,6 +70,18 @@ export class CanvasEngine {
         return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 76"><line x1="32" y1="0" x2="32" y2="16" stroke="#C0C0C0" stroke-width="2"/><circle cx="32" cy="44" r="26" fill="#D3D3D3" stroke="#808080" stroke-width="2"/><path d="M10 44C10 32 54 32 54 44C54 56 10 56 10 44Z" stroke="#FFF" stroke-width="1.5" stroke-dasharray="3 3"/><line x1="32" y1="18" x2="32" y2="70" stroke="#FFF" stroke-width="1.5" opacity="0.7"/></svg>`;
       case '🎵':
         return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 70"><rect width="110" height="70" rx="10" fill="#2C2219" stroke="#D2B48C" stroke-width="2"/><rect x="10" y="10" width="22" height="22" rx="4" fill="#8C6239"/><text x="38" y="20" fill="#F5EFE6" font-size="9" font-family="sans-serif" font-weight="bold">Lover</text><text x="38" y="29" fill="#D2B48C" font-size="7" font-family="sans-serif">Taylor Swift ♡</text><text x="10" y="44" fill="#FFF" font-size="8" font-family="sans-serif">Can we always be this close?</text></svg>`;
+      case '🍓':
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M32 16C18 16 12 28 16 46C20 60 32 62 32 62C32 62 44 60 48 46C52 28 46 16 32 16Z" fill="#D90429" stroke="#800020" stroke-width="3"/><path d="M32 16C26 8 20 12 18 14M32 16C38 8 44 12 46 14M32 16V8" stroke="#2D6A4F" stroke-width="4"/><circle cx="24" cy="28" r="1.5" fill="#FFB703"/><circle cx="36" cy="26" r="1.5" fill="#FFB703"/><circle cx="28" cy="38" r="1.5" fill="#FFB703"/><circle cx="40" cy="36" r="1.5" fill="#FFB703"/></svg>`;
+      case '🦋':
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M32 30C22 14 6 22 14 36C22 48 32 34 32 34Z" fill="#C9184A" stroke="#500A14" stroke-width="2"/><path d="M32 30C42 14 58 22 50 36C42 48 32 34 32 34Z" fill="#D90429" stroke="#500A14" stroke-width="2"/><path d="M32 34C24 38 12 50 20 56C28 60 32 40 32 40Z" fill="#800020"/><line x1="32" y1="20" x2="32" y2="44" stroke="#1A1817" stroke-width="4"/></svg>`;
+      case '🌷':
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M32 60V32" stroke="#2D6A4F" stroke-width="4"/><path d="M32 32C22 26 18 10 32 16C46 10 42 26 32 32Z" fill="#C9184A" stroke="#800020" stroke-width="3"/></svg>`;
+      case '🍷':
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M12 12L32 36L52 12H12Z" fill="#800020" stroke="#FFF" stroke-width="3"/><line x1="32" y1="36" x2="32" y2="56" stroke="#FFF" stroke-width="4"/><line x1="20" y1="56" x2="44" y2="56" stroke="#FFF" stroke-width="4"/></svg>`;
+      case '🎟️':
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 54"><rect width="90" height="54" rx="8" fill="#E8DFD1" stroke="#8C684D" stroke-width="3"/><circle cx="0" cy="27" r="8" fill="#7A1C28"/><circle cx="90" cy="27" r="8" fill="#7A1C28"/><text x="32" y="24" fill="#4A3324" font-size="9" font-family="sans-serif" font-weight="bold">TICKET TO</text><text x="32" y="36" fill="#7A1C28" font-size="10" font-family="serif" font-weight="bold">Anywhere ✨</text></svg>`;
+      case '📼':
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 50"><rect width="80" height="50" rx="6" fill="#27272A" stroke="#52525B" stroke-width="3"/><rect x="12" y="10" width="56" height="20" rx="3" fill="#E4E4E7"/><circle cx="28" cy="20" r="6" fill="#18181B" stroke="#A1A1AA" stroke-width="2"/><circle cx="52" cy="20" r="6" fill="#18181B" stroke="#A1A1AA" stroke-width="2"/></svg>`;
       default:
         return null;
     }
@@ -115,6 +127,47 @@ export class CanvasEngine {
     }
     ctx.fillRect(0, 0, width, height);
     ctx.restore();
+
+    // 1b. Draw Texture Overlays matching UI FrameRender
+    if (template.backgroundTexture === 'dots') {
+      ctx.save();
+      ctx.fillStyle = template.accentColor + '33';
+      for (let x = 0; x < width; x += 30) {
+        for (let y = 0; y < height; y += 30) {
+          ctx.beginPath();
+          ctx.arc(x, y, 3, 0, Math.PI * 2);
+          ctx.fill();
+        }
+      }
+      ctx.restore();
+    } else if (template.backgroundTexture === 'grid') {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(0, 0, 0, 0.08)';
+      ctx.lineWidth = 2;
+      for (let x = 0; x < width; x += 40) {
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
+      }
+      for (let y = 0; y < height; y += 40) {
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+      ctx.restore();
+    } else if (template.backgroundTexture === 'gingham' || template.backgroundTexture === 'gingham-red') {
+      ctx.save();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.18)';
+      for (let x = 0; x < width; x += 60) {
+        ctx.fillRect(x, 0, 30, height);
+      }
+      for (let y = 0; y < height; y += 60) {
+        ctx.fillRect(0, y, width, 30);
+      }
+      ctx.restore();
+    }
 
     // 2. Draw Frame Border if specified
     if (template.frameBorderWidth > 0) {
