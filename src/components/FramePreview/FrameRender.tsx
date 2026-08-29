@@ -429,28 +429,6 @@ export const FrameRender: React.FC<FrameRenderProps> = ({
         </div>
       ))}
 
-      {/* Realistic Photobooth Bottom Date Stamp & Barcode */}
-      <div
-        style={{
-          position: 'absolute',
-          bottom: '4px',
-          left: '10px',
-          right: '10px',
-          display: 'flex',
-          alignItems: 'center',
-          justifyContent: 'space-between',
-          zIndex: 15,
-          pointerEvents: 'none',
-          opacity: 0.5,
-          color: template.textColor,
-          fontFamily: 'monospace',
-          fontSize: '0.52rem',
-          letterSpacing: '0.05em',
-        }}
-      >
-        <span>2026.08.28 • PHOTO BOOTH</span>
-        <span>#04829</span>
-      </div>
     </div>
   );
 };

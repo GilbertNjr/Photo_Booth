@@ -525,14 +525,14 @@ export class CanvasEngine {
       ctx.restore();
     });
 
-    // 7. Render Photobooth Bottom Date Stamp & Glossy Sheen Overlay on final export
+    // 7. Render Glossy Sheen Overlay on final export
     ctx.save();
-    ctx.fillStyle = template.textColor;
-    ctx.font = '600 24px monospace';
-    ctx.textAlign = 'left';
-    ctx.fillText(options.customBottomText || '2026.08.28 • PHOTO BOOTH STUDIO', 32, height - 32);
-    ctx.textAlign = 'right';
-    ctx.fillText('#04829', width - 32, height - 32);
+    if (options.customBottomText) {
+      ctx.fillStyle = template.textColor;
+      ctx.font = '600 24px monospace';
+      ctx.textAlign = 'left';
+      ctx.fillText(options.customBottomText, 32, height - 32);
+    }
 
     const sheenGrad = ctx.createLinearGradient(0, 0, width, height);
     sheenGrad.addColorStop(0, 'rgba(255, 255, 255, 0.18)');
