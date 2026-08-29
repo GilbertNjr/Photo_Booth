@@ -9,9 +9,7 @@ import {
   Download,
   Printer,
   Edit3,
-  RotateCcw,
   CheckCircle,
-  QrCode,
   Share2,
 } from 'lucide-react';
 
@@ -102,185 +100,112 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', alignItems: 'center', width: '100%', maxWidth: '520px', margin: '0 auto', paddingBottom: '90px' }}>
-      {/* Header Subtitle matching "save your strip." */}
-      <div style={{ textAlign: 'center', margin: '0.25rem 0' }}>
-        <h2
-          style={{
-            fontFamily: 'var(--font-heading)',
-            fontSize: '1.35rem',
-            fontWeight: 500,
-            color: 'var(--color-neutral-sub)',
-            letterSpacing: '0.02em',
-            margin: 0,
-          }}
-        >
-          save your strip.
-        </h2>
-      </div>
+    <div className="camera-card-mockup-wrapper">
+      {/* Screen 4: Main Elegant Card Container ("Hasil Akhir") */}
+      <div className="camera-card-mockup">
+        {/* Top Header Bar */}
+        <div className="camera-mockup-header">
+          <button className="mockup-header-btn" onClick={onNewSession} title="Keluar">
+            ✕
+          </button>
+          <h2 className="mockup-header-title">Hasil Akhir</h2>
+          <button className="mockup-header-btn" onClick={() => setIsPrintModalOpen(true)} title="Format Cetak">
+            ⚙️
+          </button>
+        </div>
 
-      {/* Center Image Output Card */}
-      <div style={{ position: 'relative', width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <div
-          style={{
-            background: '#ffffff',
-            borderRadius: 'var(--radius-lg)',
-            padding: '1.25rem',
-            aspectRatio: '2/3',
-            maxHeight: '65vh',
-            maxWidth: '420px',
-            width: '100%',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            boxShadow: '0 12px 36px rgba(92, 6, 18, 0.12)',
-            border: '1px solid var(--color-border-soft)',
-          }}
-        >
+        {/* Center Photo Strip Render Container */}
+        <div className="camera-mockup-viewport-wrapper" style={{ aspectRatio: 'auto', minHeight: '380px', padding: '1rem', background: '#FDFBF7' }}>
           <img
             src={finalImageDataUrl}
-            alt="Final Photo Strip"
+            alt="Hasil Akhir Frame"
             style={{
-              maxHeight: '100%',
+              maxHeight: '420px',
               maxWidth: '100%',
               objectFit: 'contain',
-              borderRadius: 'var(--radius-sm)',
+              borderRadius: '12px',
+              boxShadow: '0 8px 24px rgba(92, 6, 18, 0.12)',
             }}
           />
         </div>
 
-        {/* Pink Star Decorative Badge at bottom left */}
-        <span
-          style={{
-            position: 'absolute',
-            bottom: '-12px',
-            left: '12px',
-            fontSize: '1.35rem',
-            color: 'var(--color-pink-primary)',
-          }}
-        >
-          ★
-        </span>
-      </div>
+        {/* Action Buttons Matching Screen 4 Mockup */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', width: '100%', marginTop: '1.25rem' }}>
+          {/* Top Row: Edit Bingkai (Outline) & Unduh (Filled) */}
+          <div style={{ display: 'flex', gap: '0.65rem', width: '100%' }}>
+            <button
+              onClick={onEditCustomization}
+              style={{
+                flex: 1,
+                background: '#ffffff',
+                color: 'var(--color-burgundy-deep)',
+                padding: '0.75rem 1rem',
+                borderRadius: '14px',
+                fontSize: '0.9rem',
+                fontWeight: 700,
+                border: '1.5px solid var(--color-burgundy-deep)',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.4rem',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <Edit3 size={16} />
+              <span>Edit Bingkai</span>
+            </button>
 
-      {/* 4 Action Buttons Grid matching reference screenshot */}
-      <div style={{ width: '100%', maxWidth: '420px', display: 'flex', flexDirection: 'column', gap: '0.75rem', marginTop: '0.5rem' }}>
-        {/* Row 1: Solid Red Buttons (Download & Print) */}
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <button
-            onClick={handleDownload}
-            style={{
-              flex: 1,
-              background: 'var(--color-pink-primary)',
-              color: '#ffffff',
-              padding: '0.85rem 1rem',
-              borderRadius: '9999px',
-              fontSize: '0.96rem',
-              fontWeight: 800,
-              border: '1.5px dashed rgba(255,255,255,0.4)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem',
-              boxShadow: '0 6px 20px rgba(211, 47, 47, 0.25)',
-            }}
-          >
-            <Download size={18} />
-            <span>Download</span>
-          </button>
+            <button
+              onClick={handleDownload}
+              style={{
+                flex: 1,
+                background: '#B8324E',
+                color: '#ffffff',
+                padding: '0.75rem 1rem',
+                borderRadius: '14px',
+                fontSize: '0.9rem',
+                fontWeight: 700,
+                border: 'none',
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.4rem',
+                boxShadow: '0 4px 14px rgba(184, 50, 78, 0.3)',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <Download size={16} />
+              <span>Unduh</span>
+            </button>
+          </div>
 
+          {/* Bottom Row: Cetak (Full width solid burgundy button) */}
           <button
             onClick={() => setIsPrintModalOpen(true)}
             style={{
-              flex: 1,
-              background: 'var(--color-pink-primary)',
+              width: '100%',
+              background: 'var(--color-burgundy-deep)',
               color: '#ffffff',
               padding: '0.85rem 1rem',
-              borderRadius: '9999px',
-              fontSize: '0.96rem',
+              borderRadius: '14px',
+              fontSize: '1rem',
               fontWeight: 800,
-              border: '1.5px dashed rgba(255,255,255,0.4)',
+              border: 'none',
               cursor: 'pointer',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
               gap: '0.5rem',
-              boxShadow: '0 6px 20px rgba(211, 47, 47, 0.25)',
+              boxShadow: '0 6px 20px rgba(92, 6, 18, 0.35)',
+              transition: 'all 0.2s ease',
             }}
           >
             <Printer size={18} />
-            <span>Print</span>
+            <span>Cetak</span>
           </button>
         </div>
-
-        {/* Row 2: Outlined Dashed Buttons (Edit Again & Retake) */}
-        <div style={{ display: 'flex', gap: '0.75rem' }}>
-          <button
-            onClick={onEditCustomization}
-            style={{
-              flex: 1,
-              background: '#ffffff',
-              color: 'var(--color-burgundy-deep)',
-              padding: '0.85rem 1rem',
-              borderRadius: '9999px',
-              fontSize: '0.96rem',
-              fontWeight: 800,
-              border: '1.5px dashed var(--color-burgundy-deep)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem',
-            }}
-          >
-            <Edit3 size={17} />
-            <span>Edit Again</span>
-          </button>
-
-          <button
-            onClick={onNewSession}
-            style={{
-              flex: 1,
-              background: '#ffffff',
-              color: 'var(--color-burgundy-deep)',
-              padding: '0.85rem 1rem',
-              borderRadius: '9999px',
-              fontSize: '0.96rem',
-              fontWeight: 800,
-              border: '1.5px dashed var(--color-burgundy-deep)',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem',
-            }}
-          >
-            <RotateCcw size={17} />
-            <span>Retake</span>
-          </button>
-        </div>
-
-        {/* QR Code Action Option */}
-        <button
-          onClick={() => setIsQrModalOpen(true)}
-          style={{
-            background: 'none',
-            border: 'none',
-            color: 'var(--color-neutral-sub)',
-            fontSize: '0.85rem',
-            fontWeight: 700,
-            cursor: 'pointer',
-            marginTop: '0.25rem',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            gap: '0.4rem',
-          }}
-        >
-          <QrCode size={15} />
-          <span>Simpan ke HP via QR Code 📱</span>
-        </button>
       </div>
 
       {/* QR Code Scan Modal */}

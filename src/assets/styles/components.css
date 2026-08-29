@@ -1481,3 +1481,263 @@
     font-size: 1.4rem;
   }
 }
+
+/* 📷 CAMERA & KIOSK MOCKUP CARD FLOW STYLES */
+.camera-card-mockup-wrapper {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 1rem 0 5rem 0;
+}
+
+.camera-card-mockup {
+  background: #FFFDF9;
+  border: 1px solid #EBE5DB;
+  border-radius: 28px;
+  box-shadow: 0 16px 40px rgba(92, 6, 18, 0.08);
+  width: 100%;
+  max-width: 420px;
+  padding: 1.25rem;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  transition: all 0.3s ease;
+}
+
+/* Header Bar */
+.camera-mockup-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-bottom: 1rem;
+}
+
+.mockup-header-btn {
+  background: none;
+  border: none;
+  font-size: 1.25rem;
+  color: var(--color-neutral-dark);
+  cursor: pointer;
+  padding: 0.3rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: transform 0.2s ease;
+}
+
+.mockup-header-btn:hover {
+  transform: scale(1.1);
+}
+
+.mockup-header-title {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--color-neutral-dark);
+  margin: 0;
+}
+
+/* Viewport Area */
+.camera-mockup-viewport-wrapper {
+  width: 100%;
+  aspect-ratio: 4 / 3;
+  border-radius: 20px;
+  overflow: hidden;
+  position: relative;
+  background: #18181B;
+  box-shadow: inset 0 0 16px rgba(0,0,0,0.25);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.camera-mockup-video {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Screen 2: Countdown Screen Overlay */
+.mockup-countdown-overlay {
+  position: absolute;
+  inset: 0;
+  background: #FAF3EC;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 20;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.countdown-number-box {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  margin-bottom: 0.5rem;
+}
+
+.countdown-big-number {
+  font-family: var(--font-heading);
+  font-size: 5.5rem;
+  font-weight: 900;
+  color: var(--color-burgundy-deep);
+  line-height: 1;
+}
+
+.sparkle-left, .sparkle-right {
+  font-size: 1.8rem;
+  color: #E07A5F;
+}
+
+.countdown-subtitle {
+  font-size: 0.92rem;
+  color: var(--color-neutral-sub);
+  font-weight: 600;
+  margin: 0;
+}
+
+/* Screen 3: Post Capture Overlay */
+.mockup-captured-overlay {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  z-index: 15;
+}
+
+.captured-thumbs-sidebar {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.thumb-slot-box {
+  width: 48px;
+  height: 48px;
+  border-radius: 10px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(255, 255, 255, 0.5);
+  overflow: hidden;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.78rem;
+  font-weight: 800;
+  color: var(--color-neutral-sub);
+}
+
+.thumb-slot-box.completed {
+  border: 2px solid var(--color-burgundy-deep);
+}
+
+.thumb-slot-box img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.slot-check-badge {
+  position: absolute;
+  top: 2px;
+  right: 2px;
+  background: var(--color-burgundy-deep);
+  color: #ffffff;
+  width: 16px;
+  height: 16px;
+  border-radius: 50%;
+  font-size: 0.62rem;
+  font-weight: 900;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mockup-feedback-subtitle {
+  font-size: 0.85rem;
+  color: var(--color-neutral-sub);
+  font-weight: 600;
+  margin: 0.85rem 0 0 0;
+  text-align: center;
+}
+
+/* Quick Toolbar (Flash, Timer, Grid) */
+.camera-mockup-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 2.25rem;
+  margin-top: 1.25rem;
+  width: 100%;
+}
+
+.toolbar-toggle-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  background: none;
+  border: none;
+  color: var(--color-neutral-sub);
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.toolbar-toggle-btn.active {
+  color: var(--color-neutral-dark);
+}
+
+/* Shutter Row */
+.camera-mockup-shutter-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  width: 100%;
+  margin-top: 1.25rem;
+  position: relative;
+}
+
+.shutter-spacer {
+  width: 60px;
+}
+
+.mockup-main-shutter-btn {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  background: #FFFDF9;
+  border: 3px solid var(--color-burgundy-deep);
+  padding: 4px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(92, 6, 18, 0.2);
+  transition: transform 0.15s ease;
+}
+
+.mockup-main-shutter-btn:hover {
+  transform: scale(1.05);
+}
+
+.shutter-inner-icon {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background: var(--color-burgundy-deep);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.shutter-slot-counter {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--color-neutral-sub);
+  width: 60px;
+  text-align: right;
+}

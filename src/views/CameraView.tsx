@@ -2,24 +2,15 @@ import React, { useState, useEffect, useRef } from 'react';
 import type { TemplateData } from '../types/template';
 import { CameraService } from '../services/camera/cameraService';
 import { CaptureService } from '../services/capture/captureService';
-import { GestureService } from '../services/ai/gestureService';
 import { FILM_PRESETS } from '../services/filters/colorShaderService';
 import type { FilmGradeType } from '../services/filters/colorShaderService';
-import { CameraFrameOverlay } from '../components/Camera/CameraFrameOverlay';
 import { Button } from '../components/Common/Button';
 import {
   Camera as CameraIcon,
   RefreshCw,
-  ArrowLeft,
-  Volume2,
-  VolumeX,
-  FlipHorizontal,
   Clock,
-  RotateCcw,
   Grid,
-  Focus,
   Sparkles,
-  Bot,
 } from 'lucide-react';
 
 interface CameraViewProps {
@@ -35,15 +26,12 @@ export const CameraView: React.FC<CameraViewProps> = ({
 }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isCameraReady, setIsCameraReady] = useState(false);
-  const [cameraDevices, setCameraDevices] = useState<MediaDeviceInfo[]>([]);
-  const [selectedDeviceId, setSelectedDeviceId] = useState<string>('');
   const [mirror, setMirror] = useState(true);
   const [soundEnabled, setSoundEnabled] = useState(true);
   const [countdownSeconds, setCountdownSeconds] = useState<number>(3);
-  const [showFaceGuide, setShowFaceGuide] = useState(true);
+  const [showFaceGuide] = useState(true);
   const [showGridLines, setShowGridLines] = useState(false);
-  const [selectedFilmPreset, setSelectedFilmPreset] = useState<FilmGradeType>('original');
-  const [aiStatusText, setAiStatusText] = useState('AI Pose Active 🤖 (Senyum / ✌️)');
+  const [selectedFilmPreset] = useState<FilmGradeType>('original');
 
   // Capture State
   const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
@@ -52,29 +40,15 @@ export const CameraView: React.FC<CameraViewProps> = ({
   const [currentCountdown, setCurrentCountdown] = useState<number | null>(null);
   const [showFlash, setShowFlash] = useState(false);
 
-  // AI Pose Gesture Analysis Loop
-  useEffect(() => {
-    if (!isCameraReady || isCapturingSequence) return;
-    const interval = setInterval(() => {
-      if (videoRef.current && !isCapturingSequence) {
-        const res = GestureService.detectGesture(videoRef.current);
-        setAiStatusText(res.label);
-      }
-    }, 900);
-    return () => clearInterval(interval);
-  }, [isCameraReady, isCapturingSequence]);
-
   // Initialize Camera
   useEffect(() => {
     let mounted = true;
 
     async function initCamera() {
       if (videoRef.current) {
-        const success = await CameraService.startCamera(videoRef.current, selectedDeviceId);
+        const success = await CameraService.startCamera(videoRef.current);
         if (mounted) {
           setIsCameraReady(success);
-          const devices = await CameraService.getCameraDevices();
-          setCameraDevices(devices);
         }
       }
     }
@@ -85,7 +59,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
       mounted = false;
       CameraService.stopCamera();
     };
-  }, [selectedDeviceId]);
+  }, []);
 
   // Handle Capture Sequence (Failsafe & Robust for All Slots)
   const startCaptureSequence = async () => {
@@ -160,22 +134,17 @@ export const CameraView: React.FC<CameraViewProps> = ({
     }
   };
 
-  const handleRetakeAll = () => {
-    setCapturedPhotos([]);
-    setActiveSlotIndex(0);
-  };
-
   const isAllPhotosDone = capturedPhotos.filter(Boolean).length === template.photoSlotsCount;
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem', position: 'relative' }}>
+    <div className="camera-card-mockup-wrapper">
       {/* Fullscreen Flash Overlay */}
       {showFlash && (
         <div
           style={{
             position: 'fixed',
             inset: 0,
-            zIndex: 999,
+            zIndex: 9999,
             backgroundColor: '#ffffff',
             opacity: 0.95,
             pointerEvents: 'none',
@@ -184,601 +153,196 @@ export const CameraView: React.FC<CameraViewProps> = ({
         />
       )}
 
-      {/* View Header Bar */}
-      <div className="view-header-bar">
-        <button className="btn-secondary" onClick={onBackToFrames} disabled={isCapturingSequence}>
-          <ArrowLeft size={18} />
-          <span>Ganti Frame</span>
-        </button>
+      {/* Main Elegant Card Container */}
+      <div className="camera-card-mockup">
+        {/* Top Header Bar */}
+        <div className="camera-mockup-header">
+          <button
+            className="mockup-header-btn"
+            onClick={onBackToFrames}
+            disabled={isCapturingSequence}
+            title="Keluar / Ganti Frame"
+          >
+            ✕
+          </button>
 
-        <div style={{ textAlign: 'center', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          <h2 style={{ fontFamily: 'var(--font-heading)', fontSize: '1.35rem', fontWeight: 800 }}>
-            {template.name}
+          <h2 className="mockup-header-title">
+            {currentCountdown !== null
+              ? 'Bersiap!'
+              : capturedPhotos.filter(Boolean).length > 0
+              ? `Foto ${capturedPhotos.filter(Boolean).length} / ${template.photoSlotsCount}`
+              : 'Kamera'}
           </h2>
-          <span style={{ fontSize: '0.85rem', color: 'var(--color-neutral-sub)', fontWeight: 600 }}>
-            Terganti {capturedPhotos.filter(Boolean).length} dari {template.photoSlotsCount} Foto
-          </span>
-        </div>
-
-        {/* Quick Toolbar Controls */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', justifyContent: 'center', flexWrap: 'wrap' }}>
-          {/* Timer Selector Pill */}
-          <div
-            style={{
-              display: 'inline-flex',
-              alignItems: 'center',
-              background: 'rgba(255, 255, 255, 0.85)',
-              borderRadius: 'var(--radius-full)',
-              padding: '0.2rem',
-              border: '1px solid var(--color-border-soft)',
-              boxShadow: 'var(--shadow-sm)',
-            }}
-          >
-            <Clock size={14} style={{ marginLeft: '0.5rem', color: 'var(--color-pink-primary)' }} />
-            {[3, 5, 10].map((sec) => (
-              <button
-                key={sec}
-                onClick={() => setCountdownSeconds(sec)}
-                style={{
-                  padding: '0.25rem 0.6rem',
-                  fontSize: '0.78rem',
-                  fontWeight: 700,
-                  borderRadius: 'var(--radius-full)',
-                  border: 'none',
-                  background: countdownSeconds === sec ? 'var(--color-pink-primary)' : 'transparent',
-                  color: countdownSeconds === sec ? '#fff' : 'var(--color-neutral-dark)',
-                  cursor: 'pointer',
-                  transition: 'all 0.2s ease',
-                }}
-              >
-                {sec}s
-              </button>
-            ))}
-          </div>
 
           <button
-            className={`category-pill ${mirror ? 'active' : ''}`}
+            className="mockup-header-btn"
             onClick={() => setMirror((p) => !p)}
-            title="Cermin / Mirror Kamera"
-            style={{ padding: '0.45rem 0.8rem' }}
+            title="Pengaturan Kamera / Mirror"
           >
-            <FlipHorizontal size={16} />
-            <span>Cermin</span>
-          </button>
-
-          <button
-            className={`category-pill ${showFaceGuide ? 'active' : ''}`}
-            onClick={() => setShowFaceGuide((p) => !p)}
-            title="Panduan Wajah"
-            style={{ padding: '0.45rem 0.8rem' }}
-          >
-            <Focus size={16} />
-            <span>Panduan</span>
-          </button>
-
-          <button
-            className={`category-pill ${showGridLines ? 'active' : ''}`}
-            onClick={() => setShowGridLines((p) => !p)}
-            title="Garis Kisi"
-            style={{ padding: '0.45rem 0.6rem' }}
-          >
-            <Grid size={16} />
-          </button>
-
-          <button
-            className="category-pill"
-            onClick={() => setSoundEnabled((p) => !p)}
-            title="Toggle Sound"
-            style={{ padding: '0.45rem 0.6rem' }}
-          >
-            {soundEnabled ? <Volume2 size={16} color="#6366f1" /> : <VolumeX size={16} />}
+            ⚙️
           </button>
         </div>
-      </div>
 
-      {/* Film Grade Preset Selector Bar */}
-      <div
-        style={{
-          display: 'flex',
-          alignItems: 'center',
-          gap: '0.5rem',
-          overflowX: 'auto',
-          padding: '0.5rem 0',
-          marginBottom: '1rem',
-        }}
-      >
-        <span style={{ fontSize: '0.75rem', fontWeight: 700, color: 'var(--color-neutral-sub)', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
-          <Sparkles size={14} color="#6366f1" /> Film Grade:
-        </span>
-        {FILM_PRESETS.map((preset) => (
-          <button
-            key={preset.id}
-            onClick={() => setSelectedFilmPreset(preset.id)}
-            className={`category-pill ${selectedFilmPreset === preset.id ? 'active' : ''}`}
-            style={{ padding: '0.3rem 0.75rem', fontSize: '0.75rem', whiteSpace: 'nowrap' }}
-          >
-            <span>{preset.name}</span>
-          </button>
-        ))}
-      </div>
+        {/* Camera Viewport Area */}
+        <div className="camera-mockup-viewport-wrapper">
+          {/* Realtime Live Video Stream */}
+          <video
+            ref={videoRef}
+            playsInline
+            muted
+            autoPlay
+            className="camera-mockup-video"
+            style={{
+              transform: mirror ? 'scaleX(-1)' : 'none',
+              filter: FILM_PRESETS.find((p) => p.id === selectedFilmPreset)?.filterCss || 'brightness(1.08)',
+            }}
+          />
 
-      {/* Main Workspace Layout (Left: Live Camera View, Right: Card Panel Sidebar) */}
-      <div className="camera-workspace-grid">
-        {/* LEFT COLUMN: Main Live Camera Viewport (Tampilan Kamera Utama) */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%' }}>
-          <div className="camera-live-viewport">
-            {/* Realtime Live Video Element */}
-            <video
-              ref={videoRef}
-              playsInline
-              muted
-              autoPlay
-              className="camera-live-video"
-              style={{
-                transform: mirror ? 'scaleX(-1)' : 'none',
-                filter: FILM_PRESETS.find((p) => p.id === selectedFilmPreset)?.filterCss || 'brightness(1.08)',
-              }}
-            />
-
-            {/* Top HUD Badges */}
-            <div
-              style={{
-                position: 'absolute',
-                top: '1rem',
-                left: '1rem',
-                right: '1rem',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'space-between',
-                zIndex: 10,
-              }}
-            >
-              <div
-                style={{
-                  background: 'rgba(15, 23, 42, 0.75)',
-                  backdropFilter: 'blur(8px)',
-                  color: '#ffffff',
-                  padding: '0.35rem 0.85rem',
-                  borderRadius: 'var(--radius-full)',
-                  fontSize: '0.78rem',
-                  fontWeight: 700,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
-                }}
-              >
-                <Bot size={15} color="#38bdf8" className="animate-pulse" />
-                <span>{aiStatusText}</span>
-              </div>
-
-              <div
-                style={{
-                  color: 'var(--color-neutral-dark)',
-                  background: '#ffffff',
-                  padding: '0.4rem 1rem',
-                  borderRadius: 'var(--radius-full)',
-                  fontSize: '0.85rem',
-                  fontWeight: 800,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.5rem',
-                  boxShadow: '0 4px 12px rgba(0,0,0,0.15)',
-                }}
-              >
-                <span>Photo {activeSlotIndex + 1} of {template.photoSlotsCount}</span>
-              </div>
-
-              {/* 4-Dot Sequence Indicator */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', margin: '0.35rem 0' }}>
-                {Array.from({ length: template.photoSlotsCount }).map((_, i) => (
-                  <div
-                    key={i}
-                    style={{
-                      width: i === activeSlotIndex ? '10px' : '8px',
-                      height: i === activeSlotIndex ? '10px' : '8px',
-                      borderRadius: '50%',
-                      background: i === activeSlotIndex ? '#ffffff' : 'rgba(255, 255, 255, 0.4)',
-                      transition: 'all 0.2s ease',
-                    }}
-                  />
-                ))}
-              </div>
-
-              {/* Strike a pose! Translucent Badge */}
-              <div
-                style={{
-                  background: 'rgba(0, 0, 0, 0.55)',
-                  backdropFilter: 'blur(8px)',
-                  WebkitBackdropFilter: 'blur(8px)',
-                  color: '#ffffff',
-                  padding: '0.45rem 1.25rem',
-                  borderRadius: 'var(--radius-full)',
-                  fontSize: '0.9rem',
-                  fontWeight: 700,
-                  border: '1px solid rgba(255, 255, 255, 0.2)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.4rem',
-                }}
-              >
-                <span>Strike a pose! ✦</span>
-              </div>
-            </div>
-
-            {/* Face Alignment Guide Overlay */}
-            {showFaceGuide && !isAllPhotosDone && (
-              <div className="face-alignment-guide">
-                <span className="face-alignment-guide-text">Posisi Wajah Di Sini ✨</span>
-              </div>
-            )}
-
-            {/* Rule of Thirds Grid Lines Overlay */}
-            {showGridLines && (
-              <div className="grid-lines-overlay">
-                <div />
-                <div />
-                <div />
-                <div />
-                <div />
-                <div />
-                <div />
-                <div />
-                <div />
-              </div>
-            )}
-
-            {/* Countdown Overlay */}
-            {currentCountdown !== null && (
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  zIndex: 100,
-                  background: 'rgba(0, 0, 0, 0.45)',
-                  backdropFilter: 'blur(4px)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  animation: 'fadeIn 0.15s ease-out',
-                }}
-              >
-                <div
-                  style={{
-                    fontFamily: 'var(--font-bubbly)',
-                    fontSize: currentCountdown === 0 ? '6.5rem' : '8.5rem',
-                    fontWeight: 900,
-                    color: 'white',
-                    textShadow: '0 8px 32px rgba(255, 117, 151, 0.9)',
-                    animation: 'pulse 0.9s infinite',
-                  }}
-                >
+          {/* Screen 2: Countdown Screen Overlay ("Bersiap!") */}
+          {currentCountdown !== null && (
+            <div className="mockup-countdown-overlay">
+              <div className="countdown-number-box">
+                <span className="sparkle-left">✨</span>
+                <span className="countdown-big-number">
                   {currentCountdown === 0 ? '📸' : currentCountdown}
-                </div>
-              </div>
-            )}
-
-            {/* Camera Connecting Loading Screen */}
-            {!isCameraReady && (
-              <div
-                style={{
-                  position: 'absolute',
-                  inset: 0,
-                  background: 'rgba(15, 23, 42, 0.95)',
-                  display: 'flex',
-                  flexDirection: 'column',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '1rem',
-                  zIndex: 50,
-                  color: 'white',
-                  padding: '2rem',
-                  textAlign: 'center',
-                }}
-              >
-                <RefreshCw size={38} className="animate-pulse" color="#ff7597" />
-                <p style={{ fontWeight: 700, fontSize: '1.1rem' }}>Menghubungkan Kamera...</p>
-                <span style={{ fontSize: '0.85rem', opacity: 0.8, maxWidth: '320px', lineHeight: 1.5 }}>
-                  Pastikan Anda memberikan izin (Allow) akses kamera pada browser Anda.
                 </span>
-                <button
-                  className="btn-primary"
-                  onClick={() => {
-                    if (videoRef.current) {
-                      CameraService.startCamera(videoRef.current, selectedDeviceId).then(setIsCameraReady);
-                    }
-                  }}
-                  style={{ marginTop: '0.5rem', padding: '0.65rem 1.4rem', fontSize: '0.85rem' }}
-                >
-                  <span>Coba Hubungkan Kamera 🔄</span>
-                </button>
+                <span className="sparkle-right">✨</span>
               </div>
-            )}
-          </div>
-
-          {/* Shutter Action Control Bar matching PixBooth Camera UI */}
-          <div
-            style={{
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'space-around',
-              padding: '0.75rem 1rem',
-              background: 'var(--color-cream-card)',
-              borderRadius: 'var(--radius-xl)',
-              boxShadow: 'var(--shadow-sm)',
-              border: '1px solid var(--color-border)',
-              marginTop: '0.75rem',
-            }}
-          >
-            {/* Left Button: Frame Preview Icon */}
-            <button
-              onClick={() => onBackToFrames()}
-              title="Ganti Frame"
-              style={{
-                width: '44px',
-                height: '44px',
-                borderRadius: '12px',
-                background: 'var(--color-cream-dark)',
-                border: '1px solid var(--color-border)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                cursor: 'pointer',
-                color: 'var(--color-neutral-dark)',
-              }}
-            >
-              <Grid size={22} />
-            </button>
-
-            {/* Center Button: Big Crimson Round Shutter Button */}
-            <button
-              onClick={startCaptureSequence}
-              disabled={isCapturingSequence || !isCameraReady}
-              style={{
-                width: '68px',
-                height: '68px',
-                borderRadius: '50%',
-                background: isCapturingSequence ? '#991b1b' : 'var(--color-burgundy-deep)',
-                border: '4px solid #ffffff',
-                boxShadow: '0 8px 24px rgba(92, 6, 18, 0.35)',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                color: '#ffffff',
-                cursor: isCapturingSequence || !isCameraReady ? 'not-allowed' : 'pointer',
-                transition: 'transform 0.15s ease',
-              }}
-            >
-              <CameraIcon size={28} />
-            </button>
-
-            {/* Right Buttons: Flip & Grid Controls */}
-            <div style={{ display: 'flex', gap: '0.5rem' }}>
-              <button
-                onClick={() => {
-                  if (cameraDevices.length > 1) {
-                    const currentIndex = cameraDevices.findIndex((d) => d.deviceId === selectedDeviceId);
-                    const nextIndex = (currentIndex + 1) % cameraDevices.length;
-                    setSelectedDeviceId(cameraDevices[nextIndex].deviceId);
-                  } else {
-                    setMirror(!mirror);
-                  }
-                }}
-                title="Ganti / Cermin Kamera"
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '50%',
-                  background: 'var(--color-cream-dark)',
-                  border: '1px solid var(--color-border)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  color: 'var(--color-neutral-dark)',
-                }}
-              >
-                <FlipHorizontal size={20} />
-              </button>
-
-              <button
-                onClick={() => setShowGridLines(!showGridLines)}
-                title="Grid Lines"
-                style={{
-                  width: '40px',
-                  height: '40px',
-                  borderRadius: '50%',
-                  background: showGridLines ? 'var(--color-burgundy-deep)' : 'var(--color-cream-dark)',
-                  border: '1px solid var(--color-border)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  cursor: 'pointer',
-                  color: showGridLines ? '#ffffff' : 'var(--color-neutral-dark)',
-                }}
-              >
-                <Focus size={20} />
-              </button>
+              <p className="countdown-subtitle">Bersiap untuk foto!</p>
             </div>
+          )}
+
+          {/* Screen 3: Post Capture Overlay (Thumbnail Stack) */}
+          {capturedPhotos.filter(Boolean).length > 0 && currentCountdown === null && (
+            <div className="mockup-captured-overlay">
+              {/* Right Thumbnail Sidebar Stack with checkmark ✓ */}
+              <div className="captured-thumbs-sidebar">
+                {Array.from({ length: template.photoSlotsCount }).map((_, i) => {
+                  const img = capturedPhotos[i];
+                  return (
+                    <div key={i} className={`thumb-slot-box ${img ? 'completed' : ''}`}>
+                      {img ? (
+                        <>
+                          <img src={img} alt={`Slot ${i + 1}`} />
+                          <div className="slot-check-badge">✓</div>
+                        </>
+                      ) : (
+                        <span>{i + 1}</span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          )}
+
+          {/* Face Alignment Guide Overlay */}
+          {showFaceGuide && !isAllPhotosDone && currentCountdown === null && (
+            <div className="face-alignment-guide">
+              <span className="face-alignment-guide-text">Posisi Wajah Di Sini ✨</span>
+            </div>
+          )}
+
+          {/* Rule of Thirds Grid Lines Overlay */}
+          {showGridLines && (
+            <div className="grid-lines-overlay">
+              <div /><div /><div /><div /><div /><div /><div /><div /><div />
+            </div>
+          )}
+
+          {/* Camera Loading Screen */}
+          {!isCameraReady && (
+            <div className="mockup-camera-loading">
+              <RefreshCw size={36} className="animate-pulse" color="#800020" />
+              <p style={{ fontWeight: 700, fontSize: '1rem', margin: '0.5rem 0' }}>Menghubungkan Kamera...</p>
+              <span style={{ fontSize: '0.82rem', opacity: 0.8 }}>Pastikan Anda memberikan izin akses kamera.</span>
+            </div>
+          )}
+        </div>
+
+        {/* Feedback Subtitle (Screen 3: "Bagus! Lanjut ke pose berikutnya ✦") */}
+        {capturedPhotos.filter(Boolean).length > 0 && currentCountdown === null && (
+          <p className="mockup-feedback-subtitle">
+            {isAllPhotosDone
+              ? 'Semua foto selesai! Klik Lanjut ✦'
+              : 'Bagus! Lanjut ke pose berikutnya ✦'}
+          </p>
+        )}
+
+        {/* Quick Toolbar below Viewfinder (⚡ Flash, ⏱️ Timer, 🔲 Grid) */}
+        <div className="camera-mockup-toolbar">
+          <button
+            className={`toolbar-toggle-btn ${soundEnabled ? 'active' : ''}`}
+            onClick={() => setSoundEnabled((p) => !p)}
+            title="Flash / Audio"
+          >
+            <span style={{ fontSize: '1.2rem' }}>⚡</span>
+            <span className="btn-lbl">Flash</span>
+          </button>
+
+          <button
+            className="toolbar-toggle-btn active"
+            onClick={() => setCountdownSeconds((sec) => (sec === 3 ? 5 : sec === 5 ? 10 : 3))}
+            title="Waktu Hitung Mundur"
+          >
+            <Clock size={18} />
+            <span className="btn-lbl">Timer ({countdownSeconds}s)</span>
+          </button>
+
+          <button
+            className={`toolbar-toggle-btn ${showGridLines ? 'active' : ''}`}
+            onClick={() => setShowGridLines((p) => !p)}
+            title="Garis Kisi Grid"
+          >
+            <Grid size={18} />
+            <span className="btn-lbl">Grid</span>
+          </button>
+        </div>
+
+        {/* Shutter Button & Slot Progress Indicator */}
+        <div className="camera-mockup-shutter-row">
+          <div className="shutter-spacer" />
+
+          {/* Main Round Crimson Shutter Button with Double Ring */}
+          <button
+            className="mockup-main-shutter-btn"
+            onClick={startCaptureSequence}
+            disabled={isCapturingSequence || !isCameraReady}
+          >
+            <div className="shutter-inner-icon">
+              <CameraIcon size={28} />
+            </div>
+          </button>
+
+          {/* Bottom Right Slot Counter Badge */}
+          <div className="shutter-slot-counter">
+            {capturedPhotos.filter(Boolean).length > 0
+              ? `${capturedPhotos.filter(Boolean).length}/${template.photoSlotsCount} Foto`
+              : `1/${template.photoSlotsCount} Foto`}
           </div>
         </div>
 
-        {/* RIGHT COLUMN: Clean Sidebar Panel (Card Frame Preview & Controls) */}
-        <div className="camera-sidebar-card">
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-            <div style={{ display: 'flex', flexDirection: 'column' }}>
-              <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--color-pink-primary)', textTransform: 'uppercase', letterSpacing: '0.05em' }}>
-                PRATINJAU CARD
-              </span>
-              <h3 style={{ fontSize: '1.1rem', fontWeight: 800, fontFamily: 'var(--font-heading)', margin: 0 }}>
-                Frame Strip
-              </h3>
-            </div>
-
-            {capturedPhotos.length > 0 && (
-              <button
-                onClick={handleRetakeAll}
-                disabled={isCapturingSequence}
-                style={{
-                  fontSize: '0.78rem',
-                  color: 'var(--color-favorite)',
-                  fontWeight: 700,
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '0.25rem',
-                  background: 'none',
-                  border: 'none',
-                  cursor: 'pointer',
-                }}
-              >
-                <RotateCcw size={13} /> Reset
-              </button>
-            )}
-          </div>
-
-          {/* Clean Frame Card Preview Container */}
-          <div
-            style={{
-              position: 'relative',
-              background: 'var(--color-cream-dark)',
-              borderRadius: 'var(--radius-lg)',
-              padding: '1rem',
-              aspectRatio: '2 / 3',
-              width: '100%',
-              maxWidth: '300px',
-              margin: '0 auto',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              boxShadow: 'inset 0 0 12px rgba(0,0,0,0.06)',
-            }}
-          >
-            <CameraFrameOverlay
-              template={template}
-              capturedPhotos={capturedPhotos}
-              activeSlotIndex={activeSlotIndex}
-              isCameraActive={isCameraReady}
-              mirror={mirror}
-            />
-          </div>
-
-          {/* Captured Photos Thumbnails Grid */}
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
-            <span style={{ fontSize: '0.8rem', fontWeight: 700, color: 'var(--color-neutral-sub)' }}>
-              Hasil Slot Foto:
-            </span>
-            <div style={{ display: 'grid', gridTemplateColumns: `repeat(${Math.min(template.photoSlotsCount, 4)}, 1fr)`, gap: '0.4rem' }}>
-              {Array.from({ length: template.photoSlotsCount }).map((_, i) => {
-                const img = capturedPhotos[i];
-                const isActiveSlot = i === activeSlotIndex && !isAllPhotosDone;
-                return (
-                  <div
-                    key={i}
-                    style={{
-                      aspectRatio: '1',
-                      borderRadius: 'var(--radius-sm)',
-                      background: 'var(--color-cream-dark)',
-                      overflow: 'hidden',
-                      border: isActiveSlot ? '2.5px solid var(--color-pink-primary)' : '1px solid var(--color-border)',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '0.7rem',
-                      color: 'var(--color-neutral-sub)',
-                      fontWeight: 700,
-                      boxShadow: isActiveSlot ? '0 0 8px rgba(255,117,151,0.5)' : 'none',
-                    }}
-                  >
-                    {img ? (
-                      <img src={img} alt={`Slot ${i + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
-                    ) : (
-                      <span>#{i + 1}</span>
-                    )}
-                  </div>
-                );
-              })}
-            </div>
-          </div>
-
-          {/* Camera Controls & Settings */}
-          <div
-            style={{
-              background: 'var(--color-cream-bg)',
-              borderRadius: 'var(--radius-md)',
-              padding: '0.85rem',
-              display: 'flex',
-              flexDirection: 'column',
-              gap: '0.75rem',
-              border: '1px solid var(--color-border-soft)',
-            }}
-          >
-            {/* Countdown Speed Selection */}
-            <div>
-              <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--color-neutral-sub)', display: 'flex', alignItems: 'center', gap: '0.3rem', marginBottom: '0.35rem' }}>
-                <Clock size={13} /> WAKTU HITUNG MUNDUR
-              </label>
-              <div style={{ display: 'flex', gap: '0.35rem' }}>
-                {[3, 5, 10].map((sec) => (
-                  <button
-                    key={sec}
-                    className={`category-pill ${countdownSeconds === sec ? 'active' : ''}`}
-                    onClick={() => setCountdownSeconds(sec)}
-                    disabled={isCapturingSequence}
-                    style={{ flex: 1, padding: '0.35rem', justifyContent: 'center', fontSize: '0.8rem' }}
-                  >
-                    {sec} detik
-                  </button>
-                ))}
-              </div>
-            </div>
-
-            {/* Select Camera Dropdown (if multiple) */}
-            {cameraDevices.length > 1 && (
-              <div>
-                <label style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--color-neutral-sub)', marginBottom: '0.35rem', display: 'block' }}>
-                  PILIH KAMERA
-                </label>
-                <select
-                  value={selectedDeviceId}
-                  onChange={(e) => setSelectedDeviceId(e.target.value)}
-                  style={{
-                    width: '100%',
-                    padding: '0.5rem',
-                    borderRadius: 'var(--radius-sm)',
-                    border: '1px solid var(--color-border)',
-                    fontSize: '0.82rem',
-                    background: 'white',
-                  }}
-                >
-                  {cameraDevices.map((d, i) => (
-                    <option key={d.deviceId} value={d.deviceId}>
-                      {d.label || `Kamera ${i + 1}`}
-                    </option>
-                  ))}
-                </select>
-              </div>
-            )}
-          </div>
-
-          {/* Action Button: Proceed to Customize */}
-          {isAllPhotosDone && (
+        {/* Proceed to Customize Button when all shots done */}
+        {isAllPhotosDone && (
+          <div style={{ marginTop: '1rem', width: '100%' }}>
             <Button
               variant="primary"
               onClick={() => onPhotosCaptured(capturedPhotos)}
               style={{
-                padding: '1rem',
-                fontSize: '1rem',
                 width: '100%',
-                background: '#10b981',
-                boxShadow: '0 8px 20px rgba(16, 185, 129, 0.35)',
+                padding: '0.9rem',
+                borderRadius: '9999px',
+                background: 'var(--color-burgundy-deep)',
+                fontSize: '1rem',
+                fontWeight: 800,
+                boxShadow: '0 8px 24px rgba(128, 0, 32, 0.35)',
               }}
             >
               <Sparkles size={18} />
-              <span>Lanjut Edit Card ✨</span>
+              <span>Lihat Hasil & Edit Bingkai ✨</span>
             </Button>
-          )}
-        </div>
+          </div>
+        )}
       </div>
     </div>
   );
