@@ -42,9 +42,8 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
     if (!finalImageDataUrl) return;
 
     try {
-      // 1. Convert Data URL to Blob for seamless mobile & desktop downloading
+      // 1. Convert Data URL to Blob for seamless mobile & desktop PNG download
       const parts = finalImageDataUrl.split(';');
-      const contentType = parts[0].split(':')[1] || 'image/png';
       const raw = atob(parts[1].split(',')[1]);
       const rawLength = raw.length;
       const uInt8Array = new Uint8Array(rawLength);
@@ -53,9 +52,10 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
         uInt8Array[i] = raw.charCodeAt(i);
       }
 
-      const blob = new Blob([uInt8Array], { type: contentType });
+      const blob = new Blob([uInt8Array], { type: 'image/png' });
       const blobUrl = URL.createObjectURL(blob);
-      const fileName = `pixbooth-strip-${Date.now()}.png`;
+      const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
+      const fileName = `PixBooth_${timestamp}.png`;
 
       // 2. Trigger anchor download safely
       const link = document.createElement('a');
@@ -75,7 +75,7 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
       console.warn('Blob conversion fallback to direct link download:', err);
       const link = document.createElement('a');
       link.href = finalImageDataUrl;
-      link.download = `pixbooth-strip-${Date.now()}.png`;
+      link.download = `PixBooth_${Date.now()}.png`;
       link.target = '_blank';
       document.body.appendChild(link);
       link.click();
@@ -108,7 +108,7 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
           <button className="mockup-header-btn" onClick={onNewSession} title="Keluar">
             ✕
           </button>
-          <h2 className="mockup-header-title">Hasil Akhir</h2>
+          <h2 className="mockup-header-title">Hasil Akhir Foto</h2>
           <button className="mockup-header-btn" onClick={() => setIsPrintModalOpen(true)} title="Format Cetak">
             ⚙️
           </button>
@@ -118,7 +118,7 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
         <div className="camera-mockup-viewport-wrapper" style={{ aspectRatio: 'auto', minHeight: '380px', padding: '1rem', background: '#FDFBF7' }}>
           <img
             src={finalImageDataUrl}
-            alt="Hasil Akhir Frame"
+            alt="Hasil Akhir Frame PNG"
             style={{
               maxHeight: '420px',
               maxWidth: '100%',
@@ -129,21 +129,46 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
           />
         </div>
 
-        {/* Action Buttons Matching Screen 4 Mockup */}
+        {/* Action Buttons */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', width: '100%', marginTop: '1.25rem' }}>
-          {/* Top Row: Edit Bingkai (Outline) & Unduh (Filled) */}
+          {/* Main Download Button (Full width solid burgundy button) */}
+          <button
+            onClick={handleDownload}
+            style={{
+              width: '100%',
+              background: 'var(--color-burgundy-deep)',
+              color: '#ffffff',
+              padding: '0.9rem 1rem',
+              borderRadius: '14px',
+              fontSize: '1.02rem',
+              fontWeight: 800,
+              border: 'none',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.55rem',
+              boxShadow: '0 6px 20px rgba(92, 6, 18, 0.35)',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            <Download size={20} />
+            <span>Unduh Foto (PNG High Quality)</span>
+          </button>
+
+          {/* Secondary Row: Edit Bingkai & Sesi Baru */}
           <div style={{ display: 'flex', gap: '0.65rem', width: '100%' }}>
             <button
               onClick={onEditCustomization}
               style={{
                 flex: 1,
                 background: '#ffffff',
-                color: 'var(--color-burgundy-deep)',
+                color: 'var(--color-neutral-dark)',
                 padding: '0.75rem 1rem',
                 borderRadius: '14px',
-                fontSize: '0.9rem',
+                fontSize: '0.88rem',
                 fontWeight: 700,
-                border: '1.5px solid var(--color-burgundy-deep)',
+                border: '1.5px solid var(--color-border)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
@@ -157,54 +182,27 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
             </button>
 
             <button
-              onClick={handleDownload}
+              onClick={onNewSession}
               style={{
                 flex: 1,
-                background: '#B8324E',
-                color: '#ffffff',
+                background: '#ffffff',
+                color: 'var(--color-burgundy-deep)',
                 padding: '0.75rem 1rem',
                 borderRadius: '14px',
-                fontSize: '0.9rem',
+                fontSize: '0.88rem',
                 fontWeight: 700,
-                border: 'none',
+                border: '1.5px solid var(--color-border)',
                 cursor: 'pointer',
                 display: 'flex',
                 alignItems: 'center',
                 justifyContent: 'center',
                 gap: '0.4rem',
-                boxShadow: '0 4px 14px rgba(184, 50, 78, 0.3)',
                 transition: 'all 0.2s ease',
               }}
             >
-              <Download size={16} />
-              <span>Unduh</span>
+              <span>Foto Lagi ✦</span>
             </button>
           </div>
-
-          {/* Bottom Row: Cetak (Full width solid burgundy button) */}
-          <button
-            onClick={() => setIsPrintModalOpen(true)}
-            style={{
-              width: '100%',
-              background: 'var(--color-burgundy-deep)',
-              color: '#ffffff',
-              padding: '0.85rem 1rem',
-              borderRadius: '14px',
-              fontSize: '1rem',
-              fontWeight: 800,
-              border: 'none',
-              cursor: 'pointer',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              gap: '0.5rem',
-              boxShadow: '0 6px 20px rgba(92, 6, 18, 0.35)',
-              transition: 'all 0.2s ease',
-            }}
-          >
-            <Printer size={18} />
-            <span>Cetak</span>
-          </button>
         </div>
       </div>
 

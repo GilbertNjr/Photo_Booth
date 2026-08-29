@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { Download } from 'lucide-react';
 import type { TemplateData } from '../types/template';
 import type { PhotoFilterType, PlacedSticker } from '../types/editor';
 import { FilterPicker } from '../components/PhotoEditor/FilterPicker';
@@ -356,7 +357,8 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
             transition: 'transform 0.2s ease, background 0.2s ease',
           }}
         >
-          <span>🖨️ Print & Save</span>
+          <Download size={20} />
+          <span>Unduh Foto (PNG)</span>
         </button>
       </div>
     </div>

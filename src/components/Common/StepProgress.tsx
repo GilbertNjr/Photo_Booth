@@ -1,5 +1,5 @@
 import React from 'react';
-import { LayoutGrid, Camera, Palette, Printer, Check } from 'lucide-react';
+import { LayoutGrid, Camera, Palette, Download, Check } from 'lucide-react';
 
 export type StepId = 'picker' | 'camera' | 'customize' | 'final';
 
@@ -22,7 +22,7 @@ const STEPS: StepConfig[] = [
   { id: 'picker', label: '1. Pilih Frame', subLabel: 'Koleksi Bingkai', icon: LayoutGrid },
   { id: 'camera', label: '2. Ambil Foto', subLabel: 'Kamera Studio', icon: Camera },
   { id: 'customize', label: '3. Hias & Custom', subLabel: 'Filter & Stiker', icon: Palette },
-  { id: 'final', label: '4. Cetak & Unduh', subLabel: 'Hasil Akhir', icon: Printer },
+  { id: 'final', label: '4. Unduh Foto', subLabel: 'Format PNG', icon: Download },
 ];
 
 export const StepProgress: React.FC<StepProgressProps> = ({
