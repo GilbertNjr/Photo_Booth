@@ -24,15 +24,15 @@ export const Footer: React.FC = () => {
         <div className="footer-badges">
           <div className="footer-badge-pill">
             <Sparkles size={13} color="#D90429" />
-            <span>Design Frame Korean Studio</span>
+            <span>Frame Studio Korea</span>
           </div>
           <div className="footer-badge-pill">
             <Camera size={13} color="#7A1C28" />
-            <span>High-DPI Canvas Engine</span>
+            <span>Kanvas HD DPI</span>
           </div>
           <div className="footer-badge-pill">
             <ShieldCheck size={13} color="#D90429" />
-            <span>100% Instan & Tanpa Login</span>
+            <span>100% Instan & Gratis</span>
           </div>
         </div>
 
