@@ -102,13 +102,18 @@ export function App() {
           setIsShowingHowToUse(false);
           setIsAllFramesCatalog(false);
           setActiveBottomTab('home');
+          window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         onGoToAllFrames={() => {
           setCurrentStep('picker');
           setIsShowingFavoritesOnly(false);
           setIsShowingHowToUse(false);
-          setIsAllFramesCatalog(true);
+          setIsAllFramesCatalog(false);
           setActiveBottomTab('home');
+          setTimeout(() => {
+            const el = document.getElementById('frame-showcase-section');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
         }}
         onFilterFavorites={() => {
           setCurrentStep('picker');
@@ -117,7 +122,14 @@ export function App() {
         }}
         onGoToHowToUse={() => {
           setCurrentStep('picker');
-          setIsShowingHowToUse(true);
+          setIsShowingFavoritesOnly(false);
+          setIsShowingHowToUse(false);
+          setIsAllFramesCatalog(false);
+          setActiveBottomTab('home');
+          setTimeout(() => {
+            const el = document.getElementById('how-to-use-section');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
         }}
         onGoToAbout={() => {
           setCurrentStep('picker');

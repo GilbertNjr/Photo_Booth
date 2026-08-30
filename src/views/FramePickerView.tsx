@@ -11,6 +11,8 @@ import { Camera, Grid, Sparkles } from 'lucide-react';
 
 import { imageCacheService } from '../services/imageService';
 
+import { HowToUseView } from './HowToUseView';
+
 interface FramePickerViewProps {
   onSelectFrame: (template: TemplateData) => void;
   isShowingFavoritesOnly?: boolean;
@@ -162,7 +164,7 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
       )}
 
       {/* 🖼️ 2. FRAME SHOWCASE SECTION ("Pilih Bingkai Anda ✦") */}
-      <section ref={showcaseRef} className="frame-showcase-section">
+      <section id="frame-showcase-section" ref={showcaseRef} className="frame-showcase-section">
         {/* Section Header */}
         <div className="showcase-header-centered">
           <h2 className="showcase-title">
@@ -227,6 +229,13 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
           </div>
         )}
       </section>
+
+      {/* 📖 3. CARA PAKAI SECTION (Continuous Scroll on Home View) */}
+      {isHomeView && !isShowingFavoritesOnly && (
+        <section id="how-to-use-section" className="how-to-use-section" style={{ marginTop: '2.5rem', paddingTop: '1rem', borderTop: '1px dashed rgba(128, 0, 32, 0.15)' }}>
+          <HowToUseView />
+        </section>
+      )}
 
       {/* Template Inspection Modal */}
       <FrameModal
