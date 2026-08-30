@@ -12,6 +12,7 @@ import { Camera, Grid, Sparkles } from 'lucide-react';
 import { imageCacheService } from '../services/imageService';
 
 import { HowToUseView } from './HowToUseView';
+import { AboutView } from './AboutView';
 
 interface FramePickerViewProps {
   onSelectFrame: (template: TemplateData) => void;
@@ -234,6 +235,13 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
       {isHomeView && !isShowingFavoritesOnly && (
         <section id="how-to-use-section" className="how-to-use-section" style={{ marginTop: '2.5rem', paddingTop: '1rem', borderTop: '1px dashed rgba(128, 0, 32, 0.15)' }}>
           <HowToUseView />
+        </section>
+      )}
+
+      {/* ℹ️ 4. TENTANG SECTION (Continuous Scroll on Home View) */}
+      {isHomeView && !isShowingFavoritesOnly && (
+        <section id="about-section" className="about-section" style={{ marginTop: '2.5rem', paddingTop: '1rem', borderTop: '1px dashed rgba(128, 0, 32, 0.15)' }}>
+          <AboutView />
         </section>
       )}
 

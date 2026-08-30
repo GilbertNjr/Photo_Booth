@@ -1052,9 +1052,9 @@
    MOCKUP UI DESIGN SYSTEM (MATCHING REFERENCE IMAGE)
 ---------------------------------------------------- */
 
-/* Navbar Mockup Header (Sticky at top) */
+/* Navbar Mockup Header (Fixed at top) */
 .navbar-mockup {
-  position: sticky;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;

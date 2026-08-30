@@ -133,8 +133,14 @@ export function App() {
         }}
         onGoToAbout={() => {
           setCurrentStep('picker');
+          setIsShowingFavoritesOnly(false);
           setIsShowingHowToUse(false);
+          setIsAllFramesCatalog(false);
           setActiveBottomTab('about');
+          setTimeout(() => {
+            const el = document.getElementById('about-section');
+            if (el) el.scrollIntoView({ behavior: 'smooth' });
+          }, 100);
         }}
         isShowingFavoritesOnly={isShowingFavoritesOnly}
       />
