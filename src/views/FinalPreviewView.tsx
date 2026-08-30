@@ -115,7 +115,7 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
         </div>
 
         {/* Center Photo Strip Render Container */}
-        <div className="camera-mockup-viewport-wrapper" style={{ aspectRatio: 'auto', height: 'clamp(280px, 44vh, 440px)', padding: '0.65rem', background: '#FDFBF7', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', minWidth: 0, minHeight: 0 }}>
+        <div className="camera-mockup-viewport-wrapper" style={{ aspectRatio: 'auto', height: 'clamp(300px, 46vh, 460px)', padding: '0.25rem', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', minWidth: 0, minHeight: 0, touchAction: 'pan-y', margin: '0 auto' }}>
           <img
             src={finalImageDataUrl}
             alt="Hasil Akhir Frame PNG"
@@ -127,8 +127,8 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
               objectFit: 'contain',
               display: 'block',
               margin: '0 auto',
-              borderRadius: '12px',
-              boxShadow: '0 8px 24px rgba(92, 6, 18, 0.12)',
+              borderRadius: '16px',
+              boxShadow: '0 16px 40px rgba(122, 28, 40, 0.18), 0 4px 12px rgba(0,0,0,0.06)',
             }}
           />
         </div>

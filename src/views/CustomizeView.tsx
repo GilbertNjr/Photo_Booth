@@ -209,26 +209,25 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
       </div>
 
       {/* Main Workspace */}
-      <div className="editor-workspace-grid">
+      <div className="editor-workspace-grid" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', width: '100%' }}>
         {/* Left Column: Interactive Canvas Preview */}
         <div
           ref={previewRef}
           className="editor-preview-card-wrapper"
           style={{
-            background: 'var(--color-cream-dark)',
+            background: 'transparent',
             borderRadius: 'var(--radius-xl)',
-            padding: '0.65rem',
+            padding: '0.25rem',
             width: '100%',
-            maxWidth: 'min(calc(100vw - 32px), 400px)',
-            height: 'clamp(280px, 44vh, 460px)',
+            maxWidth: 'min(calc(100vw - 32px), 380px)',
+            height: 'clamp(300px, 46vh, 480px)',
             margin: '0 auto',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            boxShadow: 'var(--shadow-hover)',
             position: 'relative',
             userSelect: 'none',
-            touchAction: 'none',
+            touchAction: 'pan-y',
             overflow: 'hidden',
             boxSizing: 'border-box',
             minWidth: 0,
@@ -237,7 +236,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
           onClick={() => setSelectedStickerId(null)}
         >
           {livePreviewUrl ? (
-            <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', minWidth: 0, minHeight: 0 }}>
+            <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', minWidth: 0, minHeight: 0, margin: '0 auto' }}>
               <img
                 src={livePreviewUrl}
                 alt="Live Customized Preview"
@@ -249,14 +248,14 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                   objectFit: 'contain',
                   display: 'block',
                   margin: '0 auto',
-                  borderRadius: 'var(--radius-md)',
-                  boxShadow: 'var(--shadow-polaroid)',
+                  borderRadius: '16px',
+                  boxShadow: '0 16px 40px rgba(122, 28, 40, 0.18), 0 4px 12px rgba(0,0,0,0.06)',
                   pointerEvents: 'none',
                 }}
               />
 
               {/* Interactive Draggable Stickers Layer */}
-              <div style={{ position: 'absolute', inset: 0, pointerEvents: 'auto' }}>
+              <div style={{ position: 'absolute', inset: 0, pointerEvents: 'auto', touchAction: 'pan-y' }}>
                 {placedStickers.map((st) => {
                   const isSelected = st.id === selectedStickerId;
                   const scale = st.scale || 1;
@@ -274,6 +273,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                         top: `${st.y}%`,
                         transform: `translate(-50%, -50%) rotate(${rotation}deg) scale(${scale})`,
                         cursor: 'grab',
+                        touchAction: 'none',
                         zIndex: isSelected ? 50 : 20,
                         padding: '6px',
                         borderRadius: '12px',
