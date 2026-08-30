@@ -85,14 +85,139 @@
   gap: 1rem;
 }
 
-/* Footer */
-.footer {
-  background: white;
-  border-top: 1px solid var(--color-border);
-  padding: 1.5rem;
+/* Soft Premium Aesthetic Footer */
+.footer-soft-premium {
+  background: linear-gradient(180deg, #FDFBF7 0%, #F5EFE6 100%);
+  border-top: 1px solid rgba(122, 28, 40, 0.08);
+  padding: 3rem 1.5rem 2rem;
+  width: 100%;
+  box-sizing: border-box;
+  margin-top: 3rem;
+  position: relative;
+  overflow: hidden;
+}
+
+.footer-soft-premium::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60%;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(217, 4, 41, 0.25), transparent);
+}
+
+.footer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1.25rem;
   text-align: center;
+}
+
+.footer-brand {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.footer-logo-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.footer-logo-img {
+  height: 38px;
+  width: auto;
+  object-fit: contain;
+  filter: drop-shadow(0 4px 8px rgba(122, 28, 40, 0.15));
+}
+
+.footer-brand-title {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.25rem;
+  font-weight: 900;
+  letter-spacing: 0.12em;
+  color: var(--color-burgundy-deep);
+}
+
+.footer-tagline {
   font-size: 0.88rem;
-  color: var(--color-neutral-sub);
+  color: #6B7280;
+  max-width: 480px;
+  margin: 0 auto;
+  line-height: 1.5;
+  font-weight: 500;
+}
+
+.footer-badges {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 0.65rem;
+  margin: 0.25rem 0;
+}
+
+.footer-badge-pill {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.4rem 0.85rem;
+  border-radius: 9999px;
+  background: rgba(255, 255, 255, 0.85);
+  border: 1px solid rgba(122, 28, 40, 0.1);
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.03);
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: #4B5563;
+  backdrop-filter: blur(4px);
+}
+
+.footer-divider {
+  width: 100%;
+  max-width: 600px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(0, 0, 0, 0.08), transparent);
+  margin: 0.5rem 0;
+}
+
+.footer-bottom-row {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  font-size: 0.82rem;
+  color: #6B7280;
+}
+
+.footer-crafted-text {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  font-weight: 600;
+  color: #374151;
+}
+
+.footer-heart-anim {
+  animation: heartPulse 1.8s infinite ease-in-out;
+}
+
+@keyframes heartPulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.22); }
+}
+
+.footer-copyright {
+  font-size: 0.76rem;
+  color: #9CA3AF;
+  font-weight: 500;
 }
 
 /* Frame Card Grid & Responsive Layout (2x2 Grid for Mobile Devices) */
