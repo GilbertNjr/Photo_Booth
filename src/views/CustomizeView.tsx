@@ -213,13 +213,14 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
         {/* Left Column: Interactive Canvas Preview */}
         <div
           ref={previewRef}
+          className="editor-preview-card-wrapper"
           style={{
             background: 'var(--color-cream-dark)',
             borderRadius: 'var(--radius-xl)',
-            padding: '1.25rem',
+            padding: '0.85rem',
             aspectRatio: '2/3',
-            maxHeight: '70vh',
-            maxWidth: '480px',
+            maxHeight: '62vh',
+            maxWidth: 'min(100%, 420px)',
             width: '100%',
             margin: '0 auto',
             display: 'flex',
@@ -230,6 +231,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
             userSelect: 'none',
             touchAction: 'none',
             overflow: 'hidden',
+            boxSizing: 'border-box',
           }}
           onClick={() => setSelectedStickerId(null)}
         >
