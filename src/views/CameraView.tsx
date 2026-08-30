@@ -380,7 +380,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
           {currentCountdown !== null
             ? 'Bersiap & Tersenyum! ✨'
             : isAllPhotosDone
-            ? 'Semua foto selesai! Klik Lanjut ✦'
+            ? 'Semua foto selesai! Klik Lanjut'
             : !isSessionStarted
             ? 'Klik tombol kamera 📸 atau berikan pose ✌️ untuk mulai'
             : `Foto ${activeSlotIndex + 1} dari ${template.photoSlotsCount} • Bersiap!`}

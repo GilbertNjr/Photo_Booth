@@ -35,7 +35,7 @@ export const cardFavoritePersonScrapbook: TemplateData = {
   ],
   textElements: [
     { id: 'text-fav', defaultText: 'you are my favorite person ♡', placeholder: 'Headline', x: 26, y: 26, fontFamily: 'Playfair Display', fontSize: 16, color: '#F9F6EE', align: 'left', isEditable: true },
-    { id: 'text-foot', defaultText: 'forever & always ✦', placeholder: 'Footer', x: 25, y: 94, fontFamily: 'Caveat', fontSize: 24, color: '#F9F6EE', align: 'center', isEditable: true },
+    { id: 'text-foot', defaultText: 'forever & always ♡', placeholder: 'Footer', x: 25, y: 94, fontFamily: 'Caveat', fontSize: 24, color: '#F9F6EE', align: 'center', isEditable: true },
   ],
   tags: ['favorite-person', 'newspaper', 'kiss', 'strawberry', 'scrapbook', 'romantic'],
   isPopular: true,

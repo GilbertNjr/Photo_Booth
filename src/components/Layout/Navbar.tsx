@@ -43,7 +43,6 @@ export const Navbar: React.FC<NavbarProps> = ({
           />
           <div className="brand-title-group" style={{ display: 'flex', alignItems: 'baseline', gap: '0.3rem' }}>
             <span className="brand-logo-text">PixBooth</span>
-            <span className="brand-logo-sparkle" style={{ fontSize: '0.75rem', fontWeight: 800, color: '#D90429' }}>✦</span>
           </div>
         </div>
 

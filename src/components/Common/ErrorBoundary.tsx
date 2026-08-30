@@ -82,7 +82,7 @@ export class ErrorBoundary extends Component<Props, State> {
                 margin: 0,
               }}
             >
-              Terjadi Kendala Teknis ✦
+              Terjadi Kendala Teknis
             </h2>
 
             <p style={{ color: '#64748B', fontSize: '0.92rem', lineHeight: 1.6, margin: 0 }}>

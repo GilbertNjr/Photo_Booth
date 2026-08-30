@@ -204,7 +204,7 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
                 transition: 'all 0.2s ease',
               }}
             >
-              <span>Foto Lagi ✦</span>
+              <span>Foto Lagi</span>
             </button>
           </div>
         </div>

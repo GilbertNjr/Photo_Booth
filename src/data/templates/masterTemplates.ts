@@ -120,7 +120,7 @@ export const templateFilmStory: TemplateData = {
   decorativeElements: [],
   textElements: [
     { id: 'text-head', defaultText: 'FILM STORY • 35MM KODAK PORTRA', placeholder: 'Header', x: 50, y: 3.5, fontFamily: 'Plus Jakarta Sans', fontSize: 13, color: '#F59E0B', align: 'center', isEditable: true },
-    { id: 'text-foot', defaultText: 'ISO 400 ✦ SAFETY FILM ✦ EXP 36', placeholder: 'Footer', x: 50, y: 94.5, fontFamily: 'Plus Jakarta Sans', fontSize: 11.5, color: '#A1A1AA', align: 'center', isEditable: true },
+    { id: 'text-foot', defaultText: 'ISO 400 • SAFETY FILM • EXP 36', placeholder: 'Footer', x: 50, y: 94.5, fontFamily: 'Plus Jakarta Sans', fontSize: 11.5, color: '#A1A1AA', align: 'center', isEditable: true },
   ],
   tags: ['film-story', '35mm', 'contact-sheet', 'kodak', 'cinematic'],
   isPopular: true,
@@ -162,7 +162,7 @@ export const templateMovieLove: TemplateData = {
     { id: 'deco-barcode', type: 'barcode', content: '║▌║█║▌│║▌║▌█', x: 50, y: 89.5, fontSize: 19, color: '#FAF6EF' },
   ],
   textElements: [
-    { id: 'text-head', defaultText: 'MOVIE LOVE ✦ CINEMA HALL 04', placeholder: 'Header', x: 48, y: 6.5, fontFamily: 'Playfair Display', fontSize: 16, color: '#FAF6EF', align: 'center', isEditable: true },
+    { id: 'text-head', defaultText: 'MOVIE LOVE • CINEMA HALL 04', placeholder: 'Header', x: 48, y: 6.5, fontFamily: 'Playfair Display', fontSize: 16, color: '#FAF6EF', align: 'center', isEditable: true },
     { id: 'text-seat', defaultText: 'ROW A • SEAT 14 • ADMIT TWO', placeholder: 'Seat Metadata', x: 50, y: 94.5, fontFamily: 'Plus Jakarta Sans', fontSize: 11.5, color: '#FAF6EF', align: 'center', isEditable: true },
   ],
   tags: ['movie-love', 'cinema', 'vintage-blue', 'ticket', 'romantic'],
@@ -247,7 +247,7 @@ export const templateDailyChronicle: TemplateData = {
   ],
   textElements: [
     { id: 'text-head', defaultText: 'THE DAILY CHRONICLE', placeholder: 'Masthead Header', x: 50, y: 4, fontFamily: 'Playfair Display', fontSize: 22, color: '#1C1917', align: 'center', isEditable: true },
-    { id: 'text-meta', defaultText: 'VOL. LXIV NO. 104 ✦ SPECIAL PHOTO BOOTH EDITION ✦ PRICE TWO CENTS', placeholder: 'Subheader', x: 50, y: 8, fontFamily: 'Plus Jakarta Sans', fontSize: 9.5, color: '#52525B', align: 'center', isEditable: true },
+    { id: 'text-meta', defaultText: 'VOL. LXIV NO. 104 • SPECIAL PHOTO BOOTH EDITION • PRICE TWO CENTS', placeholder: 'Subheader', x: 50, y: 8, fontFamily: 'Plus Jakarta Sans', fontSize: 9.5, color: '#52525B', align: 'center', isEditable: true },
     { id: 'text-foot', defaultText: 'ALL THE MEMORIES THAT ARE FIT TO PRINT', placeholder: 'Footer Caption', x: 50, y: 94.5, fontFamily: 'Playfair Display', fontSize: 13, color: '#1C1917', align: 'center', isEditable: true },
   ],
   tags: ['newspaper', 'daily-chronicle', 'gazette', 'editorial', 'vintage-press'],

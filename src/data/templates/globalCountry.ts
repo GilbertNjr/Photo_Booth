@@ -109,7 +109,7 @@ export const parisRiviera: TemplateData = {
   ],
   textElements: [
     { id: 'text-head', defaultText: 'L’AMOUR À PARIS • 1984', placeholder: 'Header', x: 50, y: 5, fontFamily: 'Playfair Display', fontSize: 18, color: '#800020', align: 'center', isEditable: true },
-    { id: 'text-foot', defaultText: 'La Vie en Rose ✦ Paris', placeholder: 'Footer', x: 50, y: 94, fontFamily: 'Playfair Display', fontSize: 20, color: '#3b2518', align: 'center', isEditable: true },
+    { id: 'text-foot', defaultText: 'La Vie en Rose • Paris', placeholder: 'Footer', x: 50, y: 94, fontFamily: 'Playfair Display', fontSize: 20, color: '#3b2518', align: 'center', isEditable: true },
   ],
   tags: ['france', 'paris', 'vintage', 'stamp', 'scrapbook'],
   isPopular: true,
@@ -148,7 +148,7 @@ export const romaCinema: TemplateData = {
   ],
   textElements: [
     { id: 'text-head', defaultText: 'CINEMA ITALIANO • ROMA', placeholder: 'Header', x: 50, y: 2, fontFamily: 'Playfair Display', fontSize: 16, color: '#d4af37', align: 'center', isEditable: true },
-    { id: 'text-foot', defaultText: 'DOLCE VITA ✦ 35MM FILM', placeholder: 'Footer', x: 50, y: 95, fontFamily: 'Plus Jakarta Sans', fontSize: 16, color: '#fef3c7', align: 'center', isEditable: true },
+    { id: 'text-foot', defaultText: 'DOLCE VITA • 35MM FILM', placeholder: 'Footer', x: 50, y: 95, fontFamily: 'Plus Jakarta Sans', fontSize: 16, color: '#fef3c7', align: 'center', isEditable: true },
   ],
   tags: ['italy', 'roma', 'cinema', '35mm', 'gold'],
   isPopular: true,
@@ -225,7 +225,7 @@ export const nusantaraBatik: TemplateData = {
   ],
   textElements: [
     { id: 'text-head', defaultText: 'PESONA NUSANTARA • INDONESIA', placeholder: 'Header', x: 50, y: 3, fontFamily: 'Playfair Display', fontSize: 16, color: '#800020', align: 'center', isEditable: true },
-    { id: 'text-foot', defaultText: 'Kenangan Indah ✦ Photo Booth', placeholder: 'Footer', x: 50, y: 95, fontFamily: 'Caveat', fontSize: 24, color: '#78350f', align: 'center', isEditable: true },
+    { id: 'text-foot', defaultText: 'Kenangan Indah • Photo Booth', placeholder: 'Footer', x: 50, y: 95, fontFamily: 'Caveat', fontSize: 24, color: '#78350f', align: 'center', isEditable: true },
   ],
   tags: ['indonesia', 'nusantara', 'batik', 'heritage', 'tropical'],
   isPopular: true,

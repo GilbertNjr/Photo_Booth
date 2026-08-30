@@ -61,7 +61,7 @@ export const Hero3DFanDisplay: React.FC<Hero3DFanDisplayProps> = ({ onSelectTemp
           className="hero-strip strip-film"
           onClick={() => handleStripClick('template-catch-yours-strip')}
           style={{ cursor: 'pointer' }}
-          title="Klik untuk memilih frame Catch Yours ✦"
+          title="Klik untuk memilih frame Catch Yours"
         >
           <div className="strip-tape-top" />
           <div className="strip-header">CATCH YOURS • STRIP</div>
@@ -80,7 +80,7 @@ export const Hero3DFanDisplay: React.FC<Hero3DFanDisplayProps> = ({ onSelectTemp
           className="hero-strip strip-ticket-burgundy"
           onClick={() => handleStripClick('master-02-special-day')}
           style={{ cursor: 'pointer' }}
-          title="Klik untuk memilih frame Special Day ✦"
+          title="Klik untuk memilih frame Special Day"
         >
           <div className="ticket-pin-top">📍</div>
           <div className="ticket-barcode-top">||| |||| || ||||</div>
@@ -93,7 +93,7 @@ export const Hero3DFanDisplay: React.FC<Hero3DFanDisplayProps> = ({ onSelectTemp
               </div>
             ))}
           </div>
-          <div className="ticket-footer-text">Special Day ✦</div>
+          <div className="ticket-footer-text">Special Day</div>
           <div className="ticket-badge-icon">📷</div>
         </div>
 
@@ -102,7 +102,7 @@ export const Hero3DFanDisplay: React.FC<Hero3DFanDisplayProps> = ({ onSelectTemp
           className="hero-strip strip-sweet-pink"
           onClick={() => handleStripClick('master-01-sweet-moment')}
           style={{ cursor: 'pointer' }}
-          title="Klik untuk memilih frame Sweet Moment ✦"
+          title="Klik untuk memilih frame Sweet Moment"
         >
           <div className="strip-ribbon-bow">🎀</div>
           <div className="strip-title-script">Sweet Moment</div>
@@ -122,7 +122,7 @@ export const Hero3DFanDisplay: React.FC<Hero3DFanDisplayProps> = ({ onSelectTemp
           className="hero-strip strip-movie-blue"
           onClick={() => handleStripClick('template-caramel-click-ticket')}
           style={{ cursor: 'pointer' }}
-          title="Klik untuk memilih frame Caramel Click ✦"
+          title="Klik untuk memilih frame Caramel Click"
         >
           <div className="ticket-cutout cutout-left" />
           <div className="ticket-cutout cutout-right" />

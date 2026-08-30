@@ -16,7 +16,7 @@ export const Footer: React.FC = () => {
             <span className="footer-brand-title">PIXBOOTH</span>
           </div>
           <p className="footer-tagline">
-            Abadikan setiap momen estetis dengan cetakan digital instan beresolusi tinggi ✦
+            Abadikan setiap momen estetis dengan cetakan digital instan beresolusi tinggi
           </p>
         </div>
 

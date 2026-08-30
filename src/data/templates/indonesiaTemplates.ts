@@ -32,7 +32,7 @@ export const nusantaraPostcard: TemplateData = {
   ],
   textElements: [
     { id: 'text-head', defaultText: 'PUSPA NUSANTARA • INDONESIA 🇮🇩', placeholder: 'Header', x: 50, y: 5, fontFamily: 'Playfair Display', fontSize: 18, color: '#800020', align: 'center', isEditable: true },
-    { id: 'text-foot', defaultText: 'Kenangan Indah ✦ Photo Booth', placeholder: 'Footer', x: 50, y: 91, fontFamily: 'Caveat', fontSize: 26, color: '#800020', align: 'center', isEditable: true },
+    { id: 'text-foot', defaultText: 'Kenangan Indah • Photo Booth', placeholder: 'Footer', x: 50, y: 91, fontFamily: 'Caveat', fontSize: 26, color: '#800020', align: 'center', isEditable: true },
   ],
   tags: ['indonesia', 'postcard', '4x6', 'grid2x2', 'nusantara', 'batik'],
   isPopular: true,
@@ -109,7 +109,7 @@ export const baliPolaroid: TemplateData = {
   ],
   textElements: [
     { id: 'text-head', defaultText: 'BALI SUNSET MEMORIES 🌅', placeholder: 'Header', x: 50, y: 4, fontFamily: 'Playfair Display', fontSize: 16, color: '#b45309', align: 'center', isEditable: true },
-    { id: 'text-foot', defaultText: 'Island of Gods ✦ Photobooth', placeholder: 'Footer', x: 50, y: 93, fontFamily: 'Caveat', fontSize: 24, color: '#78350f', align: 'center', isEditable: true },
+    { id: 'text-foot', defaultText: 'Island of Gods • Photobooth', placeholder: 'Footer', x: 50, y: 93, fontFamily: 'Caveat', fontSize: 24, color: '#78350f', align: 'center', isEditable: true },
   ],
   tags: ['indonesia', 'bali', 'polaroid', 'tilted', 'scrapbook'],
   isPopular: true,
@@ -183,7 +183,7 @@ export const jogjaHeritage: TemplateData = {
   ],
   textElements: [
     { id: 'text-head', defaultText: 'WARTA JOGJA • VINTAGE EDITION 📰', placeholder: 'Header', x: 50, y: 6, fontFamily: 'Playfair Display', fontSize: 16, color: '#800020', align: 'center', isEditable: true },
-    { id: 'text-foot', defaultText: 'Istimewa ✦ Jogja Memories', placeholder: 'Footer', x: 50, y: 90, fontFamily: 'Playfair Display', fontSize: 18, color: '#3b2518', align: 'center', isEditable: true },
+    { id: 'text-foot', defaultText: 'Istimewa • Jogja Memories', placeholder: 'Footer', x: 50, y: 90, fontFamily: 'Playfair Display', fontSize: 18, color: '#3b2518', align: 'center', isEditable: true },
   ],
   tags: ['indonesia', 'jogja', 'vintage', 'newspaper', 'wide2cut'],
   isPopular: true,

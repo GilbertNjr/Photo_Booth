@@ -110,7 +110,7 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
           <div className="hero-text-content">
             <div className="hero-welcome-badge">
               <Sparkles size={14} color="#D90429" />
-              <span>WELCOME TO PIXBOOTH ✦</span>
+              <span>WELCOME TO PIXBOOTH</span>
             </div>
 
             <h1 className="hero-main-title">
@@ -120,7 +120,7 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
             </h1>
 
             <p className="hero-subtitle">
-              Ambil foto, pilih bingkai favoritmu, dan buat kenanganmu jadi lebih berkesan. ✦
+              Ambil foto, pilih bingkai favoritmu, dan buat kenanganmu jadi lebih berkesan.
             </p>
 
             {/* Action Buttons */}
@@ -133,7 +133,7 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
                 }}
               >
                 <Camera size={18} />
-                <span>Mulai Ambil Foto ✦</span>
+                <span>Mulai Ambil Foto</span>
               </button>
 
               <button className="hero-btn-secondary" onClick={handleScrollToShowcase}>
@@ -164,16 +164,16 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
         </section>
       )}
 
-      {/* 🖼️ 2. FRAME SHOWCASE SECTION ("Pilih Bingkai Anda ✦") */}
+      {/* 🖼️ 2. FRAME SHOWCASE SECTION ("Pilih Bingkai Anda") */}
       <section id="frame-showcase-section" ref={showcaseRef} className="frame-showcase-section">
         {/* Section Header */}
         <div className="showcase-header-centered">
           <h2 className="showcase-title">
             {isShowingFavoritesOnly
-              ? 'Bingkai Favorit Saya ✦'
+              ? 'Bingkai Favorit Saya'
               : isHomeView
-              ? 'Bingkai Utama PixBooth ✦'
-              : 'Pilih Bingkai Anda ✦'}
+              ? 'Bingkai Utama PixBooth'
+              : 'Pilih Bingkai Anda'}
           </h2>
           <p className="showcase-subtitle">
             {isHomeView

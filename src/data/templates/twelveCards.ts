@@ -29,7 +29,7 @@ export const cardScrapbook: TemplateData = {
     { id: 'deco-heart', type: 'sticker', content: '💖', x: 88, y: 35, rotation: 12, fontSize: 34 },
   ],
   textElements: [
-    { id: 'text-head', defaultText: 'Sweet Moment ✦ Scrapbook', placeholder: 'Header', x: 50, y: 5, fontFamily: 'Caveat', fontSize: 24, color: '#800020', align: 'center', isEditable: true },
+    { id: 'text-head', defaultText: 'Sweet Moment • Scrapbook', placeholder: 'Header', x: 50, y: 5, fontFamily: 'Caveat', fontSize: 24, color: '#800020', align: 'center', isEditable: true },
     { id: 'text-foot', defaultText: 'our sweet memories ♡', placeholder: 'Footer', x: 50, y: 93, fontFamily: 'Caveat', fontSize: 24, color: '#4A3324', align: 'center', isEditable: true },
   ],
   tags: ['scrapbook', 'sweet-moment', 'tape', 'cream', 'cute'],
@@ -103,7 +103,7 @@ export const cardFilmStrip: TemplateData = {
   ],
   textElements: [
     { id: 'text-head', defaultText: 'FILM STORY • 35MM KODAK', placeholder: 'Header', x: 50, y: 2, fontFamily: 'Plus Jakarta Sans', fontSize: 14, color: '#F59E0B', align: 'center', isEditable: true },
-    { id: 'text-foot', defaultText: 'ISO 400 ✦ SAFETY FILM', placeholder: 'Footer', x: 50, y: 95, fontFamily: 'Plus Jakarta Sans', fontSize: 14, color: '#A1A1AA', align: 'center', isEditable: true },
+    { id: 'text-foot', defaultText: 'ISO 400 • SAFETY FILM', placeholder: 'Footer', x: 50, y: 95, fontFamily: 'Plus Jakarta Sans', fontSize: 14, color: '#A1A1AA', align: 'center', isEditable: true },
   ],
   tags: ['film', '35mm', 'cinema', 'charcoal', 'perforated'],
   isPopular: true,
@@ -172,7 +172,7 @@ export const cardNewspaper: TemplateData = {
   ],
   textElements: [
     { id: 'text-head', defaultText: 'THE MEMORY • DAILY GAZETTE', placeholder: 'Header', x: 50, y: 6, fontFamily: 'Playfair Display', fontSize: 18, color: '#18181B', align: 'center', isEditable: true },
-    { id: 'text-foot', defaultText: 'SPECIAL EDITORIAL EDITION ✦ 2026', placeholder: 'Footer', x: 50, y: 91, fontFamily: 'Playfair Display', fontSize: 14, color: '#3F3F46', align: 'center', isEditable: true },
+    { id: 'text-foot', defaultText: 'SPECIAL EDITORIAL EDITION • 2026', placeholder: 'Footer', x: 50, y: 91, fontFamily: 'Playfair Display', fontSize: 14, color: '#3F3F46', align: 'center', isEditable: true },
   ],
   tags: ['newspaper', 'editorial', 'gazette', 'vintage', 'headline'],
   isPopular: true,
@@ -278,7 +278,7 @@ export const cardMinimalLuxury: TemplateData = {
   ],
   decorativeElements: [],
   textElements: [
-    { id: 'text-head', defaultText: 'TIMELESS ✦ ELEGANCE', placeholder: 'Header', x: 50, y: 6, fontFamily: 'Playfair Display', fontSize: 18, color: '#800020', align: 'center', isEditable: true },
+    { id: 'text-head', defaultText: 'TIMELESS • ELEGANCE', placeholder: 'Header', x: 50, y: 6, fontFamily: 'Playfair Display', fontSize: 18, color: '#800020', align: 'center', isEditable: true },
     { id: 'text-foot', defaultText: 'pure & minimal', placeholder: 'Footer', x: 50, y: 91, fontFamily: 'Playfair Display', fontSize: 16, color: '#27272A', align: 'center', isEditable: true },
   ],
   tags: ['minimal', 'timeless', 'luxury', 'serif', 'clean'],
@@ -351,7 +351,7 @@ export const cardPostcard: TemplateData = {
     { id: 'deco-stamp', type: 'stamp', content: '📮', x: 92, y: 6, rotation: 6, fontSize: 40 },
   ],
   textElements: [
-    { id: 'text-head', defaultText: 'WISH YOU WERE HERE ✦ POSTCARD', placeholder: 'Header', x: 45, y: 5, fontFamily: 'Playfair Display', fontSize: 16, color: '#800020', align: 'center', isEditable: true },
+    { id: 'text-head', defaultText: 'WISH YOU WERE HERE • POSTCARD', placeholder: 'Header', x: 45, y: 5, fontFamily: 'Playfair Display', fontSize: 16, color: '#800020', align: 'center', isEditable: true },
     { id: 'text-foot', defaultText: 'Sent with love ♡ Photo Booth', placeholder: 'Footer', x: 50, y: 91, fontFamily: 'Caveat', fontSize: 26, color: '#800020', align: 'center', isEditable: true },
   ],
   tags: ['postcard', 'wish-you-were-here', 'stamp', 'airmail'],
@@ -388,7 +388,7 @@ export const cardRomanticFlower: TemplateData = {
     { id: 'deco-rose-2', type: 'sticker', content: '🌹', x: 8, y: 63, rotation: -10, fontSize: 38 },
   ],
   textElements: [
-    { id: 'text-head', defaultText: 'With Love ✦ Forever & Always', placeholder: 'Header', x: 50, y: 4, fontFamily: 'Playfair Display', fontSize: 16, color: '#BE123C', align: 'center', isEditable: true },
+    { id: 'text-head', defaultText: 'With Love • Forever & Always', placeholder: 'Header', x: 50, y: 4, fontFamily: 'Playfair Display', fontSize: 16, color: '#BE123C', align: 'center', isEditable: true },
     { id: 'text-foot', defaultText: 'you are my sunshine 💖', placeholder: 'Footer', x: 50, y: 93, fontFamily: 'Caveat', fontSize: 24, color: '#9F1239', align: 'center', isEditable: true },
   ],
   tags: ['romantic', 'with-love', 'flower', 'rose', 'pink'],
@@ -425,7 +425,7 @@ export const cardPhotoboothClassic: TemplateData = {
   ],
   textElements: [
     { id: 'text-head', defaultText: 'BEST DAY EVER • PHOTO BOOTH', placeholder: 'Header', x: 50, y: 4, fontFamily: 'Plus Jakarta Sans', fontSize: 16, color: '#ffffff', align: 'center', isEditable: true },
-    { id: 'text-foot', defaultText: 'memories to keep forever ✦', placeholder: 'Footer', x: 50, y: 92, fontFamily: 'Caveat', fontSize: 26, color: '#ffffff', align: 'center', isEditable: true },
+    { id: 'text-foot', defaultText: 'memories to keep forever ♡', placeholder: 'Footer', x: 50, y: 92, fontFamily: 'Caveat', fontSize: 26, color: '#ffffff', align: 'center', isEditable: true },
   ],
   tags: ['photobooth', 'best-day-ever', 'classic', '4-cut', 'burgundy'],
   isPopular: true,

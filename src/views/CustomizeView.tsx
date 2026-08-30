@@ -147,7 +147,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
 
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', paddingBottom: '90px' }}>
-      {/* Header Bar matching "Make It Yours ✦" */}
+      {/* Header Bar matching "Make It Yours" */}
       <div
         style={{
           display: 'flex',
@@ -185,7 +185,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
             margin: 0,
           }}
         >
-          Make It Yours ✦
+          Make It Yours
         </h1>
 
         <button
