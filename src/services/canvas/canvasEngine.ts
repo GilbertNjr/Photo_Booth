@@ -729,7 +729,12 @@ export class CanvasEngine {
           ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
           ctx.shadowBlur = 12;
           ctx.shadowOffsetY = 4;
-          ctx.drawImage(svgImg, -fontSize / 2, -fontSize / 2, fontSize, fontSize);
+          const imgW = svgImg.naturalWidth || svgImg.width || 80;
+          const imgH = svgImg.naturalHeight || svgImg.height || 80;
+          const aspect = imgW / imgH;
+          const drawW = fontSize * (aspect >= 1 ? aspect : 1);
+          const drawH = fontSize * (aspect < 1 ? (1 / aspect) : 1);
+          ctx.drawImage(svgImg, -drawW / 2, -drawH / 2, drawW, drawH);
         } catch {
           ctx.fillStyle = el.color || template.textColor;
           ctx.font = `${fontSize}px ${el.fontFamily || 'sans-serif'}`;
@@ -814,7 +819,12 @@ export class CanvasEngine {
           ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
           ctx.shadowBlur = 16 * scaleFactor;
           ctx.shadowOffsetY = 6 * scaleFactor;
-          ctx.drawImage(svgImg, -baseSize / 2, -baseSize / 2, baseSize, baseSize);
+          const imgW = svgImg.naturalWidth || svgImg.width || 80;
+          const imgH = svgImg.naturalHeight || svgImg.height || 80;
+          const aspect = imgW / imgH;
+          const drawW = baseSize * (aspect >= 1 ? aspect : 1);
+          const drawH = baseSize * (aspect < 1 ? (1 / aspect) : 1);
+          ctx.drawImage(svgImg, -drawW / 2, -drawH / 2, drawW, drawH);
         } catch {
           ctx.shadowColor = 'rgba(0, 0, 0, 0.45)';
           ctx.shadowBlur = 12 * scaleFactor;

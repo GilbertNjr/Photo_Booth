@@ -5,6 +5,7 @@ import type { PhotoFilterType, PlacedSticker } from '../types/editor';
 import { FilterPicker } from '../components/PhotoEditor/FilterPicker';
 import { TextEditor } from '../components/PhotoEditor/TextEditor';
 import { StickerPicker } from '../components/PhotoEditor/StickerPicker';
+import { StickerIllustration } from '../components/Common/StickerIllustration';
 import { CanvasEngine } from '../services/canvas/canvasEngine';
 
 interface CustomizeViewProps {
@@ -284,16 +285,15 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                       }}
                       title="Klik & Geser stiker ke mana saja!"
                     >
-                      <span
+                      <div
                         style={{
-                          fontSize: '2.5rem',
                           display: 'block',
                           filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.35)) drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
                           pointerEvents: 'none',
                         }}
                       >
-                        {st.content}
-                      </span>
+                        <StickerIllustration content={st.content} size={48} />
+                      </div>
 
                       {/* Delete handle when selected */}
                       {isSelected && (
