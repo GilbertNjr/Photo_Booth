@@ -11,11 +11,8 @@ import {
   Camera as CameraIcon,
   RefreshCw,
   Clock,
-  Grid,
   Sparkles,
   Smile,
-  Zap,
-  Heart,
 } from 'lucide-react';
 
 interface CameraViewProps {
@@ -29,15 +26,13 @@ export const CameraView: React.FC<CameraViewProps> = ({
   onBackToFrames,
   onPhotosCaptured,
 }) => {
-  const [shutterIconStyle, setShutterIconStyle] = useState<'sparkle' | 'camera' | 'heart' | 'smile'>('sparkle');
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [mirror, setMirror] = useState(true);
   const [soundEnabled] = useState(true);
-  const [isFlashActive, setIsFlashActive] = useState(true);
+  const [isFlashActive] = useState(true);
   const [countdownSeconds, setCountdownSeconds] = useState<number>(3);
   const [showFaceGuide] = useState(true);
-  const [showGridLines, setShowGridLines] = useState(false);
   const [selectedFilmPreset, setSelectedFilmPreset] = useState<FilmGradeType>('original');
   const [isAISmileEnabled] = useState(true);
   const [aiResult, setAiResult] = useState<AIGestureResult>({ gesture: 'none', confidence: 0, label: 'AI Smile Mode Aktif' });
@@ -230,141 +225,169 @@ export const CameraView: React.FC<CameraViewProps> = ({
             }}
           />
 
-          {/* Screen 2: Smooth Clean Glassmorphism Countdown Overlay */}
+          {/* Screen 2: Clean Minimalist Countdown Overlay */}
           {currentCountdown !== null && (
-            <div className="mockup-countdown-overlay">
-              <div className="countdown-glass-card" style={{ flexDirection: 'column', padding: '1.25rem 2rem', gap: '0.75rem', borderRadius: '24px' }}>
-                <div style={{ position: 'relative', width: '100px', height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                  <svg width="100" height="100" viewBox="0 0 100 100" style={{ transform: 'rotate(-90deg)', position: 'absolute', inset: 0 }}>
-                    <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255, 255, 255, 0.2)" strokeWidth="6" />
-                    <circle
-                      cx="50"
-                      cy="50"
-                      r="42"
-                      fill="none"
-                      stroke="#FFD166"
-                      strokeWidth="6"
-                      strokeDasharray="264"
-                      strokeDashoffset={(264 * (countdownSeconds - (currentCountdown || 0))) / countdownSeconds}
-                      strokeLinecap="round"
-                      style={{ transition: 'stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1)' }}
-                    />
-                  </svg>
-                  <div className="countdown-number-box">
-                    <span className="countdown-big-number" key={currentCountdown} style={{ fontSize: '3.2rem' }}>
-                      {currentCountdown === 0 ? '✨' : currentCountdown}
-                    </span>
-                  </div>
+            <div className="mockup-countdown-overlay" style={{ pointerEvents: 'none' }}>
+              <div
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  gap: '0.5rem',
+                  animation: 'countdownPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                }}
+              >
+                <div
+                  style={{
+                    width: '90px',
+                    height: '90px',
+                    borderRadius: '50%',
+                    background: 'rgba(0, 0, 0, 0.35)',
+                    backdropFilter: 'blur(8px)',
+                    border: '2.5px solid rgba(255, 255, 255, 0.65)',
+                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.35), 0 0 20px rgba(255, 209, 102, 0.4)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  <span
+                    key={currentCountdown}
+                    style={{
+                      fontFamily: 'var(--font-heading)',
+                      fontSize: '3.6rem',
+                      fontWeight: 900,
+                      color: '#FFFFFF',
+                      textShadow: '0 4px 16px rgba(0, 0, 0, 0.8), 0 0 16px rgba(255, 209, 102, 0.9)',
+                      lineHeight: 1,
+                    }}
+                  >
+                    {currentCountdown === 0 ? '✨' : currentCountdown}
+                  </span>
                 </div>
-                <p className="countdown-subtitle" style={{ fontSize: '0.95rem', fontWeight: 800 }}>
+                <div
+                  style={{
+                    background: 'rgba(128, 0, 32, 0.85)',
+                    backdropFilter: 'blur(6px)',
+                    color: '#FFFFFF',
+                    padding: '0.35rem 1rem',
+                    borderRadius: '9999px',
+                    fontSize: '0.88rem',
+                    fontWeight: 800,
+                    boxShadow: '0 4px 14px rgba(0,0,0,0.3)',
+                    letterSpacing: '0.02em',
+                  }}
+                >
                   {currentCountdown === 0 ? 'CHEESE! 📸' : 'Bersiap & Tersenyum! ✨'}
-                </p>
+                </div>
               </div>
             </div>
           )}
 
-          {/* 📐 Screen 3: Live Mini Frame Layout Grid Blueprint Overlay */}
-          <div
-            style={{
-              position: 'absolute',
-              top: '12px',
-              right: '12px',
-              width: '80px',
-              height: template.aspectRatio === '2x6' ? '145px' : '110px',
-              background: template.backgroundColor || 'rgba(255, 255, 255, 0.95)',
-              borderRadius: '12px',
-              border: '2px solid rgba(128, 0, 32, 0.35)',
-              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255,255,255,0.4)',
-              padding: '6px',
-              boxSizing: 'border-box',
-              zIndex: 25,
-              pointerEvents: 'none',
-              overflow: 'hidden',
-              backdropFilter: 'blur(4px)',
-              display: 'flex',
-              flexDirection: 'column',
-              justifyContent: 'space-between',
-            }}
-          >
-            {/* Grid Layout Container */}
-            <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-              {template.photoSlots.map((slot, i) => {
-                const img = capturedPhotos[i];
-                const isActive = (i === activeSlotIndex && isCapturingSequence) || (currentCountdown !== null && i === activeSlotIndex);
-                return (
-                  <div
-                    key={slot.id || i}
-                    style={{
-                      position: 'absolute',
-                      left: `${slot.x}%`,
-                      top: `${slot.y}%`,
-                      width: `${slot.width}%`,
-                      height: `${slot.height}%`,
-                      transform: slot.rotation ? `rotate(${slot.rotation}deg)` : 'none',
-                      borderRadius: '4px',
-                      border: isActive
-                        ? '2px solid #D90429'
-                        : img
-                        ? '1px solid #10B981'
-                        : '1px dashed rgba(128, 0, 32, 0.4)',
-                      background: img
-                        ? '#000000'
-                        : isActive
-                        ? 'rgba(217, 4, 41, 0.25)'
-                        : 'rgba(255, 255, 255, 0.75)',
-                      boxSizing: 'border-box',
-                      overflow: 'hidden',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      boxShadow: isActive ? '0 0 10px rgba(217, 4, 41, 0.9)' : 'none',
-                      transition: 'all 0.25s ease',
-                    }}
-                  >
-                    {img ? (
-                      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
-                        <img
-                          src={img}
-                          alt={`Slot ${i + 1}`}
-                          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-                        />
-                        <div
+          {/* 📐 Screen 3: Live Mini Frame Layout Grid Blueprint Overlay (Hidden during Countdown to prevent overlap) */}
+          {currentCountdown === null && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '12px',
+                right: '12px',
+                width: '80px',
+                height: template.aspectRatio === '2x6' ? '145px' : '110px',
+                background: template.backgroundColor || 'rgba(255, 255, 255, 0.95)',
+                borderRadius: '12px',
+                border: '2px solid rgba(128, 0, 32, 0.35)',
+                boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255,255,255,0.4)',
+                padding: '6px',
+                boxSizing: 'border-box',
+                zIndex: 25,
+                pointerEvents: 'none',
+                overflow: 'hidden',
+                backdropFilter: 'blur(4px)',
+                display: 'flex',
+                flexDirection: 'column',
+                justifyContent: 'space-between',
+              }}
+            >
+              {/* Grid Layout Container */}
+              <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                {template.photoSlots.map((slot, i) => {
+                  const img = capturedPhotos[i];
+                  const isActive = (i === activeSlotIndex && isCapturingSequence) || (currentCountdown !== null && i === activeSlotIndex);
+                  return (
+                    <div
+                      key={slot.id || i}
+                      style={{
+                        position: 'absolute',
+                        left: `${slot.x}%`,
+                        top: `${slot.y}%`,
+                        width: `${slot.width}%`,
+                        height: `${slot.height}%`,
+                        transform: slot.rotation ? `rotate(${slot.rotation}deg)` : 'none',
+                        borderRadius: '4px',
+                        border: isActive
+                          ? '2px solid #D90429'
+                          : img
+                          ? '1px solid #10B981'
+                          : '1px dashed rgba(128, 0, 32, 0.4)',
+                        background: img
+                          ? '#000000'
+                          : isActive
+                          ? 'rgba(217, 4, 41, 0.25)'
+                          : 'rgba(255, 255, 255, 0.75)',
+                        boxSizing: 'border-box',
+                        overflow: 'hidden',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        boxShadow: isActive ? '0 0 10px rgba(217, 4, 41, 0.9)' : 'none',
+                        transition: 'all 0.25s ease',
+                      }}
+                    >
+                      {img ? (
+                        <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                          <img
+                            src={img}
+                            alt={`Slot ${i + 1}`}
+                            style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                          />
+                          <div
+                            style={{
+                              position: 'absolute',
+                              top: '2px',
+                              right: '2px',
+                              width: '12px',
+                              height: '12px',
+                              borderRadius: '50%',
+                              background: '#10B981',
+                              color: '#ffffff',
+                              fontSize: '0.5rem',
+                              fontWeight: 900,
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                            }}
+                          >
+                            ✓
+                          </div>
+                        </div>
+                      ) : (
+                        <span
                           style={{
-                            position: 'absolute',
-                            top: '2px',
-                            right: '2px',
-                            width: '12px',
-                            height: '12px',
-                            borderRadius: '50%',
-                            background: '#10B981',
-                            color: '#ffffff',
-                            fontSize: '0.5rem',
-                            fontWeight: 900,
-                            display: 'flex',
-                            alignItems: 'center',
-                            justifyContent: 'center',
-                            boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                            fontSize: '0.62rem',
+                            fontWeight: 800,
+                            color: isActive ? '#D90429' : 'rgba(0, 0, 0, 0.5)',
                           }}
                         >
-                          ✓
-                        </div>
-                      </div>
-                    ) : (
-                      <span
-                        style={{
-                          fontSize: '0.62rem',
-                          fontWeight: 800,
-                          color: isActive ? '#D90429' : 'rgba(0, 0, 0, 0.5)',
-                        }}
-                      >
-                        {isActive ? '📸' : i + 1}
-                      </span>
-                    )}
-                  </div>
-                );
-              })}
+                          {isActive ? '📸' : i + 1}
+                        </span>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
             </div>
-          </div>
+          )}
 
           {/* AI Real-time Smile & Pose HUD Pill (Hidden during Countdown) */}
           {isAISmileEnabled && isCameraReady && !isAllPhotosDone && currentCountdown === null && (
@@ -395,21 +418,12 @@ export const CameraView: React.FC<CameraViewProps> = ({
             </div>
           )}
 
-          {/* Face Alignment Guide Overlay (Text hidden during countdown to prevent UI overlap) */}
-          {showFaceGuide && !isAllPhotosDone && (
+          {/* Face Alignment Guide Overlay (Hidden during countdown to prevent UI overlap) */}
+          {showFaceGuide && !isAllPhotosDone && currentCountdown === null && (
             <div className="face-alignment-guide">
-              {currentCountdown === null && (
-                <span className="face-alignment-guide-text">
-                  Posisi Wajah Di Sini ✨
-                </span>
-              )}
-            </div>
-          )}
-
-          {/* Rule of Thirds Grid Lines Overlay */}
-          {showGridLines && (
-            <div className="grid-lines-overlay">
-              <div /><div /><div /><div /><div /><div /><div /><div /><div />
+              <span className="face-alignment-guide-text">
+                Posisi Wajah Di Sini ✨
+              </span>
             </div>
           )}
 
@@ -499,23 +513,8 @@ export const CameraView: React.FC<CameraViewProps> = ({
           </div>
         </div>
 
-        {/* Quick Toolbar below Viewfinder (Kilatan, Pengatur waktu, Jaringan) */}
-        <div className="camera-mockup-toolbar">
-          {/* Kilatan / Flash Toggle */}
-          <button
-            type="button"
-            className={`toolbar-toggle-btn ${isFlashActive ? 'active' : ''}`}
-            onClick={(e) => {
-              e.preventDefault();
-              setIsFlashActive((p) => !p);
-            }}
-            title={isFlashActive ? 'Matikan Flash' : 'Aktifkan Flash'}
-          >
-            <Zap size={22} color={isFlashActive ? '#EAB308' : '#71717A'} fill={isFlashActive ? '#EAB308' : 'none'} />
-            <span className="btn-lbl">Kilatan</span>
-          </button>
-
-          {/* Pengatur Waktu / Timer Toggle */}
+        {/* Clean Quick Toolbar below Viewfinder (Pengatur Waktu Only) */}
+        <div className="camera-mockup-toolbar" style={{ justifyContent: 'center' }}>
           <button
             type="button"
             className="toolbar-toggle-btn active"
@@ -524,144 +523,34 @@ export const CameraView: React.FC<CameraViewProps> = ({
               setCountdownSeconds((sec) => (sec === 3 ? 5 : sec === 5 ? 10 : 3));
             }}
             title="Ubah Pengatur Waktu"
+            style={{ width: 'auto', padding: '0.5rem 1.25rem', borderRadius: '9999px' }}
           >
-            <Clock size={22} color="var(--color-neutral-dark)" />
-            <span className="btn-lbl">Pengatur waktu ( {countdownSeconds} detik)</span>
-          </button>
-
-          {/* Jaringan / Grid Lines Toggle */}
-          <button
-            type="button"
-            className={`toolbar-toggle-btn ${showGridLines ? 'active' : ''}`}
-            onClick={(e) => {
-              e.preventDefault();
-              setShowGridLines((p) => !p);
-            }}
-            title={showGridLines ? 'Sembunyikan Garis Grid' : 'Tampilkan Garis Grid'}
-          >
-            <Grid size={22} color={showGridLines ? 'var(--color-burgundy-deep)' : '#71717A'} />
-            <span className="btn-lbl">Jaringan</span>
+            <Clock size={20} color="var(--color-neutral-dark)" />
+            <span className="btn-lbl">Pengatur waktu ({countdownSeconds} detik)</span>
           </button>
         </div>
 
-        {/* Shutter Button & Slot Progress Indicator */}
-        <div className="camera-mockup-shutter-row" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
-          {/* Custom Shutter Icon Selector Pills */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(255, 255, 255, 0.85)', padding: '4px 10px', borderRadius: '9999px', border: '1px solid var(--color-border)', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
-            <span style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--color-neutral-sub)', marginRight: '0.2rem' }}>Ikon Jepret:</span>
-            <button
-              type="button"
-              onClick={() => setShutterIconStyle('sparkle')}
-              style={{
-                padding: '3px 8px',
-                borderRadius: '9999px',
-                border: 'none',
-                background: shutterIconStyle === 'sparkle' ? '#800020' : 'transparent',
-                color: shutterIconStyle === 'sparkle' ? '#FFF' : '#555',
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '2px',
-              }}
-              title="Aesthetic Sparkle Shutter ✦"
-            >
-              <Sparkles size={12} color={shutterIconStyle === 'sparkle' ? '#FFD166' : '#71717A'} />
-              <span>Magic ✦</span>
-            </button>
+        {/* Clean Shutter Button & Slot Progress Indicator */}
+        <div className="camera-mockup-shutter-row">
+          <div className="shutter-spacer" />
 
-            <button
-              type="button"
-              onClick={() => setShutterIconStyle('camera')}
-              style={{
-                padding: '3px 8px',
-                borderRadius: '9999px',
-                border: 'none',
-                background: shutterIconStyle === 'camera' ? '#800020' : 'transparent',
-                color: shutterIconStyle === 'camera' ? '#FFF' : '#555',
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '2px',
-              }}
-              title="Classic Camera Icon 📸"
-            >
-              <CameraIcon size={12} />
-              <span>Kamera</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setShutterIconStyle('heart')}
-              style={{
-                padding: '3px 8px',
-                borderRadius: '9999px',
-                border: 'none',
-                background: shutterIconStyle === 'heart' ? '#800020' : 'transparent',
-                color: shutterIconStyle === 'heart' ? '#FFF' : '#555',
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '2px',
-              }}
-              title="Cute Heart Trigger 💖"
-            >
-              <Heart size={12} fill={shutterIconStyle === 'heart' ? '#FF85A1' : 'none'} color={shutterIconStyle === 'heart' ? '#FF85A1' : '#71717A'} />
-              <span>Heart</span>
-            </button>
-
-            <button
-              type="button"
-              onClick={() => setShutterIconStyle('smile')}
-              style={{
-                padding: '3px 8px',
-                borderRadius: '9999px',
-                border: 'none',
-                background: shutterIconStyle === 'smile' ? '#800020' : 'transparent',
-                color: shutterIconStyle === 'smile' ? '#FFF' : '#555',
-                fontSize: '0.75rem',
-                fontWeight: 700,
-                cursor: 'pointer',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '2px',
-              }}
-              title="Pose & Smile Trigger ✌️"
-            >
-              <Smile size={12} color={shutterIconStyle === 'smile' ? '#FFD166' : '#71717A'} />
-              <span>Pose ✌️</span>
-            </button>
-          </div>
-
-          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
-            <div className="shutter-spacer" />
-
-            {/* Main Round Crimson Shutter Button with Double Ring */}
-            <button
-              className="mockup-main-shutter-btn"
-              onClick={startCaptureSequence}
-              disabled={isCapturingSequence || !isCameraReady}
-              title="Klik untuk Ambil Foto ✨"
-            >
-              <div className="shutter-inner-icon">
-                {shutterIconStyle === 'sparkle' && <Sparkles size={28} color="#FFD166" />}
-                {shutterIconStyle === 'camera' && <CameraIcon size={28} color="#FFFFFF" />}
-                {shutterIconStyle === 'heart' && <Heart size={28} fill="#FF85A1" color="#FF85A1" />}
-                {shutterIconStyle === 'smile' && <Smile size={28} color="#FFD166" />}
-              </div>
-            </button>
-
-            {/* Bottom Right Slot Counter Badge */}
-            <div className="shutter-slot-counter">
-              {capturedPhotos.filter(Boolean).length > 0
-                ? `${capturedPhotos.filter(Boolean).length}/${template.photoSlotsCount} Foto`
-                : `1/${template.photoSlotsCount} Foto`}
+          {/* Clean Main Camera Shutter Button */}
+          <button
+            className="mockup-main-shutter-btn"
+            onClick={startCaptureSequence}
+            disabled={isCapturingSequence || !isCameraReady}
+            title="Klik untuk Ambil Foto 📸"
+          >
+            <div className="shutter-inner-icon">
+              <CameraIcon size={28} color="#FFFFFF" />
             </div>
+          </button>
+
+          {/* Bottom Right Slot Counter Badge */}
+          <div className="shutter-slot-counter">
+            {capturedPhotos.filter(Boolean).length > 0
+              ? `${capturedPhotos.filter(Boolean).length}/${template.photoSlotsCount} Foto`
+              : `1/${template.photoSlotsCount} Foto`}
           </div>
         </div>
 
