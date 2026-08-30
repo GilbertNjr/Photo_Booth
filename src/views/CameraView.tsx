@@ -3,7 +3,6 @@ import type { TemplateData } from '../types/template';
 import { CameraService } from '../services/camera/cameraService';
 import { CaptureService } from '../services/capture/captureService';
 import { GestureService } from '../services/ai/gestureService';
-import type { AIGestureResult } from '../services/ai/gestureService';
 import { FILM_PRESETS } from '../services/filters/colorShaderService';
 import type { FilmGradeType } from '../services/filters/colorShaderService';
 import { Button } from '../components/Common/Button';
@@ -12,7 +11,6 @@ import {
   RefreshCw,
   Clock,
   Sparkles,
-  Smile,
 } from 'lucide-react';
 
 interface CameraViewProps {
@@ -32,10 +30,8 @@ export const CameraView: React.FC<CameraViewProps> = ({
   const [soundEnabled] = useState(true);
   const [isFlashActive] = useState(true);
   const [countdownSeconds, setCountdownSeconds] = useState<number>(3);
-  const [showFaceGuide] = useState(true);
   const [selectedFilmPreset, setSelectedFilmPreset] = useState<FilmGradeType>('original');
   const [isAISmileEnabled] = useState(true);
-  const [aiResult, setAiResult] = useState<AIGestureResult>({ gesture: 'none', confidence: 0, label: 'AI Smile Mode Aktif' });
 
   // Capture State
   const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
@@ -76,7 +72,6 @@ export const CameraView: React.FC<CameraViewProps> = ({
     const interval = setInterval(() => {
       if (videoRef.current && !isCapturingSequence && !isAllPhotosDone) {
         const res = GestureService.detectGesture(videoRef.current);
-        setAiResult(res);
 
         // Auto-trigger shutter when smile, wave or 2-finger pose detected from long distance (1-2.5m)
         if (res.confidence >= 0.65 && (res.gesture === 'smile' || res.gesture === 'peace' || res.gesture === 'wave')) {
@@ -221,61 +216,46 @@ export const CameraView: React.FC<CameraViewProps> = ({
             }}
           />
 
-          {/* Screen 2: Clean Minimalist Countdown Overlay */}
+          {/* ⏱️ Clean Top Floating Countdown Overlay (Placed at Top Center to keep face area 100% clean) */}
           {currentCountdown !== null && (
-            <div className="mockup-countdown-overlay" style={{ pointerEvents: 'none' }}>
+            <div
+              style={{
+                position: 'absolute',
+                top: '16px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                zIndex: 40,
+                pointerEvents: 'none',
+                animation: 'countdownPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
+              }}
+            >
               <div
                 style={{
+                  width: '64px',
+                  height: '64px',
+                  borderRadius: '50%',
+                  background: 'rgba(26, 24, 23, 0.65)',
+                  backdropFilter: 'blur(10px)',
+                  border: '2px solid rgba(255, 255, 255, 0.85)',
+                  boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4), 0 0 20px rgba(255, 209, 102, 0.4)',
                   display: 'flex',
-                  flexDirection: 'column',
                   alignItems: 'center',
-                  gap: '0.5rem',
-                  animation: 'countdownPop 0.35s cubic-bezier(0.34, 1.56, 0.64, 1)',
+                  justifyContent: 'center',
                 }}
               >
-                <div
+                <span
+                  key={currentCountdown}
                   style={{
-                    width: '90px',
-                    height: '90px',
-                    borderRadius: '50%',
-                    background: 'rgba(0, 0, 0, 0.35)',
-                    backdropFilter: 'blur(8px)',
-                    border: '2.5px solid rgba(255, 255, 255, 0.65)',
-                    boxShadow: '0 8px 32px rgba(0, 0, 0, 0.35), 0 0 20px rgba(255, 209, 102, 0.4)',
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'center',
-                  }}
-                >
-                  <span
-                    key={currentCountdown}
-                    style={{
-                      fontFamily: 'var(--font-heading)',
-                      fontSize: '3.6rem',
-                      fontWeight: 900,
-                      color: '#FFFFFF',
-                      textShadow: '0 4px 16px rgba(0, 0, 0, 0.8), 0 0 16px rgba(255, 209, 102, 0.9)',
-                      lineHeight: 1,
-                    }}
-                  >
-                    {currentCountdown === 0 ? '✨' : currentCountdown}
-                  </span>
-                </div>
-                <div
-                  style={{
-                    background: 'rgba(128, 0, 32, 0.85)',
-                    backdropFilter: 'blur(6px)',
+                    fontFamily: 'var(--font-heading)',
+                    fontSize: '2.4rem',
+                    fontWeight: 900,
                     color: '#FFFFFF',
-                    padding: '0.35rem 1rem',
-                    borderRadius: '9999px',
-                    fontSize: '0.88rem',
-                    fontWeight: 800,
-                    boxShadow: '0 4px 14px rgba(0,0,0,0.3)',
-                    letterSpacing: '0.02em',
+                    textShadow: '0 2px 10px rgba(0, 0, 0, 0.8), 0 0 12px rgba(255, 209, 102, 0.9)',
+                    lineHeight: 1,
                   }}
                 >
-                  {currentCountdown === 0 ? 'CHEESE! 📸' : 'Bersiap & Tersenyum! ✨'}
-                </div>
+                  {currentCountdown === 0 ? '✨' : currentCountdown}
+                </span>
               </div>
             </div>
           )}
@@ -287,13 +267,13 @@ export const CameraView: React.FC<CameraViewProps> = ({
                 position: 'absolute',
                 top: '12px',
                 right: '12px',
-                width: '80px',
-                height: template.aspectRatio === '2x6' ? '145px' : '110px',
+                width: '76px',
+                height: template.aspectRatio === '2x6' ? '140px' : '105px',
                 background: template.backgroundColor || 'rgba(255, 255, 255, 0.95)',
                 borderRadius: '12px',
                 border: '2px solid rgba(128, 0, 32, 0.35)',
                 boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255,255,255,0.4)',
-                padding: '6px',
+                padding: '5px',
                 boxSizing: 'border-box',
                 zIndex: 25,
                 pointerEvents: 'none',
@@ -385,74 +365,6 @@ export const CameraView: React.FC<CameraViewProps> = ({
             </div>
           )}
 
-          {/* AI Real-time Smile & Pose HUD Pill (Hidden during Countdown) */}
-          {isAISmileEnabled && isCameraReady && !isAllPhotosDone && currentCountdown === null && (
-            <div
-              style={{
-                position: 'absolute',
-                top: '12px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                background: aiResult.confidence > 0.8 ? 'rgba(217, 4, 41, 0.92)' : 'rgba(26, 24, 23, 0.82)',
-                color: '#ffffff',
-                padding: '5px 14px',
-                borderRadius: '9999px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '6px',
-                fontSize: '0.78rem',
-                fontWeight: 700,
-                backdropFilter: 'blur(4px)',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
-                zIndex: 20,
-                border: '1px solid rgba(255,255,255,0.2)',
-                transition: 'all 0.25s ease',
-              }}
-            >
-              <Smile size={14} color="#FFD166" />
-              <span>{aiResult.label}</span>
-            </div>
-          )}
-
-          {/* Face Alignment Guide Overlay (Hidden during countdown to prevent UI overlap) */}
-          {showFaceGuide && !isAllPhotosDone && currentCountdown === null && (
-            <div className="face-alignment-guide">
-              <span className="face-alignment-guide-text">
-                Posisi Wajah Di Sini ✨
-              </span>
-            </div>
-          )}
-
-          {/* Standby Prompt Banner (Shown before user starts capture session) */}
-          {!isSessionStarted && !isCapturingSequence && !isAllPhotosDone && isCameraReady && (
-            <div
-              style={{
-                position: 'absolute',
-                bottom: '18px',
-                left: '50%',
-                transform: 'translateX(-50%)',
-                background: 'rgba(26, 24, 23, 0.85)',
-                backdropFilter: 'blur(10px)',
-                color: '#ffffff',
-                padding: '0.55rem 1.1rem',
-                borderRadius: '9999px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.55rem',
-                boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
-                zIndex: 30,
-                border: '1.5px solid rgba(255,255,255,0.25)',
-                pointerEvents: 'none',
-                whiteSpace: 'nowrap',
-              }}
-            >
-              <CameraIcon size={16} color="#FFD166" />
-              <span style={{ fontSize: '0.8rem', fontWeight: 800 }}>
-                Klik tombol kamera 📸 atau Pose ✌️ untuk Mulai
-              </span>
-            </div>
-          )}
-
           {/* Camera Loading Screen */}
           {!isCameraReady && (
             <div className="mockup-camera-loading">
@@ -463,14 +375,16 @@ export const CameraView: React.FC<CameraViewProps> = ({
           )}
         </div>
 
-        {/* Feedback Subtitle */}
-        {capturedPhotos.filter(Boolean).length > 0 && currentCountdown === null && (
-          <p className="mockup-feedback-subtitle">
-            {isAllPhotosDone
-              ? 'Semua foto selesai! Klik Lanjut ✦'
-              : 'Bagus! Lanjut ke pose berikutnya ✦'}
-          </p>
-        )}
+        {/* Clean Feedback Subtitle (Outside Viewfinder) */}
+        <p className="mockup-feedback-subtitle" style={{ textAlign: 'center', margin: '0.4rem 0 0.1rem', fontSize: '0.85rem', fontWeight: 700, color: 'var(--color-burgundy-deep)' }}>
+          {currentCountdown !== null
+            ? 'Bersiap & Tersenyum! ✨'
+            : isAllPhotosDone
+            ? 'Semua foto selesai! Klik Lanjut ✦'
+            : !isSessionStarted
+            ? 'Klik tombol kamera 📸 atau berikan pose ✌️ untuk mulai'
+            : `Foto ${activeSlotIndex + 1} dari ${template.photoSlotsCount} • Bersiap!`}
+        </p>
 
         {/* 🎨 Live Pre-Capture Film Filter Selector Bar */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', width: '100%', margin: '0.5rem 0 0.25rem' }}>
