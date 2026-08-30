@@ -266,8 +266,8 @@ export const CameraView: React.FC<CameraViewProps> = ({
             </div>
           )}
 
-          {/* AI Real-time Smile & Pose HUD Pill */}
-          {isAISmileEnabled && isCameraReady && !isAllPhotosDone && (
+          {/* AI Real-time Smile & Pose HUD Pill (Hidden during Countdown) */}
+          {isAISmileEnabled && isCameraReady && !isAllPhotosDone && currentCountdown === null && (
             <div
               style={{
                 position: 'absolute',
