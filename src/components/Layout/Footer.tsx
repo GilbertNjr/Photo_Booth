@@ -47,7 +47,7 @@ export const Footer: React.FC = () => {
             <span>untuk kenangan terbaik Anda</span>
           </div>
           <div className="footer-copyright">
-            © {new Date().getFullYear()} PixBooth Studio. All rights reserved.
+            © {new Date().getFullYear()} PixBooth Studio ✨
           </div>
         </div>
       </div>
