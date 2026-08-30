@@ -231,11 +231,13 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
             touchAction: 'none',
             overflow: 'hidden',
             boxSizing: 'border-box',
+            minWidth: 0,
+            minHeight: 0,
           }}
           onClick={() => setSelectedStickerId(null)}
         >
           {livePreviewUrl ? (
-            <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden' }}>
+            <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', minWidth: 0, minHeight: 0 }}>
               <img
                 src={livePreviewUrl}
                 alt="Live Customized Preview"
@@ -245,6 +247,8 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                   width: 'auto',
                   height: 'auto',
                   objectFit: 'contain',
+                  display: 'block',
+                  margin: '0 auto',
                   borderRadius: 'var(--radius-md)',
                   boxShadow: 'var(--shadow-polaroid)',
                   pointerEvents: 'none',
