@@ -15,6 +15,7 @@ import {
   Sparkles,
   Smile,
   Zap,
+  Heart,
 } from 'lucide-react';
 
 interface CameraViewProps {
@@ -28,6 +29,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
   onBackToFrames,
   onPhotosCaptured,
 }) => {
+  const [shutterIconStyle, setShutterIconStyle] = useState<'sparkle' | 'camera' | 'heart' | 'smile'>('sparkle');
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [mirror, setMirror] = useState(true);
@@ -79,8 +81,8 @@ export const CameraView: React.FC<CameraViewProps> = ({
         const res = GestureService.detectGesture(videoRef.current);
         setAiResult(res);
 
-        // Auto-trigger shutter when smile or pose detected
-        if (res.confidence > 0.85 && (res.gesture === 'smile' || res.gesture === 'peace')) {
+        // Auto-trigger shutter when smile, wave or 2-finger pose detected from long distance (1-2.5m)
+        if (res.confidence >= 0.65 && (res.gesture === 'smile' || res.gesture === 'peace' || res.gesture === 'wave')) {
           startCaptureSequence();
         }
       }
@@ -228,18 +230,35 @@ export const CameraView: React.FC<CameraViewProps> = ({
             }}
           />
 
-          {/* Screen 2: Clean Transparent Countdown Screen Overlay */}
+          {/* Screen 2: Smooth Clean Glassmorphism Countdown Overlay */}
           {currentCountdown !== null && (
             <div className="mockup-countdown-overlay">
-              <div className="countdown-glass-card">
-                <div className="countdown-number-box">
-                  <span className="sparkle-left">✨</span>
-                  <span className="countdown-big-number" key={currentCountdown}>
-                    {currentCountdown === 0 ? '📸' : currentCountdown}
-                  </span>
-                  <span className="sparkle-right">✨</span>
+              <div className="countdown-glass-card" style={{ flexDirection: 'column', padding: '1.25rem 2rem', gap: '0.75rem', borderRadius: '24px' }}>
+                <div style={{ position: 'relative', width: '100px', height: '100px', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                  <svg width="100" height="100" viewBox="0 0 100 100" style={{ transform: 'rotate(-90deg)', position: 'absolute', inset: 0 }}>
+                    <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255, 255, 255, 0.2)" strokeWidth="6" />
+                    <circle
+                      cx="50"
+                      cy="50"
+                      r="42"
+                      fill="none"
+                      stroke="#FFD166"
+                      strokeWidth="6"
+                      strokeDasharray="264"
+                      strokeDashoffset={(264 * (countdownSeconds - (currentCountdown || 0))) / countdownSeconds}
+                      strokeLinecap="round"
+                      style={{ transition: 'stroke-dashoffset 0.8s cubic-bezier(0.4, 0, 0.2, 1)' }}
+                    />
+                  </svg>
+                  <div className="countdown-number-box">
+                    <span className="countdown-big-number" key={currentCountdown} style={{ fontSize: '3.2rem' }}>
+                      {currentCountdown === 0 ? '✨' : currentCountdown}
+                    </span>
+                  </div>
                 </div>
-                <p className="countdown-subtitle">Tersenyum! 📸</p>
+                <p className="countdown-subtitle" style={{ fontSize: '0.95rem', fontWeight: 800 }}>
+                  {currentCountdown === 0 ? 'CHEESE! 📸' : 'Bersiap & Tersenyum! ✨'}
+                </p>
               </div>
             </div>
           )}
@@ -526,25 +545,123 @@ export const CameraView: React.FC<CameraViewProps> = ({
         </div>
 
         {/* Shutter Button & Slot Progress Indicator */}
-        <div className="camera-mockup-shutter-row">
-          <div className="shutter-spacer" />
+        <div className="camera-mockup-shutter-row" style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.75rem' }}>
+          {/* Custom Shutter Icon Selector Pills */}
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.4rem', background: 'rgba(255, 255, 255, 0.85)', padding: '4px 10px', borderRadius: '9999px', border: '1px solid var(--color-border)', boxShadow: '0 2px 8px rgba(0,0,0,0.05)' }}>
+            <span style={{ fontSize: '0.7rem', fontWeight: 800, color: 'var(--color-neutral-sub)', marginRight: '0.2rem' }}>Ikon Jepret:</span>
+            <button
+              type="button"
+              onClick={() => setShutterIconStyle('sparkle')}
+              style={{
+                padding: '3px 8px',
+                borderRadius: '9999px',
+                border: 'none',
+                background: shutterIconStyle === 'sparkle' ? '#800020' : 'transparent',
+                color: shutterIconStyle === 'sparkle' ? '#FFF' : '#555',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '2px',
+              }}
+              title="Aesthetic Sparkle Shutter ✦"
+            >
+              <Sparkles size={12} color={shutterIconStyle === 'sparkle' ? '#FFD166' : '#71717A'} />
+              <span>Magic ✦</span>
+            </button>
 
-          {/* Main Round Crimson Shutter Button with Double Ring */}
-          <button
-            className="mockup-main-shutter-btn"
-            onClick={startCaptureSequence}
-            disabled={isCapturingSequence || !isCameraReady}
-          >
-            <div className="shutter-inner-icon">
-              <CameraIcon size={28} />
+            <button
+              type="button"
+              onClick={() => setShutterIconStyle('camera')}
+              style={{
+                padding: '3px 8px',
+                borderRadius: '9999px',
+                border: 'none',
+                background: shutterIconStyle === 'camera' ? '#800020' : 'transparent',
+                color: shutterIconStyle === 'camera' ? '#FFF' : '#555',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '2px',
+              }}
+              title="Classic Camera Icon 📸"
+            >
+              <CameraIcon size={12} />
+              <span>Kamera</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShutterIconStyle('heart')}
+              style={{
+                padding: '3px 8px',
+                borderRadius: '9999px',
+                border: 'none',
+                background: shutterIconStyle === 'heart' ? '#800020' : 'transparent',
+                color: shutterIconStyle === 'heart' ? '#FFF' : '#555',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '2px',
+              }}
+              title="Cute Heart Trigger 💖"
+            >
+              <Heart size={12} fill={shutterIconStyle === 'heart' ? '#FF85A1' : 'none'} color={shutterIconStyle === 'heart' ? '#FF85A1' : '#71717A'} />
+              <span>Heart</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setShutterIconStyle('smile')}
+              style={{
+                padding: '3px 8px',
+                borderRadius: '9999px',
+                border: 'none',
+                background: shutterIconStyle === 'smile' ? '#800020' : 'transparent',
+                color: shutterIconStyle === 'smile' ? '#FFF' : '#555',
+                fontSize: '0.75rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '2px',
+              }}
+              title="Pose & Smile Trigger ✌️"
+            >
+              <Smile size={12} color={shutterIconStyle === 'smile' ? '#FFD166' : '#71717A'} />
+              <span>Pose ✌️</span>
+            </button>
+          </div>
+
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', width: '100%' }}>
+            <div className="shutter-spacer" />
+
+            {/* Main Round Crimson Shutter Button with Double Ring */}
+            <button
+              className="mockup-main-shutter-btn"
+              onClick={startCaptureSequence}
+              disabled={isCapturingSequence || !isCameraReady}
+              title="Klik untuk Ambil Foto ✨"
+            >
+              <div className="shutter-inner-icon">
+                {shutterIconStyle === 'sparkle' && <Sparkles size={28} color="#FFD166" />}
+                {shutterIconStyle === 'camera' && <CameraIcon size={28} color="#FFFFFF" />}
+                {shutterIconStyle === 'heart' && <Heart size={28} fill="#FF85A1" color="#FF85A1" />}
+                {shutterIconStyle === 'smile' && <Smile size={28} color="#FFD166" />}
+              </div>
+            </button>
+
+            {/* Bottom Right Slot Counter Badge */}
+            <div className="shutter-slot-counter">
+              {capturedPhotos.filter(Boolean).length > 0
+                ? `${capturedPhotos.filter(Boolean).length}/${template.photoSlotsCount} Foto`
+                : `1/${template.photoSlotsCount} Foto`}
             </div>
-          </button>
-
-          {/* Bottom Right Slot Counter Badge */}
-          <div className="shutter-slot-counter">
-            {capturedPhotos.filter(Boolean).length > 0
-              ? `${capturedPhotos.filter(Boolean).length}/${template.photoSlotsCount} Foto`
-              : `1/${template.photoSlotsCount} Foto`}
           </div>
         </div>
 

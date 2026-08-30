@@ -16,65 +16,94 @@ export class CaptureService {
   }
 
   /**
-   * Play synthesized countdown beep tone
+   * Play synthesized countdown beep tone (Studio Chime Tone)
    */
   static playCountdownBeep(isFinal: boolean = false): void {
     try {
       const ctx = this.getAudioContext();
       if (!ctx) return;
 
+      const t = ctx.currentTime;
       const osc = ctx.createOscillator();
       const gain = ctx.createGain();
 
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(isFinal ? 880 : 440, ctx.currentTime); // A5 for final, A4 for count
+      osc.frequency.setValueAtTime(isFinal ? 1046.50 : 523.25, t); // C6 for final, C5 for count
 
-      gain.gain.setValueAtTime(0.15, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + 0.15);
+      gain.gain.setValueAtTime(0.25, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
 
       osc.connect(gain);
       gain.connect(ctx.destination);
 
-      osc.start();
-      osc.stop(ctx.currentTime + 0.15);
+      osc.start(t);
+      osc.stop(t + 0.22);
     } catch {
       // Audio playback silent fallback
     }
   }
 
   /**
-   * Play synthesized camera shutter sound
+   * Play synthesized authentic mechanical DSLR camera shutter sound (ker-CHAK! + Flash)
    */
   static playShutterSound(): void {
     try {
       const ctx = this.getAudioContext();
       if (!ctx) return;
 
-      // Noise burst for mechanical shutter click
-      const bufferSize = ctx.sampleRate * 0.08;
+      const t = ctx.currentTime;
+
+      // 1. Mechanical Mirror-Up Thud (Low Punch Slap)
+      const mirrorOsc = ctx.createOscillator();
+      const mirrorGain = ctx.createGain();
+      mirrorOsc.type = 'triangle';
+      mirrorOsc.frequency.setValueAtTime(280, t);
+      mirrorOsc.frequency.exponentialRampToValueAtTime(40, t + 0.07);
+      mirrorGain.gain.setValueAtTime(0.65, t);
+      mirrorGain.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
+      mirrorOsc.connect(mirrorGain);
+      mirrorGain.connect(ctx.destination);
+      mirrorOsc.start(t);
+      mirrorOsc.stop(t + 0.07);
+
+      // 2. High-Frequency Metallic Curtain Snap (Dual Noise Burst)
+      const bufferSize = Math.floor(ctx.sampleRate * 0.14);
       const buffer = ctx.createBuffer(1, bufferSize, ctx.sampleRate);
       const data = buffer.getChannelData(0);
-
       for (let i = 0; i < bufferSize; i++) {
         data[i] = Math.random() * 2 - 1;
       }
-
       const noise = ctx.createBufferSource();
       noise.buffer = buffer;
 
-      const filter = ctx.createBiquadFilter();
-      filter.type = 'highpass';
-      filter.frequency.setValueAtTime(1000, ctx.currentTime);
+      const bandpass = ctx.createBiquadFilter();
+      bandpass.type = 'bandpass';
+      bandpass.frequency.setValueAtTime(3200, t + 0.015);
+      bandpass.Q.setValueAtTime(1.8, t + 0.015);
 
-      const gain = ctx.createGain();
-      gain.gain.setValueAtTime(0.3, ctx.currentTime);
-      gain.gain.exponentialRampToValueAtTime(0.01, ctx.currentTime + 0.08);
+      const noiseGain = ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.01, t);
+      noiseGain.gain.setValueAtTime(0.7, t + 0.015);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
 
-      noise.connect(filter);
-      filter.connect(gain);
-      gain.connect(ctx.destination);
+      noise.connect(bandpass);
+      bandpass.connect(noiseGain);
+      noiseGain.connect(ctx.destination);
+      noise.start(t + 0.015);
+      noise.stop(t + 0.14);
 
-      noise.start();
+      // 3. Secondary Motor Rewind / Spring Click
+      const springOsc = ctx.createOscillator();
+      const springGain = ctx.createGain();
+      springOsc.type = 'sine';
+      springOsc.frequency.setValueAtTime(1600, t + 0.08);
+      springOsc.frequency.exponentialRampToValueAtTime(500, t + 0.16);
+      springGain.gain.setValueAtTime(0.2, t + 0.08);
+      springGain.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+      springOsc.connect(springGain);
+      springGain.connect(ctx.destination);
+      springOsc.start(t + 0.08);
+      springOsc.stop(t + 0.16);
     } catch {
       // Audio fallback
     }
