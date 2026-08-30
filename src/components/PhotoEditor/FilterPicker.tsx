@@ -31,18 +31,20 @@ export const FilterPicker: React.FC<FilterPickerProps> = ({
   onBeautyBrightnessChange,
 }) => {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', width: '100%', boxSizing: 'border-box', overflow: 'hidden' }}>
       {/* Photo Filter Grids */}
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.8rem' }}>
-        <label style={{ fontSize: '0.88rem', fontWeight: 700, color: 'var(--color-neutral-sub)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
-          <Sparkles size={16} color="#6366f1" /> PILIH FILTER WARNA
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.65rem', width: '100%', boxSizing: 'border-box' }}>
+        <label style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-neutral-sub)', display: 'flex', alignItems: 'center', gap: '0.4rem', textTransform: 'uppercase' }}>
+          <Sparkles size={15} color="#D90429" /> PILIH FILTER WARNA
         </label>
 
         <div
           style={{
             display: 'grid',
-            gridTemplateColumns: 'repeat(auto-fill, minmax(120px, 1fr))',
-            gap: '0.6rem',
+            gridTemplateColumns: 'repeat(auto-fill, minmax(100px, 1fr))',
+            gap: '0.5rem',
+            width: '100%',
+            boxSizing: 'border-box',
           }}
         >
           {FILTERS.map((f) => {
@@ -50,16 +52,27 @@ export const FilterPicker: React.FC<FilterPickerProps> = ({
             return (
               <button
                 key={f.id}
+                type="button"
                 onClick={() => onSelectFilter(f.id)}
                 className={`category-pill ${isActive ? 'active' : ''}`}
                 style={{
-                  padding: '0.6rem 0.8rem',
-                  fontSize: '0.82rem',
+                  padding: '0.55rem 0.6rem',
+                  fontSize: '0.78rem',
+                  fontWeight: 700,
                   justifyContent: 'center',
                   textAlign: 'center',
+                  width: '100%',
+                  minWidth: 0,
+                  boxSizing: 'border-box',
+                  overflow: 'hidden',
+                  whiteSpace: 'nowrap',
+                  textOverflow: 'ellipsis',
                 }}
+                title={f.label}
               >
-                {f.label}
+                <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0, display: 'block' }}>
+                  {f.label}
+                </span>
               </button>
             );
           })}
@@ -69,25 +82,32 @@ export const FilterPicker: React.FC<FilterPickerProps> = ({
       {/* AI Beauty & Retouch Sliders Panel */}
       <div
         style={{
-          background: 'var(--color-pink-soft)',
-          borderRadius: 'var(--radius-lg)',
-          padding: '1.1rem 1.25rem',
+          background: 'rgba(253, 242, 244, 0.9)',
+          borderRadius: '16px',
+          padding: '0.9rem 1rem',
           display: 'flex',
           flexDirection: 'column',
-          gap: '1rem',
-          border: '1px solid var(--color-border)',
+          gap: '0.85rem',
+          border: '1px solid rgba(217, 4, 41, 0.15)',
+          width: '100%',
+          boxSizing: 'border-box',
+          overflow: 'hidden',
         }}
       >
-        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', fontWeight: 700, fontSize: '0.88rem', color: 'var(--color-pink-primary)' }}>
-          <Sliders size={16} />
-          <span>AI Beauty Retouching (Tingkat Kehalusan & Cahaya)</span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', fontWeight: 800, fontSize: '0.82rem', color: 'var(--color-burgundy-deep)', minWidth: 0 }}>
+          <Sliders size={15} style={{ flexShrink: 0 }} />
+          <span style={{ overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>AI Beauty & Retouching</span>
         </div>
 
         {/* Skin Smoothness Slider */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 600 }}>
-            <span>✨ AI Skin Smoothness (Kehalusan Kulit)</span>
-            <span style={{ color: 'var(--color-pink-primary)', fontWeight: 700 }}>{skinSmoothness}%</span>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', width: '100%', boxSizing: 'border-box' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', width: '100%', minWidth: 0 }}>
+            <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--color-neutral-dark)', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>
+              ✨ Kehalusan Kulit (Smooth)
+            </span>
+            <span style={{ fontSize: '0.78rem', fontWeight: 900, color: 'var(--color-burgundy-deep)', flexShrink: 0 }}>
+              {skinSmoothness}%
+            </span>
           </div>
           <input
             type="range"
@@ -95,17 +115,19 @@ export const FilterPicker: React.FC<FilterPickerProps> = ({
             max="100"
             value={skinSmoothness}
             onChange={(e) => onSkinSmoothnessChange && onSkinSmoothnessChange(Number(e.target.value))}
-            style={{ accentColor: 'var(--color-pink-primary)', cursor: 'pointer', width: '100%' }}
+            style={{ accentColor: 'var(--color-burgundy-deep)', cursor: 'pointer', width: '100%', margin: 0, boxSizing: 'border-box' }}
           />
         </div>
 
         {/* Beauty Brightness Slider */}
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '0.8rem', fontWeight: 600 }}>
-            <span style={{ display: 'flex', alignItems: 'center', gap: '0.25rem' }}>
-              <Sun size={14} color="#f59e0b" /> Beauty Studio Brightness (Pencahayaan)
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', width: '100%', boxSizing: 'border-box' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', gap: '0.5rem', width: '100%', minWidth: 0 }}>
+            <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--color-neutral-dark)', display: 'flex', alignItems: 'center', gap: '0.3rem', overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap', minWidth: 0 }}>
+              <Sun size={14} color="#f59e0b" style={{ flexShrink: 0 }} /> Pencahayaan Studio (Light)
             </span>
-            <span style={{ color: 'var(--color-pink-primary)', fontWeight: 700 }}>{beautyBrightness}%</span>
+            <span style={{ fontSize: '0.78rem', fontWeight: 900, color: 'var(--color-burgundy-deep)', flexShrink: 0 }}>
+              {beautyBrightness}%
+            </span>
           </div>
           <input
             type="range"
@@ -113,7 +135,7 @@ export const FilterPicker: React.FC<FilterPickerProps> = ({
             max="100"
             value={beautyBrightness}
             onChange={(e) => onBeautyBrightnessChange && onBeautyBrightnessChange(Number(e.target.value))}
-            style={{ accentColor: 'var(--color-pink-primary)', cursor: 'pointer', width: '100%' }}
+            style={{ accentColor: 'var(--color-burgundy-deep)', cursor: 'pointer', width: '100%', margin: 0, boxSizing: 'border-box' }}
           />
         </div>
       </div>

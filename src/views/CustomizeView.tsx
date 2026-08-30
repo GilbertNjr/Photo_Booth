@@ -346,12 +346,16 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
           style={{
             background: 'white',
             borderRadius: 'var(--radius-xl)',
-            padding: '1.25rem',
+            padding: '0.9rem 0.85rem',
             boxShadow: 'var(--shadow-card)',
             border: '1px solid var(--color-border-soft)',
             display: 'flex',
             flexDirection: 'column',
-            gap: '1.25rem',
+            gap: '1rem',
+            width: '100%',
+            maxWidth: '100%',
+            boxSizing: 'border-box',
+            overflow: 'hidden',
           }}
         >
           {/* Sheet Handle Indicator */}
