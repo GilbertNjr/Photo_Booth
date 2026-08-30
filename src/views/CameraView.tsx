@@ -41,10 +41,12 @@ export const CameraView: React.FC<CameraViewProps> = ({
   const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
   const [activeSlotIndex, setActiveSlotIndex] = useState<number>(0);
   const [isCapturingSequence, setIsCapturingSequence] = useState(false);
+  const [isSessionStarted, setIsSessionStarted] = useState(false);
   const [currentCountdown, setCurrentCountdown] = useState<number | null>(null);
   const [showFlash, setShowFlash] = useState(false);
 
   const activePreset = FILM_PRESETS.find((p) => p.id === selectedFilmPreset) || FILM_PRESETS[0];
+  const isAllPhotosDone = capturedPhotos.filter(Boolean).length === template.photoSlotsCount;
 
   // Initialize Camera
   useEffect(() => {
@@ -67,35 +69,31 @@ export const CameraView: React.FC<CameraViewProps> = ({
     };
   }, []);
 
-  // AI Real-Time Smile & Pose Auto-Capture Loop
+  // AI Real-Time Smile & Pose Auto-Capture Loop (STOPS completely when isAllPhotosDone is true)
   useEffect(() => {
-    if (!isAISmileEnabled || !isCameraReady || isCapturingSequence) return;
+    if (!isAISmileEnabled || !isCameraReady || isCapturingSequence || isAllPhotosDone) return;
 
     const interval = setInterval(() => {
-      if (videoRef.current && !isCapturingSequence) {
+      if (videoRef.current && !isCapturingSequence && !isAllPhotosDone) {
         const res = GestureService.detectGesture(videoRef.current);
         setAiResult(res);
 
         // Auto-trigger shutter when smile, wave or 2-finger pose detected from long distance (1-2.5m)
         if (res.confidence >= 0.65 && (res.gesture === 'smile' || res.gesture === 'peace' || res.gesture === 'wave')) {
+          setIsSessionStarted(true);
           startCaptureSequence();
         }
       }
     }, 500);
 
     return () => clearInterval(interval);
-  }, [isAISmileEnabled, isCameraReady, isCapturingSequence]);
+  }, [isAISmileEnabled, isCameraReady, isCapturingSequence, isAllPhotosDone]);
 
   // Handle Capture Sequence (Failsafe & Robust for All Slots)
   const startCaptureSequence = async () => {
-    if (isCapturingSequence || !videoRef.current) return;
+    if (isCapturingSequence || !videoRef.current || isAllPhotosDone) return;
 
-    // Reset captured photos if starting from beginning when all were done
-    if (capturedPhotos.filter(Boolean).length === template.photoSlotsCount) {
-      setCapturedPhotos([]);
-      setActiveSlotIndex(0);
-    }
-
+    setIsSessionStarted(true);
     setIsCapturingSequence(true);
 
     try {
@@ -160,8 +158,6 @@ export const CameraView: React.FC<CameraViewProps> = ({
       setCurrentCountdown(null);
     }
   };
-
-  const isAllPhotosDone = capturedPhotos.filter(Boolean).length === template.photoSlotsCount;
 
   return (
     <div className="camera-card-mockup-wrapper">
@@ -427,6 +423,36 @@ export const CameraView: React.FC<CameraViewProps> = ({
             </div>
           )}
 
+          {/* Standby Prompt Banner (Shown before user starts capture session) */}
+          {!isSessionStarted && !isCapturingSequence && !isAllPhotosDone && isCameraReady && (
+            <div
+              style={{
+                position: 'absolute',
+                bottom: '18px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: 'rgba(26, 24, 23, 0.85)',
+                backdropFilter: 'blur(10px)',
+                color: '#ffffff',
+                padding: '0.55rem 1.1rem',
+                borderRadius: '9999px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.55rem',
+                boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
+                zIndex: 30,
+                border: '1.5px solid rgba(255,255,255,0.25)',
+                pointerEvents: 'none',
+                whiteSpace: 'nowrap',
+              }}
+            >
+              <CameraIcon size={16} color="#FFD166" />
+              <span style={{ fontSize: '0.8rem', fontWeight: 800 }}>
+                Klik tombol kamera 📸 atau Pose ✌️ untuk Mulai
+              </span>
+            </div>
+          )}
+
           {/* Camera Loading Screen */}
           {!isCameraReady && (
             <div className="mockup-camera-loading">
@@ -437,7 +463,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
           )}
         </div>
 
-        {/* Feedback Subtitle (Screen 3: "Bagus! Lanjut ke pose berikutnya ✦") */}
+        {/* Feedback Subtitle */}
         {capturedPhotos.filter(Boolean).length > 0 && currentCountdown === null && (
           <p className="mockup-feedback-subtitle">
             {isAllPhotosDone
@@ -538,7 +564,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
           <button
             className="mockup-main-shutter-btn"
             onClick={startCaptureSequence}
-            disabled={isCapturingSequence || !isCameraReady}
+            disabled={isCapturingSequence || !isCameraReady || isAllPhotosDone}
             title="Klik untuk Ambil Foto 📸"
           >
             <div className="shutter-inner-icon">
@@ -554,9 +580,9 @@ export const CameraView: React.FC<CameraViewProps> = ({
           </div>
         </div>
 
-        {/* Proceed to Customize Button when all shots done */}
+        {/* Proceed to Customize / Retake Buttons when all shots done */}
         {isAllPhotosDone && (
-          <div style={{ marginTop: '1rem', width: '100%' }}>
+          <div style={{ marginTop: '1rem', width: '100%', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
             <Button
               variant="primary"
               onClick={() => onPhotosCaptured(capturedPhotos)}
@@ -573,6 +599,28 @@ export const CameraView: React.FC<CameraViewProps> = ({
               <Sparkles size={18} />
               <span>Lihat Hasil & Edit Bingkai ✨</span>
             </Button>
+
+            <button
+              type="button"
+              onClick={() => {
+                setCapturedPhotos([]);
+                setActiveSlotIndex(0);
+                setIsSessionStarted(false);
+              }}
+              style={{
+                width: '100%',
+                padding: '0.65rem',
+                borderRadius: '9999px',
+                background: '#ffffff',
+                border: '1.5px solid var(--color-border)',
+                color: 'var(--color-neutral-dark)',
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+              }}
+            >
+              🔄 Foto Ulang Dari Awal
+            </button>
           </div>
         )}
       </div>
