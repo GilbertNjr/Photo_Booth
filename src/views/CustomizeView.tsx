@@ -146,7 +146,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
   };
 
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', paddingBottom: '90px' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', paddingBottom: '140px' }}>
       {/* Header Bar matching "Make It Yours" */}
       <div
         style={{
@@ -238,6 +238,75 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
         >
           {livePreviewUrl ? (
             <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', minWidth: 0, minHeight: 0, margin: '0 auto' }}>
+              
+              {/* Quick Floating Toolbar for Active Sticker */}
+              {selectedStickerId && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '12px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    zIndex: 120,
+                    background: 'rgba(122, 28, 40, 0.92)',
+                    backdropFilter: 'blur(12px)',
+                    color: 'white',
+                    padding: '0.35rem 0.75rem',
+                    borderRadius: '9999px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.4rem',
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const st = placedStickers.find((s) => s.id === selectedStickerId);
+                      if (st) handleUpdateSticker(st.id, { scale: Math.max(0.3, Math.round(((st.scale || 1) - 0.15) * 100) / 100) });
+                    }}
+                    style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', padding: '0.2rem 0.5rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 800, cursor: 'pointer' }}
+                    title="Perkecil Stiker"
+                  >
+                    ➖ Perkecil
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const st = placedStickers.find((s) => s.id === selectedStickerId);
+                      if (st) handleUpdateSticker(st.id, { scale: Math.min(3.0, Math.round(((st.scale || 1) + 0.15) * 100) / 100) });
+                    }}
+                    style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', padding: '0.2rem 0.5rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 800, cursor: 'pointer' }}
+                    title="Perbesar Stiker"
+                  >
+                    ➕ Perbesar
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const st = placedStickers.find((s) => s.id === selectedStickerId);
+                      if (st) handleUpdateSticker(st.id, { rotation: ((st.rotation || 0) + 15) % 360 });
+                    }}
+                    style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', padding: '0.2rem 0.5rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 800, cursor: 'pointer' }}
+                    title="Putar Stiker"
+                  >
+                    🔄
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleRemoveSticker(selectedStickerId)}
+                    style={{ background: '#ef4444', border: 'none', color: 'white', padding: '0.2rem 0.5rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 800, cursor: 'pointer' }}
+                    title="Hapus Stiker"
+                  >
+                    ✕
+                  </button>
+                </div>
+              )}
+
               <img
                 src={livePreviewUrl}
                 alt="Live Customized Preview"
@@ -295,41 +364,132 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                         <StickerIllustration content={st.content} size={48} />
                       </div>
 
-                      {/* Delete handle when selected */}
+                      {/* Interactive control handles when selected */}
                       {isSelected && (
-                        <div
-                          style={{
-                            position: 'absolute',
-                            top: '-10px',
-                            right: '-10px',
-                            display: 'flex',
-                            gap: '4px',
-                          }}
-                        >
+                        <>
+                          {/* Top-Right: Delete Handle */}
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
                               handleRemoveSticker(st.id);
                             }}
                             style={{
-                              width: '22px',
-                              height: '22px',
+                              position: 'absolute',
+                              top: '-12px',
+                              right: '-12px',
+                              width: '24px',
+                              height: '24px',
                               borderRadius: '50%',
                               background: '#ef4444',
                               color: 'white',
-                              border: 'none',
+                              border: '2px solid #ffffff',
                               fontSize: '12px',
+                              fontWeight: 800,
                               cursor: 'pointer',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                              zIndex: 60,
                             }}
                             title="Hapus Stiker"
                           >
                             ✕
                           </button>
-                        </div>
+
+                          {/* Bottom-Right: Scale Up (Perbesar) Handle */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const newScale = Math.min(3.0, Math.round(((st.scale || 1) + 0.15) * 100) / 100);
+                              handleUpdateSticker(st.id, { scale: newScale });
+                            }}
+                            style={{
+                              position: 'absolute',
+                              bottom: '-12px',
+                              right: '-12px',
+                              width: '24px',
+                              height: '24px',
+                              borderRadius: '50%',
+                              background: 'var(--color-burgundy-deep)',
+                              color: 'white',
+                              border: '2px solid #ffffff',
+                              fontSize: '13px',
+                              fontWeight: 800,
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                              zIndex: 60,
+                            }}
+                            title="Perbesar Stiker (+)"
+                          >
+                            ➕
+                          </button>
+
+                          {/* Bottom-Left: Scale Down (Perkecil) Handle */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const newScale = Math.max(0.3, Math.round(((st.scale || 1) - 0.15) * 100) / 100);
+                              handleUpdateSticker(st.id, { scale: newScale });
+                            }}
+                            style={{
+                              position: 'absolute',
+                              bottom: '-12px',
+                              left: '-12px',
+                              width: '24px',
+                              height: '24px',
+                              borderRadius: '50%',
+                              background: 'var(--color-burgundy-deep)',
+                              color: 'white',
+                              border: '2px solid #ffffff',
+                              fontSize: '13px',
+                              fontWeight: 800,
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                              zIndex: 60,
+                            }}
+                            title="Perkecil Stiker (-)"
+                          >
+                            ➖
+                          </button>
+
+                          {/* Top-Left: Rotate Handle */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              const newRot = ((st.rotation || 0) + 15) % 360;
+                              handleUpdateSticker(st.id, { rotation: newRot });
+                            }}
+                            style={{
+                              position: 'absolute',
+                              top: '-12px',
+                              left: '-12px',
+                              width: '24px',
+                              height: '24px',
+                              borderRadius: '50%',
+                              background: '#3b82f6',
+                              color: 'white',
+                              border: '2px solid #ffffff',
+                              fontSize: '11px',
+                              fontWeight: 800,
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                              zIndex: 60,
+                            }}
+                            title="Putar Stiker (15°)"
+                          >
+                            🔄
+                          </button>
+                        </>
                       )}
                     </div>
                   );
@@ -523,18 +683,22 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
         </div>
       </div>
 
-      {/* Floating Sticky Bottom "Print & Save" Button */}
+      {/* Sticky Bottom "Print & Save" Action Bar */}
       <div
         style={{
           position: 'fixed',
-          bottom: '76px',
-          left: '50%',
-          transform: 'translateX(-50%)',
-          zIndex: 1010,
-          width: 'calc(100% - 32px)',
-          maxWidth: '380px',
+          bottom: 0,
+          left: 0,
+          right: 0,
+          zIndex: 1000,
+          padding: '0.75rem 1rem',
+          background: 'rgba(255, 255, 255, 0.94)',
+          backdropFilter: 'blur(16px)',
+          WebkitBackdropFilter: 'blur(16px)',
+          borderTop: '1px solid var(--color-border-soft)',
           display: 'flex',
           justifyContent: 'center',
+          alignItems: 'center',
         }}
       >
         <button
@@ -542,14 +706,15 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
           disabled={isRendering}
           style={{
             width: '100%',
-            background: 'var(--color-pink-primary)',
+            maxWidth: '380px',
+            background: 'var(--color-burgundy-deep)',
             color: '#ffffff',
-            padding: '0.95rem 1.75rem',
+            padding: '0.9rem 1.75rem',
             borderRadius: '9999px',
-            fontSize: '1.02rem',
+            fontSize: '1rem',
             fontWeight: 800,
             border: 'none',
-            boxShadow: '0 10px 30px rgba(211, 47, 47, 0.35)',
+            boxShadow: '0 8px 25px rgba(128, 0, 32, 0.3)',
             cursor: 'pointer',
             display: 'flex',
             alignItems: 'center',
@@ -559,7 +724,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
           }}
         >
           <Download size={20} />
-          <span>Unduh Foto (PNG)</span>
+          <span>{isRendering ? 'Menyiapkan Foto...' : 'Unduh Foto (PNG)'}</span>
         </button>
       </div>
     </div>

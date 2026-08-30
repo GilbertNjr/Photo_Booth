@@ -145,20 +145,60 @@ export const StickerPicker: React.FC<StickerPickerProps> = ({
                 </button>
               </div>
 
-              {/* Scale Slider */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
+              {/* Scale Slider & Quick Buttons */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
                 <Maximize2 size={14} color="var(--color-neutral-sub)" />
-                <span style={{ fontSize: '0.75rem', width: '50px', color: 'var(--color-neutral-sub)', fontWeight: 600 }}>Ukuran</span>
+                <span style={{ fontSize: '0.75rem', width: '48px', color: 'var(--color-neutral-sub)', fontWeight: 600 }}>Ukuran</span>
+                
+                <button
+                  type="button"
+                  onClick={() => onUpdateSticker(activeSticker.id, { scale: Math.max(0.3, Math.round(((activeSticker.scale || 1) - 0.15) * 100) / 100) })}
+                  style={{
+                    padding: '0.2rem 0.5rem',
+                    borderRadius: '8px',
+                    border: '1px solid var(--color-border)',
+                    background: '#ffffff',
+                    fontSize: '0.75rem',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    color: 'var(--color-burgundy-deep)',
+                  }}
+                  title="Perkecil Stiker"
+                >
+                  ➖ Perkecil
+                </button>
+
                 <input
                   type="range"
-                  min="0.5"
-                  max="2.5"
-                  step="0.1"
+                  min="0.3"
+                  max="3.0"
+                  step="0.05"
                   value={activeSticker.scale || 1}
                   onChange={(e) => onUpdateSticker(activeSticker.id, { scale: parseFloat(e.target.value) })}
-                  style={{ flex: 1, accentColor: 'var(--color-burgundy-deep)' }}
+                  style={{ flex: 1, accentColor: 'var(--color-burgundy-deep)', minWidth: '80px' }}
                 />
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, width: '32px' }}>{Math.round((activeSticker.scale || 1) * 100)}%</span>
+
+                <button
+                  type="button"
+                  onClick={() => onUpdateSticker(activeSticker.id, { scale: Math.min(3.0, Math.round(((activeSticker.scale || 1) + 0.15) * 100) / 100) })}
+                  style={{
+                    padding: '0.2rem 0.5rem',
+                    borderRadius: '8px',
+                    border: '1px solid var(--color-border)',
+                    background: '#ffffff',
+                    fontSize: '0.75rem',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    color: 'var(--color-burgundy-deep)',
+                  }}
+                  title="Perbesar Stiker"
+                >
+                  ➕ Perbesar
+                </button>
+
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, width: '38px', textAlign: 'right' }}>
+                  {Math.round((activeSticker.scale || 1) * 100)}%
+                </span>
               </div>
 
               {/* Rotation Slider */}
