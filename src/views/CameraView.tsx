@@ -2,6 +2,8 @@ import React, { useState, useEffect, useRef } from 'react';
 import type { TemplateData } from '../types/template';
 import { CameraService } from '../services/camera/cameraService';
 import { CaptureService } from '../services/capture/captureService';
+import { GestureService } from '../services/ai/gestureService';
+import type { AIGestureResult } from '../services/ai/gestureService';
 import { FILM_PRESETS } from '../services/filters/colorShaderService';
 import type { FilmGradeType } from '../services/filters/colorShaderService';
 import { Button } from '../components/Common/Button';
@@ -11,6 +13,8 @@ import {
   Clock,
   Grid,
   Sparkles,
+  Smile,
+  Zap,
 } from 'lucide-react';
 
 interface CameraViewProps {
@@ -27,11 +31,14 @@ export const CameraView: React.FC<CameraViewProps> = ({
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [mirror, setMirror] = useState(true);
-  const [soundEnabled, setSoundEnabled] = useState(true);
+  const [soundEnabled] = useState(true);
+  const [isFlashActive, setIsFlashActive] = useState(true);
   const [countdownSeconds, setCountdownSeconds] = useState<number>(3);
   const [showFaceGuide] = useState(true);
   const [showGridLines, setShowGridLines] = useState(false);
   const [selectedFilmPreset] = useState<FilmGradeType>('original');
+  const [isAISmileEnabled] = useState(true);
+  const [aiResult, setAiResult] = useState<AIGestureResult>({ gesture: 'none', confidence: 0, label: 'AI Smile Mode Aktif' });
 
   // Capture State
   const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
@@ -60,6 +67,25 @@ export const CameraView: React.FC<CameraViewProps> = ({
       CameraService.stopCamera();
     };
   }, []);
+
+  // AI Real-Time Smile & Pose Auto-Capture Loop
+  useEffect(() => {
+    if (!isAISmileEnabled || !isCameraReady || isCapturingSequence) return;
+
+    const interval = setInterval(() => {
+      if (videoRef.current && !isCapturingSequence) {
+        const res = GestureService.detectGesture(videoRef.current);
+        setAiResult(res);
+
+        // Auto-trigger shutter when smile or pose detected
+        if (res.confidence > 0.85 && (res.gesture === 'smile' || res.gesture === 'peace')) {
+          startCaptureSequence();
+        }
+      }
+    }, 500);
+
+    return () => clearInterval(interval);
+  }, [isAISmileEnabled, isCameraReady, isCapturingSequence]);
 
   // Handle Capture Sequence (Failsafe & Robust for All Slots)
   const startCaptureSequence = async () => {
@@ -105,8 +131,10 @@ export const CameraView: React.FC<CameraViewProps> = ({
         }
 
         // Flash effect
-        setShowFlash(true);
-        setTimeout(() => setShowFlash(false), 200);
+        if (isFlashActive) {
+          setShowFlash(true);
+          setTimeout(() => setShowFlash(false), 250);
+        }
 
         // Capture frame with failsafe
         if (videoRef.current) {
@@ -238,6 +266,35 @@ export const CameraView: React.FC<CameraViewProps> = ({
             </div>
           )}
 
+          {/* AI Real-time Smile & Pose HUD Pill */}
+          {isAISmileEnabled && isCameraReady && !isAllPhotosDone && (
+            <div
+              style={{
+                position: 'absolute',
+                top: '12px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                background: aiResult.confidence > 0.8 ? 'rgba(217, 4, 41, 0.92)' : 'rgba(26, 24, 23, 0.82)',
+                color: '#ffffff',
+                padding: '5px 14px',
+                borderRadius: '9999px',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '6px',
+                fontSize: '0.78rem',
+                fontWeight: 700,
+                backdropFilter: 'blur(4px)',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.25)',
+                zIndex: 20,
+                border: '1px solid rgba(255,255,255,0.2)',
+                transition: 'all 0.25s ease',
+              }}
+            >
+              <Smile size={14} color="#FFD166" />
+              <span>{aiResult.label}</span>
+            </div>
+          )}
+
           {/* Face Alignment Guide Overlay */}
           {showFaceGuide && !isAllPhotosDone && (
             <div className="face-alignment-guide">
@@ -273,33 +330,48 @@ export const CameraView: React.FC<CameraViewProps> = ({
           </p>
         )}
 
-        {/* Quick Toolbar below Viewfinder (⚡ Flash, ⏱️ Timer, 🔲 Grid) */}
+        {/* Quick Toolbar below Viewfinder (Kilatan, Pengatur waktu, Jaringan) */}
         <div className="camera-mockup-toolbar">
+          {/* Kilatan / Flash Toggle */}
           <button
-            className={`toolbar-toggle-btn ${soundEnabled ? 'active' : ''}`}
-            onClick={() => setSoundEnabled((p) => !p)}
-            title="Flash / Audio"
+            type="button"
+            className={`toolbar-toggle-btn ${isFlashActive ? 'active' : ''}`}
+            onClick={(e) => {
+              e.preventDefault();
+              setIsFlashActive((p) => !p);
+            }}
+            title={isFlashActive ? 'Matikan Flash' : 'Aktifkan Flash'}
           >
-            <span style={{ fontSize: '1.2rem' }}>⚡</span>
-            <span className="btn-lbl">Flash</span>
+            <Zap size={22} color={isFlashActive ? '#EAB308' : '#71717A'} fill={isFlashActive ? '#EAB308' : 'none'} />
+            <span className="btn-lbl">Kilatan</span>
           </button>
 
+          {/* Pengatur Waktu / Timer Toggle */}
           <button
+            type="button"
             className="toolbar-toggle-btn active"
-            onClick={() => setCountdownSeconds((sec) => (sec === 3 ? 5 : sec === 5 ? 10 : 3))}
-            title="Waktu Hitung Mundur"
+            onClick={(e) => {
+              e.preventDefault();
+              setCountdownSeconds((sec) => (sec === 3 ? 5 : sec === 5 ? 10 : 3));
+            }}
+            title="Ubah Pengatur Waktu"
           >
-            <Clock size={18} />
-            <span className="btn-lbl">Timer ({countdownSeconds}s)</span>
+            <Clock size={22} color="var(--color-neutral-dark)" />
+            <span className="btn-lbl">Pengatur waktu ( {countdownSeconds} detik)</span>
           </button>
 
+          {/* Jaringan / Grid Lines Toggle */}
           <button
+            type="button"
             className={`toolbar-toggle-btn ${showGridLines ? 'active' : ''}`}
-            onClick={() => setShowGridLines((p) => !p)}
-            title="Garis Kisi Grid"
+            onClick={(e) => {
+              e.preventDefault();
+              setShowGridLines((p) => !p);
+            }}
+            title={showGridLines ? 'Sembunyikan Garis Grid' : 'Tampilkan Garis Grid'}
           >
-            <Grid size={18} />
-            <span className="btn-lbl">Grid</span>
+            <Grid size={22} color={showGridLines ? 'var(--color-burgundy-deep)' : '#71717A'} />
+            <span className="btn-lbl">Jaringan</span>
           </button>
         </div>
 

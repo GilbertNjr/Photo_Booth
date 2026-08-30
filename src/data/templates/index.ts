@@ -10,7 +10,6 @@ import {
   templateSpecialDay,
   templateFilmStory,
   templateMovieLove,
-  templateBetterTogether,
   templateDailyChronicle,
 } from './masterTemplates';
 import { cardBurgundyGinghamScrapbook } from './burgundyScrapbook';
@@ -22,21 +21,12 @@ import {
   cardRetroVinylCassetteFilm,
 } from './fiveAssetTemplates';
 import {
-  cardScrapbook,
-  cardPolaroid,
-  cardFilmStrip,
-  cardTicket,
-  cardNewspaper,
   cardCuteSticker,
-  cardRetroCamera,
   cardMinimalLuxury,
   cardY2K,
   cardPostcard,
-  cardRomanticFlower,
-  cardPhotoboothClassic,
 } from './twelveCards';
 import {
-  nusantaraPostcard,
   jakartaLife4cuts,
   baliPolaroid,
   bandungDigicam,
@@ -46,60 +36,46 @@ import {
   seoulLife4Cuts,
   tokyoPurikura,
   parisRiviera,
-  romaCinema,
-  nycDigicam,
   nusantaraBatik,
 } from './globalCountry';
 
 export const TEMPLATES: TemplateData[] = [
-  // 🌟 Featured Pinterest Reference Frames
+  // 🌟 1. Featured Pinterest Art Direction
   templateCatchYoursStrip,
   templateCatchYoursDual,
   templateCaramelClick,
   templatePinkScrapbookCollage,
 
-  // 🌟 6 Master Curated Graphic Art Photobooth Templates
+  // 🎀 2. Curated Aesthetic Scrapbook & Romantic
   templateSweetMoment,
-  templateSpecialDay,
-  templateFilmStory,
-  templateMovieLove,
-  templateBetterTogether,
-  templateDailyChronicle,
-
-  // 🎨 Featured Asset Frame Cards
   cardFavoritePersonScrapbook,
   cardDarkRomanceCherries,
-  cardSilverDigicamGingham,
   cardILoveYouFloralGrid,
-  cardRetroVinylCassetteFilm,
   cardBurgundyGinghamScrapbook,
 
-  // 🎨 Distinct Pinterest Aesthetic Personality Cards
-  cardScrapbook,
-  cardPolaroid,
-  cardFilmStrip,
-  cardTicket,
-  cardNewspaper,
-  cardCuteSticker,
-  cardRetroCamera,
-  cardMinimalLuxury,
-  cardY2K,
-  cardPostcard,
-  cardRomanticFlower,
-  cardPhotoboothClassic,
+  // 📷 3. Analog Film, Vintage Tickets & 90s Digicam
+  templateSpecialDay,
+  templateFilmStory,
+  cardSilverDigicamGingham,
+  cardRetroVinylCassetteFilm,
+  templateDailyChronicle,
 
-  // 🇮🇩 Nusantara & Global Collection
-  nusantaraPostcard,
-  jakartaLife4cuts,
-  baliPolaroid,
-  bandungDigicam,
-  jogjaHeritage,
+  // 👑 4. Minimalist Editorial, Airmail Postcard & Y2K
+  cardMinimalLuxury,
+  cardPostcard,
+  cardY2K,
+  cardCuteSticker,
+  templateMovieLove,
+
+  // 🌏 5. Global Cities & Nusantara Cultural Heritage
   seoulLife4Cuts,
   tokyoPurikura,
   parisRiviera,
-  romaCinema,
-  nycDigicam,
+  baliPolaroid,
   nusantaraBatik,
+  jakartaLife4cuts,
+  bandungDigicam,
+  jogjaHeritage,
 ];
 
 export * from './masterTemplates';

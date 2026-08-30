@@ -1,7 +1,13 @@
 import React from 'react';
 import { StickerIllustration } from '../Common/StickerIllustration';
+import type { TemplateData } from '../../types/template';
+import { TemplateService } from '../../services/template/templateService';
 
-export const Hero3DFanDisplay: React.FC = () => {
+interface Hero3DFanDisplayProps {
+  onSelectTemplate?: (template: TemplateData) => void;
+}
+
+export const Hero3DFanDisplay: React.FC<Hero3DFanDisplayProps> = ({ onSelectTemplate }) => {
   // Sample high quality portrait photos for hero preview
   const photos1 = [
     'https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=400&q=80',
@@ -28,6 +34,13 @@ export const Hero3DFanDisplay: React.FC = () => {
     'https://images.unsplash.com/photo-1524504388940-b1c1722653e1?auto=format&fit=crop&w=400&q=80',
   ];
 
+  const handleStripClick = (templateId: string) => {
+    const tpl = TemplateService.getTemplateById(templateId) || TemplateService.getAllTemplates()[0];
+    if (tpl && onSelectTemplate) {
+      onSelectTemplate(tpl);
+    }
+  };
+
   return (
     <div className="hero-3d-container">
       {/* Decorative Floral & Sticker Accents */}
@@ -43,22 +56,32 @@ export const Hero3DFanDisplay: React.FC = () => {
 
       {/* Fan-Stacked 4 Photo Strips */}
       <div className="hero-fan-wrapper">
-        {/* Strip 1: 35mm Film Story (Far Left, Tilted -10 deg) */}
-        <div className="hero-strip strip-film">
+        {/* Strip 1: Catch Yours / Film Story (Far Left, Tilted -10 deg) */}
+        <div
+          className="hero-strip strip-film"
+          onClick={() => handleStripClick('template-catch-yours-strip')}
+          style={{ cursor: 'pointer' }}
+          title="Klik untuk memilih frame Catch Yours ✦"
+        >
           <div className="strip-tape-top" />
-          <div className="strip-header">35MM • FILM STORY</div>
+          <div className="strip-header">CATCH YOURS • STRIP</div>
           <div className="strip-photos">
             {photos1.map((url, i) => (
               <div key={i} className="strip-photo-box">
-                <img src={url} alt="Film Story sample" />
+                <img src={url} alt="Catch Yours sample" />
               </div>
             ))}
           </div>
-          <div className="strip-footer">FILM STORY ✦</div>
+          <div className="strip-footer">CATCH YOURS ♡</div>
         </div>
 
         {/* Strip 2: Special Day Burgundy Ticket (Center Left, Elevated, Tilted -2 deg) */}
-        <div className="hero-strip strip-ticket-burgundy">
+        <div
+          className="hero-strip strip-ticket-burgundy"
+          onClick={() => handleStripClick('master-02-special-day')}
+          style={{ cursor: 'pointer' }}
+          title="Klik untuk memilih frame Special Day ✦"
+        >
           <div className="ticket-pin-top">📍</div>
           <div className="ticket-barcode-top">||| |||| || ||||</div>
           <div className="ticket-title">Special Day</div>
@@ -75,7 +98,12 @@ export const Hero3DFanDisplay: React.FC = () => {
         </div>
 
         {/* Strip 3: Sweet Moment Pink Ribbon (Center Right, Tilted +8 deg) */}
-        <div className="hero-strip strip-sweet-pink">
+        <div
+          className="hero-strip strip-sweet-pink"
+          onClick={() => handleStripClick('master-01-sweet-moment')}
+          style={{ cursor: 'pointer' }}
+          title="Klik untuk memilih frame Sweet Moment ✦"
+        >
           <div className="strip-ribbon-bow">🎀</div>
           <div className="strip-title-script">Sweet Moment</div>
           <div className="strip-photos compact">
@@ -86,26 +114,31 @@ export const Hero3DFanDisplay: React.FC = () => {
             ))}
           </div>
           <div className="strip-teddy-sticker">🧸</div>
-          <div className="strip-footer-script">Spacie Together ♡</div>
+          <div className="strip-footer-script">Sweet Memories ♡</div>
         </div>
 
-        {/* Strip 4: Movie Love Vintage Blue Ticket (Far Right, Tilted +14 deg) */}
-        <div className="hero-strip strip-movie-blue">
+        {/* Strip 4: Caramel Click Cinema Ticket (Far Right, Tilted +14 deg) */}
+        <div
+          className="hero-strip strip-movie-blue"
+          onClick={() => handleStripClick('template-caramel-click-ticket')}
+          style={{ cursor: 'pointer' }}
+          title="Klik untuk memilih frame Caramel Click ✦"
+        >
           <div className="ticket-cutout cutout-left" />
           <div className="ticket-cutout cutout-right" />
           <div className="ticket-movie-header">
-            <div>Movie Love</div>
-            <div className="ticket-date-badge">DATE: 20.05.26</div>
+            <div>Caramel Click</div>
+            <div className="ticket-date-badge">CINEMA PASS</div>
           </div>
           <div className="strip-photos">
             {photos4.map((url, i) => (
               <div key={i} className="strip-photo-box">
-                <img src={url} alt="Movie Love sample" />
+                <img src={url} alt="Caramel Click sample" />
               </div>
             ))}
           </div>
           <div className="ticket-admit-box">
-            <div className="admit-text">ENJOY THE MOVIE • ADMIT ONE</div>
+            <div className="admit-text">CARAMEL CLICK • ADMIT ONE</div>
             <div className="admit-barcode">|||| | |||||| |||</div>
           </div>
         </div>

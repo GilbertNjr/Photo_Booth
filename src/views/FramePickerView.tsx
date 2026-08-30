@@ -88,9 +88,14 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
   }, [filteredTemplates, activeSelectedFrame]);
 
   const handleScrollToShowcase = () => {
-    if (showcaseRef.current) {
-      showcaseRef.current.scrollIntoView({ behavior: 'smooth' });
+    if (onExploreAllFrames) {
+      onExploreAllFrames();
     }
+    setTimeout(() => {
+      if (showcaseRef.current) {
+        showcaseRef.current.scrollIntoView({ behavior: 'smooth' });
+      }
+    }, 50);
   };
 
   return (
@@ -151,7 +156,7 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
 
           {/* Right Column: 3D Fan-Stacked Photo Strips */}
           <div className="hero-visual-content">
-            <Hero3DFanDisplay />
+            <Hero3DFanDisplay onSelectTemplate={onSelectFrame} />
           </div>
         </section>
       )}

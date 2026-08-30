@@ -2030,28 +2030,58 @@
   text-align: center;
 }
 
-/* Quick Toolbar (Flash, Timer, Grid) */
+/* Rule of Thirds Grid Lines Overlay */
+.grid-lines-overlay {
+  position: absolute;
+  inset: 0;
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-template-rows: repeat(3, 1fr);
+  pointer-events: none;
+  z-index: 12;
+  box-sizing: border-box;
+}
+
+.grid-lines-overlay > div {
+  border: 1px dashed rgba(255, 255, 255, 0.4);
+  box-sizing: border-box;
+}
+
+/* Quick Toolbar (Kilatan, Pengatur waktu, Jaringan) */
 .camera-mockup-toolbar {
   display: flex;
   align-items: center;
-  justify-content: center;
-  gap: 2.25rem;
+  justify-content: space-around;
+  gap: 1.5rem;
   margin-top: 1.25rem;
   width: 100%;
+  padding: 0.5rem 0.25rem;
 }
 
 .toolbar-toggle-btn {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 4px;
-  background: none;
+  gap: 6px;
+  background: transparent;
   border: none;
   color: var(--color-neutral-sub);
-  font-size: 0.75rem;
-  font-weight: 600;
+  font-size: 0.8rem;
+  font-weight: 700;
   cursor: pointer;
-  transition: color 0.2s ease;
+  padding: 0.4rem 0.6rem;
+  border-radius: 12px;
+  transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+  user-select: none;
+}
+
+.toolbar-toggle-btn:hover {
+  transform: translateY(-2px);
+  background: rgba(0, 0, 0, 0.03);
+}
+
+.toolbar-toggle-btn:active {
+  transform: scale(0.94);
 }
 
 .toolbar-toggle-btn.active {
