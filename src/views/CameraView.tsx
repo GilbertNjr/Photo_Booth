@@ -226,7 +226,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
             }}
           />
 
-          {/* Screen 2: Countdown Screen Overlay ("Bersiap!") */}
+          {/* Screen 2: Clean Transparent Countdown Screen Overlay */}
           {currentCountdown !== null && (
             <div className="mockup-countdown-overlay">
               <div className="countdown-glass-card">
@@ -237,7 +237,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
                   </span>
                   <span className="sparkle-right">✨</span>
                 </div>
-                <p className="countdown-subtitle">Bersiap untuk foto!</p>
+                <p className="countdown-subtitle">Tersenyum! 📸</p>
               </div>
             </div>
           )}
