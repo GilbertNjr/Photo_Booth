@@ -77,23 +77,28 @@ export const AboutView: React.FC<AboutViewProps> = ({ onBack }) => {
           alignItems: 'flex-start',
         }}
       >
-        {/* Pink Camera App Icon */}
+        {/* Official Brand Logo Box */}
         <div
           style={{
-            width: '68px',
-            height: '68px',
+            width: '90px',
+            height: '90px',
             borderRadius: '20px',
-            background: 'linear-gradient(135deg, #FFE4E6 0%, #FECDD3 100%)',
+            background: '#ffffff',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
-            color: '#E11D48',
             flexShrink: 0,
-            boxShadow: '0 6px 16px rgba(244, 63, 94, 0.18)',
-            border: '2px solid #ffffff',
+            boxShadow: '0 8px 24px rgba(217, 4, 41, 0.12)',
+            border: '1.5px solid #FCE7F3',
+            padding: '0.4rem',
+            overflow: 'hidden',
           }}
         >
-          <Camera size={34} />
+          <img
+            src="/pixbooth-logo.png"
+            alt="Pixbooth Official Logo"
+            style={{ width: '100%', height: '100%', objectFit: 'contain' }}
+          />
         </div>
 
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>

@@ -31,9 +31,19 @@ export const Navbar: React.FC<NavbarProps> = ({
     <header className="navbar-mockup">
       <div className="navbar-container">
         {/* Brand Logo */}
-        <div className="navbar-brand-box" onClick={() => handleMobileNav(onGoToStudio)} style={{ cursor: 'pointer' }}>
-          <span className="brand-logo-text">PIXBOOTH</span>
-          <span className="brand-camera-badge">📷</span>
+        <div className="navbar-brand-box" onClick={() => handleMobileNav(onGoToStudio)} style={{ cursor: 'pointer', display: 'flex', alignItems: 'center' }}>
+          <img
+            src="/pixbooth-logo.png"
+            alt="Pixbooth Logo"
+            style={{
+              height: '42px',
+              maxHeight: '42px',
+              width: 'auto',
+              objectFit: 'contain',
+              filter: 'drop-shadow(0 2px 6px rgba(0,0,0,0.08))',
+              transition: 'transform 0.2s ease',
+            }}
+          />
         </div>
 
         {/* Center Nav Links (Desktop) */}
