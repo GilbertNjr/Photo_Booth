@@ -1,6 +1,7 @@
 import React from 'react';
 import type { TemplateData } from '../../types/template';
 import { StickerIllustration } from '../Common/StickerIllustration';
+import { imageCacheService } from '../../services/imageService';
 
 interface FrameRenderProps {
   template: TemplateData;
@@ -48,7 +49,8 @@ export const FrameRender: React.FC<FrameRenderProps> = React.memo(({
   className = '',
   showPhotoPlaceholders = true,
 }) => {
-  const samplePhotos = template.samplePhotos || CATEGORY_SAMPLE_PHOTOS[template.category] || CATEGORY_SAMPLE_PHOTOS.cute;
+  const rawSamplePhotos = template.samplePhotos || CATEGORY_SAMPLE_PHOTOS[template.category] || CATEGORY_SAMPLE_PHOTOS.cute;
+  const samplePhotos = rawSamplePhotos.map((url) => imageCacheService.getOptimizedSampleUrl(url, 200, 65));
 
   return (
     <div
