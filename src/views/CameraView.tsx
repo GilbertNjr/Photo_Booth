@@ -244,29 +244,108 @@ export const CameraView: React.FC<CameraViewProps> = ({
             </div>
           )}
 
-          {/* Screen 3: Post Capture Overlay (Thumbnail Stack) */}
-          {capturedPhotos.filter(Boolean).length > 0 && currentCountdown === null && (
-            <div className="mockup-captured-overlay">
-              {/* Right Thumbnail Sidebar Stack with checkmark ✓ */}
-              <div className="captured-thumbs-sidebar">
-                {Array.from({ length: template.photoSlotsCount }).map((_, i) => {
-                  const img = capturedPhotos[i];
-                  return (
-                    <div key={i} className={`thumb-slot-box ${img ? 'completed' : ''}`}>
-                      {img ? (
-                        <>
-                          <img src={img} alt={`Slot ${i + 1}`} />
-                          <div className="slot-check-badge">✓</div>
-                        </>
-                      ) : (
-                        <span>{i + 1}</span>
-                      )}
-                    </div>
-                  );
-                })}
-              </div>
+          {/* 📐 Screen 3: Live Mini Frame Layout Grid Blueprint Overlay */}
+          <div
+            style={{
+              position: 'absolute',
+              top: '12px',
+              right: '12px',
+              width: '80px',
+              height: template.aspectRatio === '2x6' ? '145px' : '110px',
+              background: template.backgroundColor || 'rgba(255, 255, 255, 0.95)',
+              borderRadius: '12px',
+              border: '2px solid rgba(128, 0, 32, 0.35)',
+              boxShadow: '0 8px 24px rgba(0, 0, 0, 0.4), inset 0 0 0 1px rgba(255,255,255,0.4)',
+              padding: '6px',
+              boxSizing: 'border-box',
+              zIndex: 25,
+              pointerEvents: 'none',
+              overflow: 'hidden',
+              backdropFilter: 'blur(4px)',
+              display: 'flex',
+              flexDirection: 'column',
+              justifyContent: 'space-between',
+            }}
+          >
+            {/* Grid Layout Container */}
+            <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+              {template.photoSlots.map((slot, i) => {
+                const img = capturedPhotos[i];
+                const isActive = (i === activeSlotIndex && isCapturingSequence) || (currentCountdown !== null && i === activeSlotIndex);
+                return (
+                  <div
+                    key={slot.id || i}
+                    style={{
+                      position: 'absolute',
+                      left: `${slot.x}%`,
+                      top: `${slot.y}%`,
+                      width: `${slot.width}%`,
+                      height: `${slot.height}%`,
+                      transform: slot.rotation ? `rotate(${slot.rotation}deg)` : 'none',
+                      borderRadius: '4px',
+                      border: isActive
+                        ? '2px solid #D90429'
+                        : img
+                        ? '1px solid #10B981'
+                        : '1px dashed rgba(128, 0, 32, 0.4)',
+                      background: img
+                        ? '#000000'
+                        : isActive
+                        ? 'rgba(217, 4, 41, 0.25)'
+                        : 'rgba(255, 255, 255, 0.75)',
+                      boxSizing: 'border-box',
+                      overflow: 'hidden',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      boxShadow: isActive ? '0 0 10px rgba(217, 4, 41, 0.9)' : 'none',
+                      transition: 'all 0.25s ease',
+                    }}
+                  >
+                    {img ? (
+                      <div style={{ position: 'relative', width: '100%', height: '100%' }}>
+                        <img
+                          src={img}
+                          alt={`Slot ${i + 1}`}
+                          style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
+                        />
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '2px',
+                            right: '2px',
+                            width: '12px',
+                            height: '12px',
+                            borderRadius: '50%',
+                            background: '#10B981',
+                            color: '#ffffff',
+                            fontSize: '0.5rem',
+                            fontWeight: 900,
+                            display: 'flex',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            boxShadow: '0 2px 4px rgba(0,0,0,0.3)',
+                          }}
+                        >
+                          ✓
+                        </div>
+                      </div>
+                    ) : (
+                      <span
+                        style={{
+                          fontSize: '0.62rem',
+                          fontWeight: 800,
+                          color: isActive ? '#D90429' : 'rgba(0, 0, 0, 0.5)',
+                        }}
+                      >
+                        {isActive ? '📸' : i + 1}
+                      </span>
+                    )}
+                  </div>
+                );
+              })}
             </div>
-          )}
+          </div>
 
           {/* AI Real-time Smile & Pose HUD Pill (Hidden during Countdown) */}
           {isAISmileEnabled && isCameraReady && !isAllPhotosDone && currentCountdown === null && (
