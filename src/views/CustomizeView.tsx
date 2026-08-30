@@ -220,7 +220,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
             padding: '0.65rem',
             width: '100%',
             maxWidth: 'min(calc(100vw - 32px), 400px)',
-            maxHeight: 'min(50vh, 480px)',
+            height: 'clamp(280px, 44vh, 460px)',
             margin: '0 auto',
             display: 'flex',
             alignItems: 'center',
