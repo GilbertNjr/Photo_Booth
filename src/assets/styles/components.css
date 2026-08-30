@@ -1278,6 +1278,17 @@
   perspective: 1000px;
 }
 
+.hero-3d-container::before {
+  content: '';
+  position: absolute;
+  inset: -15px;
+  background: radial-gradient(circle at 50% 50%, rgba(255, 240, 243, 0.9) 0%, rgba(247, 231, 219, 0.5) 60%, transparent 80%);
+  filter: blur(24px);
+  border-radius: 50px;
+  z-index: 0;
+  pointer-events: none;
+}
+
 .hero-fan-wrapper {
   position: relative;
   width: 380px;
@@ -1285,33 +1296,60 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  z-index: 1;
 }
 
-/* Base Photo Strip Style */
+/* Floor Shadow Aura under 3D Fan */
+.hero-fan-wrapper::after {
+  content: '';
+  position: absolute;
+  bottom: -24px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90%;
+  height: 44px;
+  background: radial-gradient(ellipse at center, rgba(122, 28, 40, 0.32) 0%, rgba(0, 0, 0, 0.2) 50%, transparent 80%);
+  filter: blur(18px);
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Base Photo Strip Style with Multi-Layer 3D Drop Shadows */
 .hero-strip {
   position: absolute;
   width: 110px;
   padding: 0.6rem 0.5rem;
-  border-radius: 8px;
-  box-shadow: 0 16px 36px rgba(0, 0, 0, 0.22);
+  border-radius: 12px;
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.08),
+    0 18px 36px -6px rgba(0, 0, 0, 0.3),
+    0 32px 64px -12px rgba(122, 28, 40, 0.22);
   transition: transform 0.35s cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 0.35s ease;
   cursor: pointer;
   user-select: none;
 }
 
 .hero-strip:hover {
-  transform: translateY(-12px) scale(1.08) rotate(0deg) !important;
-  z-index: 20 !important;
-  box-shadow: 0 24px 48px rgba(0, 0, 0, 0.35);
+  transform: translateY(-18px) scale(1.1) rotate(0deg) !important;
+  z-index: 30 !important;
+  box-shadow:
+    0 10px 20px rgba(0, 0, 0, 0.15),
+    0 32px 64px -4px rgba(0, 0, 0, 0.42),
+    0 48px 90px -8px rgba(122, 28, 40, 0.38) !important;
 }
 
-/* Strip 1: 35mm Film Story */
+/* Strip 1: 35mm Film Story (Black Card Shadow) */
 .strip-film {
   background: #18181B;
   color: #FFFFFF;
   left: 0;
   transform: rotate(-10deg) translateY(10px);
   z-index: 1;
+  box-shadow:
+    0 4px 8px rgba(0, 0, 0, 0.15),
+    0 20px 40px -6px rgba(0, 0, 0, 0.48),
+    0 36px 70px -10px rgba(24, 24, 27, 0.38);
 }
 
 .strip-tape-top {
@@ -1362,7 +1400,7 @@
   letter-spacing: 0.05em;
 }
 
-/* Strip 2: Special Day Burgundy Ticket */
+/* Strip 2: Special Day Burgundy Ticket (Hero Front Card Shadow) */
 .strip-ticket-burgundy {
   background: #7A1C28;
   color: #F9F6EE;
@@ -1370,6 +1408,10 @@
   transform: rotate(-2deg) translateY(-15deg);
   z-index: 4;
   border: 2px solid #500A14;
+  box-shadow:
+    0 6px 14px rgba(0, 0, 0, 0.18),
+    0 26px 54px -4px rgba(122, 28, 40, 0.52),
+    0 44px 84px -12px rgba(80, 10, 20, 0.42);
 }
 
 .ticket-pin-top {
@@ -1408,7 +1450,7 @@
   margin-top: 0.3rem;
 }
 
-/* Strip 3: Sweet Moment Pink Ribbon */
+/* Strip 3: Sweet Moment Pink Ribbon (Rose Pink Shadow) */
 .strip-sweet-pink {
   background: #FFF0F3;
   color: #800020;
@@ -1416,6 +1458,10 @@
   transform: rotate(8deg) translateY(5px);
   z-index: 3;
   border: 2px stroke #FFB3C1;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.1),
+    0 22px 44px -6px rgba(224, 122, 95, 0.38),
+    0 36px 68px -10px rgba(128, 0, 32, 0.25);
 }
 
 .strip-ribbon-bow {
@@ -1446,7 +1492,7 @@
   margin-top: 0.2rem;
 }
 
-/* Strip 4: Movie Love Vintage Blue Ticket */
+/* Strip 4: Movie Love Vintage Blue Ticket (Royal Blue Shadow) */
 .strip-movie-blue {
   background: #3B82F6;
   color: #FFFFFF;
@@ -1454,6 +1500,10 @@
   transform: rotate(15deg) translateY(20px);
   z-index: 2;
   border: 2px dashed #60A5FA;
+  box-shadow:
+    0 4px 10px rgba(0, 0, 0, 0.12),
+    0 22px 46px -6px rgba(59, 130, 246, 0.45),
+    0 36px 72px -10px rgba(30, 64, 175, 0.32);
 }
 
 .ticket-cutout {
