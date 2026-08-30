@@ -36,7 +36,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
   const [countdownSeconds, setCountdownSeconds] = useState<number>(3);
   const [showFaceGuide] = useState(true);
   const [showGridLines, setShowGridLines] = useState(false);
-  const [selectedFilmPreset] = useState<FilmGradeType>('original');
+  const [selectedFilmPreset, setSelectedFilmPreset] = useState<FilmGradeType>('original');
   const [isAISmileEnabled] = useState(true);
   const [aiResult, setAiResult] = useState<AIGestureResult>({ gesture: 'none', confidence: 0, label: 'AI Smile Mode Aktif' });
 
@@ -46,6 +46,8 @@ export const CameraView: React.FC<CameraViewProps> = ({
   const [isCapturingSequence, setIsCapturingSequence] = useState(false);
   const [currentCountdown, setCurrentCountdown] = useState<number | null>(null);
   const [showFlash, setShowFlash] = useState(false);
+
+  const activePreset = FILM_PRESETS.find((p) => p.id === selectedFilmPreset) || FILM_PRESETS[0];
 
   // Initialize Camera
   useEffect(() => {
@@ -136,9 +138,9 @@ export const CameraView: React.FC<CameraViewProps> = ({
           setTimeout(() => setShowFlash(false), 250);
         }
 
-        // Capture frame with failsafe
+        // Capture frame with failsafe & live cinematic filter
         if (videoRef.current) {
-          const photoData = CaptureService.captureFrame(videoRef.current, mirror);
+          const photoData = CaptureService.captureFrame(videoRef.current, mirror, activePreset.filterCss);
           setCapturedPhotos((prev) => {
             const updated = [...prev];
             updated[slot] = photoData;
@@ -295,12 +297,14 @@ export const CameraView: React.FC<CameraViewProps> = ({
             </div>
           )}
 
-          {/* Face Alignment Guide Overlay */}
+          {/* Face Alignment Guide Overlay (Text hidden during countdown to prevent UI overlap) */}
           {showFaceGuide && !isAllPhotosDone && (
             <div className="face-alignment-guide">
-              <span className="face-alignment-guide-text">
-                {currentCountdown !== null ? 'Tersenyum! 📸' : 'Posisi Wajah Di Sini ✨'}
-              </span>
+              {currentCountdown === null && (
+                <span className="face-alignment-guide-text">
+                  Posisi Wajah Di Sini ✨
+                </span>
+              )}
             </div>
           )}
 
@@ -329,6 +333,73 @@ export const CameraView: React.FC<CameraViewProps> = ({
               : 'Bagus! Lanjut ke pose berikutnya ✦'}
           </p>
         )}
+
+        {/* 🎨 Live Pre-Capture Film Filter Selector Bar */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', width: '100%', margin: '0.5rem 0 0.25rem' }}>
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 0.25rem' }}>
+            <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--color-burgundy-deep)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+              <Sparkles size={14} color="#D90429" />
+              <span>Filter Foto Sebelum Capture:</span>
+            </span>
+            <span style={{ fontSize: '0.74rem', color: '#888', fontWeight: 600 }}>
+              {activePreset.name}
+            </span>
+          </div>
+
+          <div
+            style={{
+              display: 'flex',
+              gap: '0.5rem',
+              overflowX: 'auto',
+              paddingBottom: '0.35rem',
+              scrollbarWidth: 'none',
+              msOverflowStyle: 'none',
+              touchAction: 'pan-x',
+            }}
+          >
+            {FILM_PRESETS.map((preset) => {
+              const isSelected = selectedFilmPreset === preset.id;
+              return (
+                <button
+                  key={preset.id}
+                  type="button"
+                  onClick={() => setSelectedFilmPreset(preset.id)}
+                  style={{
+                    flexShrink: 0,
+                    padding: '0.4rem 0.75rem',
+                    borderRadius: '9999px',
+                    border: isSelected ? '2px solid var(--color-burgundy-deep)' : '1px solid var(--color-border)',
+                    background: isSelected ? 'var(--color-burgundy-deep)' : '#ffffff',
+                    color: isSelected ? '#ffffff' : 'var(--color-neutral-dark)',
+                    fontSize: '0.78rem',
+                    fontWeight: 700,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.35rem',
+                    boxShadow: isSelected ? '0 4px 12px rgba(128, 0, 32, 0.25)' : '0 2px 6px rgba(0,0,0,0.04)',
+                    transition: 'all 0.2s ease',
+                  }}
+                  title={preset.subtitle}
+                >
+                  <span
+                    style={{
+                      background: isSelected ? 'rgba(255,255,255,0.25)' : '#FFF1F2',
+                      color: isSelected ? '#ffffff' : '#D90429',
+                      padding: '0.15rem 0.35rem',
+                      borderRadius: '6px',
+                      fontSize: '0.68rem',
+                      fontWeight: 800,
+                    }}
+                  >
+                    {preset.badge}
+                  </span>
+                  <span>{preset.name}</span>
+                </button>
+              );
+            })}
+          </div>
+        </div>
 
         {/* Quick Toolbar below Viewfinder (Kilatan, Pengatur waktu, Jaringan) */}
         <div className="camera-mockup-toolbar">

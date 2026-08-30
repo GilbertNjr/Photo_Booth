@@ -81,9 +81,9 @@ export class CaptureService {
   }
 
   /**
-   * Capture a single frame from video element as base64 JPEG with auto studio portrait enhancement
+   * Capture a single frame from video element as base64 JPEG with live cinematic filter & studio portrait enhancement
    */
-  static captureFrame(videoElement: HTMLVideoElement, mirror: boolean = true): string {
+  static captureFrame(videoElement: HTMLVideoElement, mirror: boolean = true, filterCss?: string): string {
     try {
       const canvas = document.createElement('canvas');
       const w = videoElement.videoWidth || 1920;
@@ -98,8 +98,8 @@ export class CaptureService {
           ctx.scale(-1, 1);
         }
 
-        // Apply Auto Studio Lighting Enhancement (Brightness boost, skin warmth & contrast sharpening)
-        ctx.filter = 'brightness(1.08) contrast(1.06) saturate(1.08)';
+        // Apply Live Cinematic Filter or Auto Studio Lighting Enhancement
+        ctx.filter = filterCss || 'brightness(1.08) contrast(1.06) saturate(1.08)';
         ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
         ctx.filter = 'none';
       }

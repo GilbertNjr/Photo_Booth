@@ -156,7 +156,7 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
 
           {/* Right Column: 3D Fan-Stacked Photo Strips */}
           <div className="hero-visual-content">
-            <Hero3DFanDisplay onSelectTemplate={onSelectFrame} />
+            <Hero3DFanDisplay onSelectTemplate={(tpl) => setSelectedTemplateForModal(tpl)} />
           </div>
         </section>
       )}
