@@ -117,7 +117,11 @@ export const templateFilmStory: TemplateData = {
     { id: 'slot-3', x: 12, y: 50, width: 76, height: 18.5, rotation: 0, borderRadius: 2 },
     { id: 'slot-4', x: 12, y: 71.5, width: 76, height: 18.5, rotation: 0, borderRadius: 2 },
   ],
-  decorativeElements: [],
+  decorativeElements: [
+    { id: 'deco-sprocket-l', type: 'sprocket', content: '🎞️', x: 4, y: 5, fontSize: 32 },
+    { id: 'deco-sprocket-r', type: 'sprocket', content: '🎞️', x: 92, y: 5, fontSize: 32 },
+    { id: 'deco-cam', type: 'sticker', content: '📸', x: 86, y: 92, rotation: 10, fontSize: 34 },
+  ],
   textElements: [
     { id: 'text-head', defaultText: 'FILM STORY • 35MM KODAK PORTRA', placeholder: 'Header', x: 50, y: 3.5, fontFamily: 'Plus Jakarta Sans', fontSize: 13, color: '#F59E0B', align: 'center', isEditable: true },
     { id: 'text-foot', defaultText: 'ISO 400 • SAFETY FILM • EXP 36', placeholder: 'Footer', x: 50, y: 94.5, fontFamily: 'Plus Jakarta Sans', fontSize: 11.5, color: '#A1A1AA', align: 'center', isEditable: true },
