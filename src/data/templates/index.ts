@@ -1,7 +1,6 @@
 import type { TemplateData } from '../../types/template';
 import {
   templateCatchYoursStrip,
-  templateCatchYoursDual,
 } from './catchYours';
 import { templateCaramelClick } from './caramelClick';
 import { templatePinkScrapbookCollage } from './pinkScrapbookCollage';
@@ -18,64 +17,81 @@ import {
   cardDarkRomanceCherries,
   cardSilverDigicamGingham,
   cardILoveYouFloralGrid,
-  cardRetroVinylCassetteFilm,
 } from './fiveAssetTemplates';
 import {
-  cardCuteSticker,
   cardMinimalLuxury,
   cardY2K,
-  cardPostcard,
 } from './twelveCards';
 import {
-  jakartaLife4cuts,
-  baliPolaroid,
   bandungDigicam,
   jogjaHeritage,
 } from './indonesiaTemplates';
 import {
   seoulLife4Cuts,
   tokyoPurikura,
-  parisRiviera,
-  nusantaraBatik,
 } from './globalCountry';
+import {
+  gradNavyVictory,
+  gradBurgundyHonors,
+  gradEmeraldScholar,
+  gradGazettePress,
+} from './graduation';
+import {
+  friendshipBestieForever,
+  friendshipSquadGoals,
+  friendshipY2KGingham,
+} from './friendship';
+import {
+  bdayPartyCelebration,
+  bdayGoldenJubilee,
+  bdaySweetSixteen,
+  bdayCowgirlParty,
+} from './birthday';
 
 export const TEMPLATES: TemplateData[] = [
-  // 🌟 1. Featured Pinterest Art Direction
-  templateCatchYoursStrip,
-  templateCatchYoursDual,
-  templateCaramelClick,
-  templatePinkScrapbookCollage,
-
-  // 🎀 2. Curated Aesthetic Scrapbook & Romantic
+  // 💖 1. Romantic (5)
   templateSweetMoment,
   cardFavoritePersonScrapbook,
   cardDarkRomanceCherries,
   cardILoveYouFloralGrid,
-  cardBurgundyGinghamScrapbook,
-
-  // 📷 3. Analog Film, Vintage Tickets & 90s Digicam
-  templateSpecialDay,
-  templateFilmStory,
-  cardSilverDigicamGingham,
-  cardRetroVinylCassetteFilm,
-  templateDailyChronicle,
-
-  // 👑 4. Minimalist Editorial, Airmail Postcard & Y2K
-  cardMinimalLuxury,
-  cardPostcard,
-  cardY2K,
-  cardCuteSticker,
   templateMovieLove,
 
-  // 🌏 5. Global Cities & Nusantara Cultural Heritage
+  // 👯 2. Friendship / Bestie (5)
+  friendshipBestieForever,
+  friendshipSquadGoals,
+  templateCaramelClick,
+  friendshipY2KGingham,
+  cardBurgundyGinghamScrapbook,
+
+  // 🎓 3. Graduation (4)
+  gradNavyVictory,
+  gradBurgundyHonors,
+  gradEmeraldScholar,
+  gradGazettePress,
+
+  // 🎀 4. Cute (4)
+  templateCatchYoursStrip,
+  templatePinkScrapbookCollage,
   seoulLife4Cuts,
   tokyoPurikura,
-  parisRiviera,
-  baliPolaroid,
-  nusantaraBatik,
-  jakartaLife4cuts,
-  bandungDigicam,
+
+  // 📷 5. Vintage (4)
+  templateSpecialDay,
+  templateFilmStory,
+  templateDailyChronicle,
   jogjaHeritage,
+
+  // 💎 6. Minimal (4)
+  cardMinimalLuxury,
+  cardSilverDigicamGingham,
+  bandungDigicam,
+  cardY2K,
+
+  // 🎂 7. Birthday (4)
+  bdayPartyCelebration,
+  bdayGoldenJubilee,
+  bdaySweetSixteen,
+  bdayCowgirlParty,
 ];
 
 export * from './masterTemplates';
@@ -87,3 +103,6 @@ export * from './indonesiaTemplates';
 export * from './globalCountry';
 export * from './burgundyScrapbook';
 export * from './fiveAssetTemplates';
+export * from './graduation';
+export * from './friendship';
+export * from './birthday';

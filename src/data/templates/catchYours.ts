@@ -16,6 +16,7 @@ export const templateCatchYoursStrip: TemplateData = {
   canvasWidth: 600,
   canvasHeight: 1800,
   backgroundColor: '#EFE9DF',
+  backgroundGradient: 'linear-gradient(135deg, #F7F3EB 0%, #EFE9DF 50%, #E3D9CB 100%)',
   backgroundTexture: 'paper',
   frameBorderColor: '#8B2635',
   frameBorderWidth: 6,

@@ -17,6 +17,7 @@ export const templatePinkScrapbookCollage: TemplateData = {
   canvasWidth: 600,
   canvasHeight: 1800,
   backgroundColor: '#E8B4C0',
+  backgroundGradient: 'linear-gradient(135deg, #F8C0CE 0%, #E8B4C0 50%, #D898A8 100%)',
   backgroundTexture: 'vintage-paper',
   frameBorderColor: '#A84B66',
   frameBorderWidth: 4,
