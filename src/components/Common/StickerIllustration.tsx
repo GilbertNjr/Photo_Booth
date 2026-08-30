@@ -6,7 +6,7 @@ interface StickerIllustrationProps {
   color?: string;
 }
 
-export const StickerIllustration: React.FC<StickerIllustrationProps> = ({
+export const StickerIllustration: React.FC<StickerIllustrationProps> = React.memo(({
   content,
   size = 40,
 }) => {
@@ -297,6 +297,247 @@ export const StickerIllustration: React.FC<StickerIllustrationProps> = ({
         </svg>
       );
 
+    // 🎟️ Vintage Pink Photo Ticket & Day Pass (From Pinterest Image 1)
+    case '🎟️-pink-ticket':
+    case 'photo-ticket':
+    case 'photo-ticket-pink':
+      return (
+        <svg width={size * 2.8} height={size * 1.1} viewBox="0 0 240 96" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <filter id="ticketShadow" x="-5%" y="-5%" width="110%" height="115%" filterUnits="userSpaceOnUse">
+              <feDropShadow dx="0" dy="4" stdDeviation="3" floodColor="#000000" floodOpacity="0.15" />
+            </filter>
+          </defs>
+          <g filter="url(#ticketShadow)">
+            {/* Main Pink Ticket Body */}
+            <rect x="4" y="4" width="232" height="88" rx="4" fill="#F7C8D4" stroke="#B8657B" strokeWidth="2"/>
+            <rect x="8" y="8" width="224" height="80" rx="2" fill="#FCE9EF" stroke="#DF93A7" strokeWidth="1" strokeDasharray="3 3"/>
+            
+            {/* Perforated Vertical Stub Line */}
+            <line x1="172" y1="8" x2="172" y2="88" stroke="#B8657B" strokeWidth="1.5" strokeDasharray="3 3"/>
+
+            {/* Left & Right Notch Cutouts */}
+            <circle cx="4" cy="48" r="7" fill="#EAE4D9" stroke="#B8657B" strokeWidth="1.5"/>
+            <circle cx="236" cy="48" r="7" fill="#EAE4D9" stroke="#B8657B" strokeWidth="1.5"/>
+            <circle cx="172" cy="4" r="5" fill="#EAE4D9" stroke="#B8657B" strokeWidth="1.5"/>
+            <circle cx="172" cy="92" r="5" fill="#EAE4D9" stroke="#B8657B" strokeWidth="1.5"/>
+
+            {/* Header: PHOTO TICKET */}
+            <text x="20" y="32" fill="#3D2329" fontSize="16" fontFamily="'Playfair Display', serif" fontWeight="900" letterSpacing="0.08em">PHOTO</text>
+            <text x="20" y="48" fill="#3D2329" fontSize="16" fontFamily="'Playfair Display', serif" fontWeight="900" letterSpacing="0.08em">TICKET</text>
+            
+            {/* Minimal Sub Text */}
+            <text x="20" y="20" fill="#8C5362" fontSize="5.5" fontFamily="'Courier New', monospace" letterSpacing="0.05em">TEL: 021-9344</text>
+            
+            {/* Grid Table for Day/Month/Year */}
+            <rect x="20" y="55" width="140" height="22" fill="#FFFFFF" stroke="#B8657B" strokeWidth="1" opacity="0.9"/>
+            <line x1="52" y1="55" x2="52" y2="77" stroke="#B8657B" strokeWidth="1"/>
+            <line x1="90" y1="55" x2="90" y2="77" stroke="#B8657B" strokeWidth="1"/>
+            <line x1="122" y1="55" x2="122" y2="77" stroke="#B8657B" strokeWidth="1"/>
+            
+            <text x="25" y="64" fill="#6B3846" fontSize="6" fontFamily="'Plus Jakarta Sans', sans-serif" fontWeight="600">Day</text>
+            <text x="56" y="64" fill="#6B3846" fontSize="6" fontFamily="'Plus Jakarta Sans', sans-serif" fontWeight="600">Month</text>
+            <text x="94" y="64" fill="#6B3846" fontSize="6" fontFamily="'Plus Jakarta Sans', sans-serif" fontWeight="600">Year</text>
+            <text x="124" y="64" fill="#6B3846" fontSize="5" fontFamily="'Plus Jakarta Sans', sans-serif" fontWeight="600">Expiration</text>
+
+            <text x="20" y="85" fill="#8C5362" fontSize="6" fontFamily="'Courier New', monospace" fontWeight="bold">No. 009324</text>
+
+            {/* Right Stub: DAY PASS */}
+            <text x="180" y="20" fill="#8C5362" fontSize="5" fontFamily="'Courier New', monospace">TEL: 021-9344</text>
+            <text x="202" y="40" fill="#3D2329" fontSize="13" fontFamily="'Playfair Display', serif" fontWeight="900" textAnchor="middle" letterSpacing="0.06em">DAY</text>
+            <text x="202" y="54" fill="#3D2329" fontSize="13" fontFamily="'Playfair Display', serif" fontWeight="900" textAnchor="middle" letterSpacing="0.06em">PASS</text>
+            <line x1="182" y1="62" x2="222" y2="62" stroke="#B8657B" strokeWidth="0.8"/>
+            <text x="182" y="70" fill="#6B3846" fontSize="5.5" fontFamily="'Plus Jakarta Sans', sans-serif">For_Month_Year</text>
+            <text x="182" y="84" fill="#8C5362" fontSize="5" fontFamily="'Courier New', monospace">No. 009324</text>
+          </g>
+        </svg>
+      );
+
+    // ♥ Deep Maroon Watercolor Heart
+    case '♥-maroon':
+    case 'heart-maroon':
+    case 'heart-watercolor':
+      return (
+        <svg width={size} height={size} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 54C32 54 8 36 8 21C8 12.5 15.5 7 23 7C27.8 7 30.8 9.5 32 12C33.2 9.5 36.2 7 41 7C48.5 7 56 12.5 56 21C56 36 32 54 32 54Z" fill="#8C2635" opacity="0.88"/>
+          <path d="M26 16C21 11 14 14 14 21C14 29 25 38 28 41" stroke="#A93244" strokeWidth="2.5" strokeLinecap="round" opacity="0.5"/>
+          <circle cx="20" cy="18" r="2" fill="#FFFFFF" opacity="0.4"/>
+        </svg>
+      );
+
+    // 🎀 Vintage Scalloped Tag "the curious!" (From Pinterest Image 2)
+    case 'tag-curious':
+    case 'the-curious':
+      return (
+        <svg width={size * 1.8} height={size * 1.3} viewBox="0 0 120 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M60 22C52 12 40 16 45 26C50 34 60 22 60 22Z" fill="none" stroke="#2C2219" strokeWidth="2.5"/>
+          <path d="M60 22C68 12 80 16 75 26C70 34 60 22 60 22Z" fill="none" stroke="#2C2219" strokeWidth="2.5"/>
+          <circle cx="60" cy="22" r="3" fill="#2C2219"/>
+          <path d="M57 24L48 38" stroke="#2C2219" strokeWidth="2" strokeLinecap="round"/>
+          <path d="M63 24L72 38" stroke="#2C2219" strokeWidth="2" strokeLinecap="round"/>
+          <ellipse cx="60" cy="56" rx="46" ry="24" fill="#FAF5ED" stroke="#B8A388" strokeWidth="2"/>
+          <ellipse cx="60" cy="56" rx="42" ry="20" fill="#FFFDF9" stroke="#D8C8B0" strokeWidth="1" strokeDasharray="3 2"/>
+          <text x="60" y="55" fill="#8C2D38" fontSize="12" fontFamily="'Caveat', cursive" fontWeight="bold" fontStyle="italic" textAnchor="middle">the</text>
+          <text x="60" y="67" fill="#8C2D38" fontSize="15" fontFamily="'Caveat', cursive" fontWeight="bold" fontStyle="italic" textAnchor="middle">curious!</text>
+        </svg>
+      );
+
+    // 🎬 Vintage Movie Reel & Film Strip (From Pinterest Image 2)
+    case 'movie-film-reel':
+    case 'film-clapper':
+      return (
+        <svg width={size * 1.8} height={size * 1.3} viewBox="0 0 110 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="25" y="42" width="75" height="28" rx="3" fill="#FAF5ED" stroke="#4A3324" strokeWidth="2" transform="rotate(-6 25 42)"/>
+          <line x1="28" y1="48" x2="98" y2="40" stroke="#4A3324" strokeWidth="1" strokeDasharray="4 3"/>
+          <line x1="28" y1="64" x2="98" y2="56" stroke="#4A3324" strokeWidth="1" strokeDasharray="4 3"/>
+          <circle cx="34" cy="40" r="22" fill="#5C3E2D" stroke="#2C1D14" strokeWidth="2.5"/>
+          <circle cx="34" cy="40" r="16" fill="#FAF5ED" stroke="#4A3324" strokeWidth="1.5"/>
+          <circle cx="34" cy="40" r="6" fill="#2C1D14"/>
+          <circle cx="34" cy="29" r="3.5" fill="#5C3E2D"/>
+          <circle cx="34" cy="51" r="3.5" fill="#5C3E2D"/>
+          <circle cx="23" cy="40" r="3.5" fill="#5C3E2D"/>
+          <circle cx="45" cy="40" r="3.5" fill="#5C3E2D"/>
+        </svg>
+      );
+
+    // ⭐ 3D Metallic Glossy Star (From Pinterest Image 2)
+    case '3d-star-gold':
+    case 'star-3d':
+      return (
+        <svg width={size} height={size} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="starG1" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#FFFFFF"/>
+              <stop offset="50%" stopColor="#E6D3B8"/>
+              <stop offset="100%" stopColor="#B8976C"/>
+            </linearGradient>
+          </defs>
+          <path d="M32 4L37 27L60 32L37 37L32 60L27 37L4 32L27 27Z" fill="url(#starG1)" stroke="#8C684D" strokeWidth="1.5"/>
+          <path d="M32 4L32 60" stroke="#FFFFFF" strokeWidth="1" opacity="0.6"/>
+          <path d="M4 32L60 32" stroke="#FFFFFF" strokeWidth="1" opacity="0.6"/>
+        </svg>
+      );
+
+    // ❗ Pink Capsule Exclamation Mark Badge (From Pinterest Image 2)
+    case 'exclamation-pink':
+    case 'badge-exclamation':
+      return (
+        <svg width={size * 0.6} height={size * 1.2} viewBox="0 0 32 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="28" height="60" rx="14" fill="#E63956" stroke="#FFFFFF" strokeWidth="2.5"/>
+          <rect x="13" y="12" width="6" height="24" rx="3" fill="#FFFFFF"/>
+          <circle cx="16" cy="46" r="3.5" fill="#FFFFFF"/>
+        </svg>
+      );
+
+    // 🎟️ Caramel Click Cinema Barcode & Stub (From Pinterest Image 2)
+    case 'cinema-barcode':
+      return (
+        <svg width={size * 1.5} height={size * 0.9} viewBox="0 0 100 60" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <text x="50" y="14" fill="#3E271E" fontSize="7" fontFamily="'Outfit', sans-serif" fontWeight="bold" textAnchor="middle">Caramel Click</text>
+          <text x="50" y="22" fill="#8C684D" fontSize="5" fontFamily="'Outfit', sans-serif" textAnchor="middle">CINEMA PASS</text>
+          <rect x="10" y="28" width="4" height="22" fill="#2C1D14"/>
+          <rect x="17" y="28" width="2" height="22" fill="#2C1D14"/>
+          <rect x="22" y="28" width="5" height="22" fill="#2C1D14"/>
+          <rect x="30" y="28" width="2" height="22" fill="#2C1D14"/>
+          <rect x="35" y="28" width="6" height="22" fill="#2C1D14"/>
+          <rect x="44" y="28" width="2" height="22" fill="#2C1D14"/>
+          <rect x="49" y="28" width="4" height="22" fill="#2C1D14"/>
+          <rect x="56" y="28" width="3" height="22" fill="#2C1D14"/>
+          <rect x="62" y="28" width="6" height="22" fill="#2C1D14"/>
+          <rect x="71" y="28" width="2" height="22" fill="#2C1D14"/>
+          <rect x="76" y="28" width="4" height="22" fill="#2C1D14"/>
+          <rect x="83" y="28" width="3" height="22" fill="#2C1D14"/>
+          <rect x="89" y="28" width="2" height="22" fill="#2C1D14"/>
+          <text x="50" y="56" fill="#8C684D" fontSize="4.5" fontFamily="monospace" textAnchor="middle">№ 7492019-A</text>
+        </svg>
+      );
+
+    // ☀️ Sun Tarot Card (From Pinterest Image 4)
+    case 'sun-tarot':
+    case 'tarot-sun':
+      return (
+        <svg width={size * 1.1} height={size * 1.7} viewBox="0 0 70 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <rect x="2" y="2" width="66" height="106" rx="6" fill="#FCE4EC" stroke="#C97A8E" strokeWidth="2"/>
+          <rect x="5" y="5" width="60" height="100" rx="3" fill="#FFF5F7" stroke="#E598AC" strokeWidth="1"/>
+          <circle cx="35" cy="40" r="14" fill="#FFB703" stroke="#FB8500" strokeWidth="1.5"/>
+          <circle cx="31" cy="38" r="1.5" fill="#2C1D14"/>
+          <circle cx="39" cy="38" r="1.5" fill="#2C1D14"/>
+          <path d="M31 43C33 45 37 45 39 43" stroke="#2C1D14" strokeWidth="1" strokeLinecap="round"/>
+          <path d="M35 20L35 23M35 57L35 60M17 40L20 40M50 40L53 40M22 27L25 30M45 50L48 53M22 53L25 50M45 30L48 27" stroke="#FFB703" strokeWidth="2" strokeLinecap="round"/>
+          <ellipse cx="26" cy="63" rx="12" ry="6" fill="#F8BBD0"/>
+          <ellipse cx="44" cy="63" rx="12" ry="6" fill="#F48FB1"/>
+          <ellipse cx="35" cy="66" rx="16" ry="7" fill="#F06292"/>
+          <text x="35" y="93" fill="#880E4F" fontSize="7.5" fontFamily="'Playfair Display', serif" fontWeight="bold" letterSpacing="0.08em" textAnchor="middle">THE SUN</text>
+        </svg>
+      );
+
+    // 🌸 Die-cut Pink Lily Sticker (From Pinterest Image 4)
+    case 'pink-lily':
+    case 'flower-lily':
+      return (
+        <svg width={size * 1.5} height={size * 1.5} viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M40 6C50 18 70 26 74 40C70 54 50 62 40 74C30 62 10 54 6 40C10 26 30 18 40 6Z" fill="#FFFFFF" stroke="#F8BBD0" strokeWidth="3.5"/>
+          <path d="M40 12C46 23 60 30 66 40C60 50 46 57 40 68C34 57 20 50 14 40C20 30 34 23 40 12Z" fill="#F48FB1"/>
+          <path d="M22 22C34 32 40 45 40 66C40 45 46 32 58 22C46 30 34 30 22 22Z" fill="#EC407A" opacity="0.65"/>
+          <circle cx="40" cy="40" r="4" fill="#FFF59D"/>
+          <circle cx="40" cy="32" r="2" fill="#AD1457"/>
+          <circle cx="48" cy="36" r="2" fill="#AD1457"/>
+          <circle cx="46" cy="46" r="2" fill="#AD1457"/>
+          <circle cx="34" cy="46" r="2" fill="#AD1457"/>
+          <circle cx="32" cy="36" r="2" fill="#AD1457"/>
+        </svg>
+      );
+
+    // 👼 Marble Cherub Angel Statue (From Pinterest Image 4)
+    case 'cherub-angel':
+    case 'angel-statue':
+      return (
+        <svg width={size * 1.5} height={size * 1.3} viewBox="0 0 90 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M15 35C5 20 20 10 32 22C24 28 18 32 15 35Z" fill="#EDE7F6" stroke="#D1C4E9" strokeWidth="1.5"/>
+          <path d="M75 35C85 20 70 10 58 22C66 28 72 32 75 35Z" fill="#EDE7F6" stroke="#D1C4E9" strokeWidth="1.5"/>
+          <circle cx="45" cy="30" r="16" fill="#F5F5F5" stroke="#D7CCC8" strokeWidth="1.5"/>
+          <circle cx="45" cy="20" r="13" fill="#FFFFFF" stroke="#BCAAA4" strokeWidth="1.5"/>
+          <circle cx="38" cy="12" r="5" fill="#EFEBE9"/>
+          <circle cx="45" cy="10" r="5" fill="#EFEBE9"/>
+          <circle cx="52" cy="12" r="5" fill="#EFEBE9"/>
+          <ellipse cx="40" cy="20" rx="1.5" ry="1" fill="#8D6E63"/>
+          <ellipse cx="50" cy="20" rx="1.5" ry="1" fill="#8D6E63"/>
+          <path d="M43 25C44 26 46 26 47 25" stroke="#8D6E63" strokeWidth="1" strokeLinecap="round"/>
+          <ellipse cx="45" cy="46" rx="18" ry="10" fill="#FFFFFF" stroke="#D7CCC8" strokeWidth="1.5"/>
+        </svg>
+      );
+
+    // 🦋 3D Pink Aesthetic Butterfly (From Pinterest Image 4)
+    case 'butterfly-pink':
+    case 'butterfly-3d':
+      return (
+        <svg width={size * 1.5} height={size * 1.3} viewBox="0 0 90 75" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <linearGradient id="bfG2" x1="0" y1="0" x2="1" y2="1">
+              <stop offset="0%" stopColor="#F8BBD0"/>
+              <stop offset="60%" stopColor="#EC407A"/>
+              <stop offset="100%" stopColor="#AD1457"/>
+            </linearGradient>
+          </defs>
+          <path d="M45 42C30 18 5 28 15 50C25 65 42 48 45 42Z" fill="url(#bfG2)" stroke="#880E4F" strokeWidth="1.5"/>
+          <path d="M45 42C60 18 85 28 75 50C65 65 48 48 45 42Z" fill="url(#bfG2)" stroke="#880E4F" strokeWidth="1.5"/>
+          <path d="M45 46C34 50 20 65 32 72C42 75 45 52 45 46Z" fill="#C2185B" stroke="#880E4F" strokeWidth="1.5"/>
+          <path d="M45 46C56 50 70 65 58 72C48 75 45 52 45 46Z" fill="#C2185B" stroke="#880E4F" strokeWidth="1.5"/>
+          <line x1="45" y1="28" x2="45" y2="60" stroke="#2C1D14" strokeWidth="3.5" strokeLinecap="round"/>
+        </svg>
+      );
+
+    // ✨ Hand-drawn White Outline Doodle & Sparkles (From Pinterest Image 3)
+    case 'doodle-sparkle-white':
+    case 'sparkle-doodle':
+      return (
+        <svg width={size} height={size} viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M32 6C32 20 44 32 58 32C44 32 32 44 32 58C32 44 20 32 6 32C20 32 32 20 32 6Z" fill="#FFFFFF" stroke="rgba(0,0,0,0.2)" strokeWidth="1.5"/>
+          <circle cx="48" cy="16" r="3" fill="#FFFFFF"/>
+          <circle cx="16" cy="48" r="2.5" fill="#FFFFFF"/>
+        </svg>
+      );
+
     // Default fallback
     default:
       return (
@@ -305,4 +546,4 @@ export const StickerIllustration: React.FC<StickerIllustrationProps> = ({
         </span>
       );
   }
-};
+});

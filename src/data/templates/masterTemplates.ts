@@ -210,3 +210,48 @@ export const templateBetterTogether: TemplateData = {
   isPopular: true,
   isNew: true,
 };
+
+/**
+ * 🌟 06 — THE DAILY CHRONICLE
+ * ART DIRECTION: Vintage 1920s Editorial Gazette / Newspaper Press.
+ * MOOD: nostalgic, archival, editorial, classic, authentic newsprint.
+ * PALETTE: aged newsprint cream (#F4F0EA), deep charcoal ink (#1C1917), muted sepia (#78350F), washed gray (#52525B).
+ * COMPOSITION: Classic newspaper masthead with double rule borders, volume numbers, 3 photo slots formatted as news press photos with captions & barcode stub.
+ */
+export const templateDailyChronicle: TemplateData = {
+  id: 'master-06-daily-chronicle',
+  name: 'The Daily Chronicle',
+  subtitle: 'Vintage editorial newspaper masthead with newsprint grain, press photos & archival date stamp',
+  category: 'vintage',
+  style: 'newspaper',
+  photoSlotsCount: 3,
+  aspectRatio: '2:6',
+  canvasWidth: 600,
+  canvasHeight: 1800,
+  backgroundColor: '#F4F0EA',
+  backgroundTexture: 'vintage-paper',
+  frameBorderColor: '#1C1917',
+  frameBorderWidth: 4,
+  frameBorderRadius: 4,
+  accentColor: '#1C1917',
+  textColor: '#1C1917',
+  colorPalettes: ['#F4F0EA', '#1C1917', '#78350F', '#52525B'],
+  photoSlots: [
+    { id: 'slot-1', x: 10, y: 13, width: 80, height: 22, rotation: 0, borderRadius: 2 },
+    { id: 'slot-2', x: 10, y: 39, width: 80, height: 22, rotation: 0, borderRadius: 2 },
+    { id: 'slot-3', x: 10, y: 65, width: 80, height: 22, rotation: 0, borderRadius: 2 },
+  ],
+  decorativeElements: [
+    { id: 'deco-stamp', type: 'stamp', content: '📰', x: 86, y: 5.5, rotation: 6, fontSize: 32 },
+    { id: 'deco-barcode', type: 'barcode', content: '║▌║█║▌│║▌║▌█', x: 50, y: 90, fontSize: 20, color: '#1C1917' },
+  ],
+  textElements: [
+    { id: 'text-head', defaultText: 'THE DAILY CHRONICLE', placeholder: 'Masthead Header', x: 50, y: 4, fontFamily: 'Playfair Display', fontSize: 22, color: '#1C1917', align: 'center', isEditable: true },
+    { id: 'text-meta', defaultText: 'VOL. LXIV NO. 104 ✦ SPECIAL PHOTO BOOTH EDITION ✦ PRICE TWO CENTS', placeholder: 'Subheader', x: 50, y: 8, fontFamily: 'Plus Jakarta Sans', fontSize: 9.5, color: '#52525B', align: 'center', isEditable: true },
+    { id: 'text-foot', defaultText: 'ALL THE MEMORIES THAT ARE FIT TO PRINT', placeholder: 'Footer Caption', x: 50, y: 94.5, fontFamily: 'Playfair Display', fontSize: 13, color: '#1C1917', align: 'center', isEditable: true },
+  ],
+  tags: ['newspaper', 'daily-chronicle', 'gazette', 'editorial', 'vintage-press'],
+  isPopular: true,
+  isNew: true,
+};
+

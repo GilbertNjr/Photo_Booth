@@ -52,6 +52,7 @@ export interface TextElement {
   placeholder: string;
   x: number;          // % x
   y: number;          // % y
+  rotation?: number;  // degrees tilt (-45 to 45)
   fontFamily: string;
   fontSize: number;
   color: string;
@@ -72,7 +73,7 @@ export interface TemplateData {
   
   // Visual properties
   backgroundColor: string; // hex or CSS background
-  backgroundTexture?: 'none' | 'paper' | 'film-grain' | 'grid' | 'dots' | 'vintage-paper' | 'gingham' | 'gingham-red' | 'leica';
+  backgroundTexture?: 'none' | 'paper' | 'film-grain' | 'grid' | 'dots' | 'vintage-paper' | 'gingham' | 'gingham-red' | 'leica' | 'wood';
   backgroundGradient?: string;
   frameBorderColor: string;
   frameBorderWidth: number;

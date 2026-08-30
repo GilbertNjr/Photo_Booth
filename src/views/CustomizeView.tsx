@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Download } from 'lucide-react';
 import type { TemplateData } from '../types/template';
 import type { PhotoFilterType, PlacedSticker } from '../types/editor';
@@ -20,20 +20,26 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
   onBackToCamera,
   onApplyCustomization,
 }) => {
-  const [activeTab, setActiveTab] = useState<'filter' | 'color' | 'text' | 'stickers'>('filter');
+  const [activeTab, setActiveTab] = useState<'filter' | 'frame' | 'bg' | 'text' | 'stickers'>('stickers');
 
   // Customization State
   const [selectedFilter, setSelectedFilter] = useState<PhotoFilterType>('original');
   const [backgroundColor, setBackgroundColor] = useState<string>(template.backgroundColor);
+  const [backgroundTexture, setBackgroundTexture] = useState<string>(template.backgroundTexture || 'none');
   const [customTexts, setCustomTexts] = useState<Record<string, string>>({});
   const [customBottomText, setCustomBottomText] = useState<string>('2026.08.28 • PHOTO BOOTH STUDIO');
   const [placedStickers, setPlacedStickers] = useState<PlacedSticker[]>([]);
+  const [selectedStickerId, setSelectedStickerId] = useState<string | null>(null);
   const [skinSmoothness, setSkinSmoothness] = useState<number>(50);
   const [beautyBrightness, setBeautyBrightness] = useState<number>(50);
 
   // Live Canvas Rendering State
   const [livePreviewUrl, setLivePreviewUrl] = useState<string>('');
   const [isRendering, setIsRendering] = useState(false);
+
+  // Dragging sticker ref
+  const previewRef = useRef<HTMLDivElement>(null);
+  const dragRef = useRef<{ isDragging: boolean; startX: number; startY: number; initX: number; initY: number } | null>(null);
 
   // Re-render live preview whenever customization state changes
   useEffect(() => {
@@ -45,6 +51,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
       const dataUrl = await CanvasEngine.renderFullCanvas(canvas, template, capturedPhotos, {
         filter: selectedFilter,
         backgroundColor,
+        backgroundTexture,
         customTexts,
         customBottomText,
         placedStickers,
@@ -61,15 +68,16 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
     return () => {
       isCancelled = true;
     };
-  }, [template, capturedPhotos, selectedFilter, backgroundColor, customTexts, customBottomText, placedStickers, skinSmoothness, beautyBrightness]);
+  }, [template, capturedPhotos, selectedFilter, backgroundColor, backgroundTexture, customTexts, customBottomText, placedStickers, skinSmoothness, beautyBrightness]);
 
   const handleTextChange = (id: string, value: string) => {
     setCustomTexts((prev) => ({ ...prev, [id]: value }));
   };
 
   const handleAddSticker = (content: string) => {
+    const newId = `st-${Date.now()}-${Math.random()}`;
     const newSticker: PlacedSticker = {
-      id: `st-${Date.now()}-${Math.random()}`,
+      id: newId,
       stickerId: content,
       content,
       x: 30 + Math.random() * 40,
@@ -78,10 +86,56 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
       rotation: Math.floor(Math.random() * 30) - 15,
     };
     setPlacedStickers((prev) => [...prev, newSticker]);
+    setSelectedStickerId(newId);
   };
 
   const handleRemoveSticker = (id: string) => {
     setPlacedStickers((prev) => prev.filter((s) => s.id !== id));
+    if (selectedStickerId === id) {
+      setSelectedStickerId(null);
+    }
+  };
+
+  const handleUpdateSticker = (id: string, updates: Partial<PlacedSticker>) => {
+    setPlacedStickers((prev) =>
+      prev.map((s) => (s.id === id ? { ...s, ...updates } : s))
+    );
+  };
+
+  // Interactive Drag Event Handlers for Stickers on Canvas
+  const handlePointerDownSticker = (e: React.PointerEvent, id: string, initX: number, initY: number) => {
+    e.stopPropagation();
+    setSelectedStickerId(id);
+    dragRef.current = {
+      isDragging: true,
+      startX: e.clientX,
+      startY: e.clientY,
+      initX,
+      initY,
+    };
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  const handlePointerMoveSticker = (e: React.PointerEvent) => {
+    if (!dragRef.current || !dragRef.current.isDragging || !selectedStickerId || !previewRef.current) return;
+    const rect = previewRef.current.getBoundingClientRect();
+    if (rect.width === 0 || rect.height === 0) return;
+
+    const deltaX = ((e.clientX - dragRef.current.startX) / rect.width) * 100;
+    const deltaY = ((e.clientY - dragRef.current.startY) / rect.height) * 100;
+
+    const newX = Math.max(2, Math.min(98, dragRef.current.initX + deltaX));
+    const newY = Math.max(2, Math.min(98, dragRef.current.initY + deltaY));
+
+    setPlacedStickers((prev) =>
+      prev.map((st) => (st.id === selectedStickerId ? { ...st, x: newX, y: newY } : st))
+    );
+  };
+
+  const handlePointerUpSticker = () => {
+    if (dragRef.current) {
+      dragRef.current.isDragging = false;
+    }
   };
 
   const handleApply = () => {
@@ -156,8 +210,9 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
 
       {/* Main Workspace */}
       <div className="editor-workspace-grid">
-        {/* Left Column: Live Canvas Preview */}
+        {/* Left Column: Interactive Canvas Preview */}
         <div
+          ref={previewRef}
           style={{
             background: 'var(--color-cream-dark)',
             borderRadius: 'var(--radius-xl)',
@@ -172,20 +227,108 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
             justifyContent: 'center',
             boxShadow: 'var(--shadow-hover)',
             position: 'relative',
+            userSelect: 'none',
+            touchAction: 'none',
+            overflow: 'hidden',
           }}
+          onClick={() => setSelectedStickerId(null)}
         >
           {livePreviewUrl ? (
-            <img
-              src={livePreviewUrl}
-              alt="Live Customized Preview"
-              style={{
-                width: '100%',
-                height: '100%',
-                objectFit: 'contain',
-                borderRadius: 'var(--radius-md)',
-                boxShadow: 'var(--shadow-polaroid)',
-              }}
-            />
+            <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <img
+                src={livePreviewUrl}
+                alt="Live Customized Preview"
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  objectFit: 'contain',
+                  borderRadius: 'var(--radius-md)',
+                  boxShadow: 'var(--shadow-polaroid)',
+                  pointerEvents: 'none',
+                }}
+              />
+
+              {/* Interactive Draggable Stickers Layer */}
+              <div style={{ position: 'absolute', inset: 0, pointerEvents: 'auto' }}>
+                {placedStickers.map((st) => {
+                  const isSelected = st.id === selectedStickerId;
+                  const scale = st.scale || 1;
+                  const rotation = st.rotation || 0;
+
+                  return (
+                    <div
+                      key={st.id}
+                      onPointerDown={(e) => handlePointerDownSticker(e, st.id, st.x, st.y)}
+                      onPointerMove={handlePointerMoveSticker}
+                      onPointerUp={handlePointerUpSticker}
+                      style={{
+                        position: 'absolute',
+                        left: `${st.x}%`,
+                        top: `${st.y}%`,
+                        transform: `translate(-50%, -50%) rotate(${rotation}deg) scale(${scale})`,
+                        cursor: 'grab',
+                        zIndex: isSelected ? 50 : 20,
+                        padding: '6px',
+                        borderRadius: '12px',
+                        border: isSelected ? '2px dashed var(--color-burgundy-deep)' : '2px solid transparent',
+                        background: isSelected ? 'rgba(255, 255, 255, 0.45)' : 'transparent',
+                        backdropFilter: isSelected ? 'blur(4px)' : 'none',
+                        transition: 'border 0.15s ease, background 0.15s ease',
+                      }}
+                      title="Klik & Geser stiker ke mana saja!"
+                    >
+                      <span
+                        style={{
+                          fontSize: '2.5rem',
+                          display: 'block',
+                          filter: 'drop-shadow(0 6px 12px rgba(0,0,0,0.35)) drop-shadow(0 2px 4px rgba(0,0,0,0.2))',
+                          pointerEvents: 'none',
+                        }}
+                      >
+                        {st.content}
+                      </span>
+
+                      {/* Delete handle when selected */}
+                      {isSelected && (
+                        <div
+                          style={{
+                            position: 'absolute',
+                            top: '-10px',
+                            right: '-10px',
+                            display: 'flex',
+                            gap: '4px',
+                          }}
+                        >
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRemoveSticker(st.id);
+                            }}
+                            style={{
+                              width: '22px',
+                              height: '22px',
+                              borderRadius: '50%',
+                              background: '#ef4444',
+                              color: 'white',
+                              border: 'none',
+                              fontSize: '12px',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              boxShadow: '0 2px 6px rgba(0,0,0,0.3)',
+                            }}
+                            title="Hapus Stiker"
+                          >
+                            ✕
+                          </button>
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
           ) : (
             <div style={{ color: 'var(--color-neutral-sub)', fontWeight: 600 }}>Rendering Preview...</div>
           )}
@@ -211,8 +354,8 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
           <div style={{ display: 'flex', borderBottom: '1px solid var(--color-border-soft)', overflowX: 'auto' }}>
             {[
               { id: 'stickers', label: 'STICKERS' },
-              { id: 'color', label: 'FRAME' },
-              { id: 'color', label: 'BG' },
+              { id: 'frame', label: 'FRAME' },
+              { id: 'bg', label: 'BG' },
               { id: 'text', label: 'TEXT' },
               { id: 'filter', label: 'FILTER' },
             ].map((tab, idx) => {
@@ -244,13 +387,13 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
           {/* Active Tab Content */}
           {activeTab === 'stickers' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-              <span style={{ fontSize: '0.78rem', fontWeight: 800, color: 'var(--color-neutral-sub)', letterSpacing: '0.05em' }}>
-                ADD DOODLES
-              </span>
               <StickerPicker
                 onAddSticker={handleAddSticker}
                 placedStickers={placedStickers}
                 onRemoveSticker={handleRemoveSticker}
+                onUpdateSticker={handleUpdateSticker}
+                selectedStickerId={selectedStickerId}
+                onSelectSticker={setSelectedStickerId}
               />
             </div>
           )}
@@ -266,27 +409,74 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
             />
           )}
 
-          {activeTab === 'color' && (
+          {activeTab === 'frame' && (
             <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
               <label style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-neutral-sub)', textTransform: 'uppercase' }}>
-                FRAME BACKGROUND COLOR
+                WARNA FRAME FOTO
               </label>
 
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.6rem' }}>
+              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.65rem' }}>
                 {template.colorPalettes.map((c, i) => (
                   <button
                     key={i}
                     onClick={() => setBackgroundColor(c)}
                     style={{
-                      width: '36px',
-                      height: '36px',
+                      width: '38px',
+                      height: '38px',
                       borderRadius: '50%',
                       backgroundColor: c,
                       border: backgroundColor === c ? '3px solid var(--color-burgundy-deep)' : '1px solid rgba(0,0,0,0.15)',
                       cursor: 'pointer',
+                      boxShadow: backgroundColor === c ? '0 4px 10px rgba(0,0,0,0.2)' : 'none',
+                      transition: 'transform 0.15s ease',
                     }}
+                    title={`Pilih Warna ${c}`}
                   />
                 ))}
+              </div>
+            </div>
+          )}
+
+          {activeTab === 'bg' && (
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+              <label style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-neutral-sub)', textTransform: 'uppercase' }}>
+                TEKSTUR & PATTERN BACKGROUND
+              </label>
+
+              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.65rem' }}>
+                {[
+                  { id: 'none', label: 'Polos Solid', icon: '🎨' },
+                  { id: 'dots', label: 'Polka Dots', icon: '✨' },
+                  { id: 'grid', label: 'Grid Lines', icon: '📐' },
+                  { id: 'gingham', label: 'Kain Gingham', icon: '🧺' },
+                  { id: 'paper', label: 'Vintage Paper', icon: '📜' },
+                  { id: 'film-grain', label: 'Retro Grain', icon: '🎞️' },
+                ].map((pat) => {
+                  const isSelected = backgroundTexture === pat.id;
+                  return (
+                    <button
+                      key={pat.id}
+                      onClick={() => setBackgroundTexture(pat.id)}
+                      style={{
+                        padding: '0.65rem 0.85rem',
+                        borderRadius: 'var(--radius-md)',
+                        border: isSelected ? '2px solid var(--color-burgundy-deep)' : '1px solid var(--color-border)',
+                        background: isSelected ? 'var(--color-pink-soft)' : '#ffffff',
+                        color: isSelected ? 'var(--color-burgundy-deep)' : 'var(--color-neutral-dark)',
+                        fontWeight: isSelected ? 800 : 600,
+                        fontSize: '0.82rem',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '0.5rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.15s ease',
+                      }}
+                    >
+                      <span style={{ fontSize: '1.1rem' }}>{pat.icon}</span>
+                      <span>{pat.label}</span>
+                    </button>
+                  );
+                })}
               </div>
             </div>
           )}

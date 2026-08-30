@@ -1,10 +1,17 @@
 import type { TemplateData } from '../../types/template';
 import {
+  templateCatchYoursStrip,
+  templateCatchYoursDual,
+} from './catchYours';
+import { templateCaramelClick } from './caramelClick';
+import { templatePinkScrapbookCollage } from './pinkScrapbookCollage';
+import {
   templateSweetMoment,
   templateSpecialDay,
   templateFilmStory,
   templateMovieLove,
   templateBetterTogether,
+  templateDailyChronicle,
 } from './masterTemplates';
 import { cardBurgundyGinghamScrapbook } from './burgundyScrapbook';
 import {
@@ -45,12 +52,19 @@ import {
 } from './globalCountry';
 
 export const TEMPLATES: TemplateData[] = [
-  // 🌟 5 Master Curated Graphic Art Photobooth Templates
+  // 🌟 Featured Pinterest Reference Frames
+  templateCatchYoursStrip,
+  templateCatchYoursDual,
+  templateCaramelClick,
+  templatePinkScrapbookCollage,
+
+  // 🌟 6 Master Curated Graphic Art Photobooth Templates
   templateSweetMoment,
   templateSpecialDay,
   templateFilmStory,
   templateMovieLove,
   templateBetterTogether,
+  templateDailyChronicle,
 
   // 🎨 Featured Asset Frame Cards
   cardFavoritePersonScrapbook,
@@ -89,6 +103,9 @@ export const TEMPLATES: TemplateData[] = [
 ];
 
 export * from './masterTemplates';
+export * from './catchYours';
+export * from './caramelClick';
+export * from './pinkScrapbookCollage';
 export * from './twelveCards';
 export * from './indonesiaTemplates';
 export * from './globalCountry';

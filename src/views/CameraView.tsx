@@ -201,14 +201,16 @@ export const CameraView: React.FC<CameraViewProps> = ({
           {/* Screen 2: Countdown Screen Overlay ("Bersiap!") */}
           {currentCountdown !== null && (
             <div className="mockup-countdown-overlay">
-              <div className="countdown-number-box">
-                <span className="sparkle-left">✨</span>
-                <span className="countdown-big-number">
-                  {currentCountdown === 0 ? '📸' : currentCountdown}
-                </span>
-                <span className="sparkle-right">✨</span>
+              <div className="countdown-glass-card">
+                <div className="countdown-number-box">
+                  <span className="sparkle-left">✨</span>
+                  <span className="countdown-big-number" key={currentCountdown}>
+                    {currentCountdown === 0 ? '📸' : currentCountdown}
+                  </span>
+                  <span className="sparkle-right">✨</span>
+                </div>
+                <p className="countdown-subtitle">Bersiap untuk foto!</p>
               </div>
-              <p className="countdown-subtitle">Bersiap untuk foto!</p>
             </div>
           )}
 
@@ -237,9 +239,11 @@ export const CameraView: React.FC<CameraViewProps> = ({
           )}
 
           {/* Face Alignment Guide Overlay */}
-          {showFaceGuide && !isAllPhotosDone && currentCountdown === null && (
+          {showFaceGuide && !isAllPhotosDone && (
             <div className="face-alignment-guide">
-              <span className="face-alignment-guide-text">Posisi Wajah Di Sini ✨</span>
+              <span className="face-alignment-guide-text">
+                {currentCountdown !== null ? 'Tersenyum! 📸' : 'Posisi Wajah Di Sini ✨'}
+              </span>
             </div>
           )}
 
