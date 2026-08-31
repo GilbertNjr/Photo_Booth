@@ -48,46 +48,104 @@ import {
   bdayCowgirlParty,
 } from './birthday';
 
+import {
+  templateSakuraMemories,
+  templateOurMemoryKorea,
+  templateBeautifulTimeChina,
+  templateSpecialMomentFusion,
+  templateEternalMemoryFusion,
+} from './asianFusionTemplates';
+
+import {
+  templateSakura2x3Grid,
+  templateOurMemory2x3Grid,
+  templateBeautifulTime2x3Grid,
+  templateSpecialMoment2x3Grid,
+  templateSlowMoments2x3Grid,
+  templateMemoriesForever2x3Grid,
+  templateDreamyDays2x3Grid,
+  templateClassicNoir2x3Grid,
+  templateSakura1x3Strip,
+  templateOurMemory1x3Strip,
+  templateBeautifulTime1x3Strip,
+  templateSpecialMoment1x3Strip,
+  templateSlowMoments1x3Strip,
+  templateMemoriesForever1x3Strip,
+  templateDreamyDays1x3Strip,
+  templateClassicNoir1x3Strip,
+  templateGoodTimes1x3Strip,
+  templateLittleThings1x3Strip,
+} from './gridAndStripVariants';
+
 export const TEMPLATES: TemplateData[] = [
-  // 💖 1. Romantic (5)
+  // 🌸 0. Asian Fusion & Master Series (5 Photos)
+  templateSakuraMemories,
+  templateOurMemoryKorea,
+  templateBeautifulTimeChina,
+  templateSpecialMomentFusion,
+  templateEternalMemoryFusion,
+
+  // ⏹️ 1. 2x3 Grid Layout Series (6 Photos)
+  templateSakura2x3Grid,
+  templateOurMemory2x3Grid,
+  templateBeautifulTime2x3Grid,
+  templateSpecialMoment2x3Grid,
+  templateSlowMoments2x3Grid,
+  templateMemoriesForever2x3Grid,
+  templateDreamyDays2x3Grid,
+  templateClassicNoir2x3Grid,
+
+  // 🎞️ 2. 1x3 Strip Layout Series (3 Photos)
+  templateSakura1x3Strip,
+  templateOurMemory1x3Strip,
+  templateBeautifulTime1x3Strip,
+  templateSpecialMoment1x3Strip,
+  templateSlowMoments1x3Strip,
+  templateMemoriesForever1x3Strip,
+  templateDreamyDays1x3Strip,
+  templateClassicNoir1x3Strip,
+  templateGoodTimes1x3Strip,
+  templateLittleThings1x3Strip,
+
+  // 💖 3. Romantic (5)
   templateSweetMoment,
   cardFavoritePersonScrapbook,
   cardDarkRomanceCherries,
   cardILoveYouFloralGrid,
   templateMovieLove,
 
-  // 👯 2. Friendship / Bestie (5)
+  // 👯 4. Friendship / Bestie (5)
   friendshipBestieForever,
   friendshipSquadGoals,
   templateCaramelClick,
   friendshipY2KGingham,
   cardBurgundyGinghamScrapbook,
 
-  // 🎓 3. Graduation (4)
+  // 🎓 5. Graduation (4)
   gradNavyVictory,
   gradBurgundyHonors,
   gradEmeraldScholar,
   gradGazettePress,
 
-  // 🎀 4. Cute (4)
+  // 🎀 6. Cute (4)
   templateCatchYoursStrip,
   templatePinkScrapbookCollage,
   seoulLife4Cuts,
   tokyoPurikura,
 
-  // 📷 5. Vintage (4)
+  // 📷 7. Vintage (4)
   templateSpecialDay,
   templateFilmStory,
   templateDailyChronicle,
   jogjaHeritage,
 
-  // 💎 6. Minimal (4)
+  // 💎 8. Minimal (4)
   cardMinimalLuxury,
   cardSilverDigicamGingham,
   bandungDigicam,
   cardY2K,
 
-  // 🎂 7. Birthday (4)
+  // 🎂 9. Birthday (4)
   bdayPartyCelebration,
   bdayGoldenJubilee,
   bdaySweetSixteen,
@@ -106,3 +164,5 @@ export * from './fiveAssetTemplates';
 export * from './graduation';
 export * from './friendship';
 export * from './birthday';
+export * from './asianFusionTemplates';
+export * from './gridAndStripVariants';

@@ -19,10 +19,10 @@ interface StepConfig {
 }
 
 const STEPS: StepConfig[] = [
-  { id: 'picker', label: '1. Pilih Frame', subLabel: 'Koleksi Bingkai', icon: LayoutGrid },
-  { id: 'camera', label: '2. Ambil Foto', subLabel: 'Kamera Studio', icon: Camera },
-  { id: 'customize', label: '3. Hias & Custom', subLabel: 'Filter & Stiker', icon: Palette },
-  { id: 'final', label: '4. Unduh Foto', subLabel: 'Format PNG', icon: Download },
+  { id: 'picker', label: '1 Pilih Frame', subLabel: 'Temukan bingkai', icon: LayoutGrid },
+  { id: 'camera', label: '2 Ambil Foto', subLabel: 'Kamera & Galeri', icon: Camera },
+  { id: 'customize', label: '3 Hias & Custom', subLabel: 'Sticker & Edit', icon: Palette },
+  { id: 'final', label: '4 Unduh Foto', subLabel: 'Simpan Foto', icon: Download },
 ];
 
 export const StepProgress: React.FC<StepProgressProps> = ({

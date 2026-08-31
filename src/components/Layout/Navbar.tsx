@@ -28,130 +28,252 @@ export const Navbar: React.FC<NavbarProps> = ({
   };
 
   return (
-    <header className="navbar-mockup">
-      <div className="navbar-container">
-        {/* Brand Logo & Title */}
+    <header
+      style={{
+        position: 'sticky',
+        top: 0,
+        zIndex: 1000,
+        background: 'rgba(255, 255, 255, 0.94)',
+        backdropFilter: 'blur(16px)',
+        WebkitBackdropFilter: 'blur(16px)',
+        borderBottom: '1px solid #EFE4D8',
+        boxShadow: '0 4px 20px rgba(122, 28, 40, 0.04)',
+        padding: '0.75rem 1.5rem',
+        width: '100%',
+      }}
+    >
+      <div
+        style={{
+          maxWidth: '1140px',
+          margin: '0 auto',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'space-between',
+        }}
+      >
+        {/* Left: Brand Logo & Title */}
         <div
-          className="navbar-brand-box"
           onClick={() => handleMobileNav(onGoToStudio)}
-          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.65rem' }}
+          style={{ cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '0.6rem' }}
         >
           <img
             src="/pixbooth-logo.png"
             alt="Pixbooth Logo"
-            className="navbar-brand-logo-img"
+            style={{ width: '36px', height: '36px', objectFit: 'contain' }}
           />
-          <div className="brand-title-group" style={{ display: 'flex', alignItems: 'baseline', gap: '0.3rem' }}>
-            <span className="brand-logo-text">PixBooth</span>
-          </div>
+          <span
+            style={{
+              fontFamily: 'var(--font-heading)',
+              fontSize: '1.4rem',
+              fontWeight: 900,
+              color: 'var(--color-burgundy-deep)',
+              letterSpacing: '-0.02em',
+            }}
+          >
+            PixBooth
+          </span>
+          <span style={{ fontSize: '1rem' }}>🌸</span>
         </div>
 
-        {/* Center Nav Links (Desktop) */}
-        <nav className="navbar-center-links desktop-only">
-          <button className={`nav-link-item ${!isShowingFavoritesOnly ? 'active' : ''}`} onClick={onGoToStudio}>
+        {/* Center Navigation Links (Desktop) */}
+        <nav className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '1.75rem' }}>
+          <button
+            onClick={onGoToStudio}
+            style={{
+              fontSize: '0.92rem',
+              fontWeight: 700,
+              color: !isShowingFavoritesOnly ? 'var(--color-burgundy-deep)' : '#4B5563',
+              borderBottom: !isShowingFavoritesOnly ? '2.5px solid var(--color-burgundy-deep)' : '2.5px solid transparent',
+              padding: '0.35rem 0',
+              cursor: 'pointer',
+              transition: 'all 0.2s ease',
+            }}
+          >
             Beranda
           </button>
-          <button className="nav-link-item" onClick={onGoToAllFrames || onGoToStudio}>
+
+          <button
+            onClick={onGoToAllFrames || onGoToStudio}
+            style={{
+              fontSize: '0.92rem',
+              fontWeight: 600,
+              color: '#4B5563',
+              padding: '0.35rem 0',
+              cursor: 'pointer',
+            }}
+          >
             Pilih Frame
           </button>
-          <button className="nav-link-item" onClick={onGoToHowToUse || onGoToStudio}>
+
+          <button
+            onClick={onGoToHowToUse || onGoToStudio}
+            style={{
+              fontSize: '0.92rem',
+              fontWeight: 600,
+              color: '#4B5563',
+              padding: '0.35rem 0',
+              cursor: 'pointer',
+            }}
+          >
             Cara Pakai
           </button>
-          <button className="nav-link-item" onClick={onGoToAbout || onGoToStudio}>
+
+          <button
+            onClick={onGoToAbout || onGoToStudio}
+            style={{
+              fontSize: '0.92rem',
+              fontWeight: 600,
+              color: '#4B5563',
+              padding: '0.35rem 0',
+              cursor: 'pointer',
+            }}
+          >
             Tentang
           </button>
         </nav>
 
-        {/* Right Actions (Desktop) */}
-        <div className="navbar-right-actions desktop-only">
+        {/* Right Action Buttons (Desktop) */}
+        <div className="desktop-only" style={{ display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
           {onFilterFavorites && (
             <button
               onClick={onFilterFavorites}
-              className={`nav-action-pill ${isShowingFavoritesOnly ? 'active' : ''}`}
-              title="Koleksi Favorit"
+              style={{
+                display: 'inline-flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                padding: '0.45rem 1.1rem',
+                borderRadius: '9999px',
+                background: isShowingFavoritesOnly ? 'var(--color-burgundy-deep)' : '#FFFFFF',
+                color: isShowingFavoritesOnly ? '#FFFFFF' : 'var(--color-burgundy-deep)',
+                border: '1.5px solid var(--color-burgundy-deep)',
+                fontSize: '0.85rem',
+                fontWeight: 700,
+                cursor: 'pointer',
+                boxShadow: '0 2px 8px rgba(122, 28, 40, 0.08)',
+                transition: 'all 0.2s ease',
+              }}
             >
-              <Heart size={16} fill={isShowingFavoritesOnly ? 'currentColor' : 'none'} color={isShowingFavoritesOnly ? 'white' : '#800020'} />
+              <Heart size={15} fill={isShowingFavoritesOnly ? 'currentColor' : 'none'} />
               <span>Favorit</span>
-              {favoritesCount > 0 && <span className="action-badge-count">{favoritesCount}</span>}
+              {favoritesCount > 0 && (
+                <span
+                  style={{
+                    background: isShowingFavoritesOnly ? '#FFFFFF' : 'var(--color-burgundy-deep)',
+                    color: isShowingFavoritesOnly ? 'var(--color-burgundy-deep)' : '#FFFFFF',
+                    borderRadius: '50%',
+                    width: '18px',
+                    height: '18px',
+                    fontSize: '0.7rem',
+                    fontWeight: 800,
+                    display: 'inline-flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                  }}
+                >
+                  {favoritesCount}
+                </span>
+              )}
             </button>
           )}
 
           <button
-            className="nav-action-pill history-pill"
             onClick={onFilterFavorites}
-            title="Riwayat Foto Studio"
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.4rem',
+              padding: '0.45rem 1.1rem',
+              borderRadius: '9999px',
+              background: '#FFFFFF',
+              color: 'var(--color-burgundy-deep)',
+              border: '1.5px solid #EFE4D8',
+              fontSize: '0.85rem',
+              fontWeight: 700,
+              cursor: 'pointer',
+              boxShadow: '0 2px 8px rgba(0,0,0,0.04)',
+            }}
           >
             <Camera size={15} />
             <span>Riwayat Foto</span>
           </button>
         </div>
 
-        {/* Hamburger Toggle Button (Mobile Only) */}
-        <div className="mobile-menu-toggle-box mobile-only">
+        {/* Mobile Hamburger Button */}
+        <div className="mobile-only">
           <button
-            className="mobile-hamburger-btn"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            aria-label="Toggle Menu"
+            style={{
+              background: 'none',
+              border: 'none',
+              color: 'var(--color-burgundy-deep)',
+              cursor: 'pointer',
+              padding: '0.2rem',
+            }}
+            aria-label="Toggle Navigation"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
           </button>
         </div>
       </div>
 
-      {/* Mobile Drawer Menu Dropdown */}
+      {/* Mobile Drawer Dropdown */}
       {isMobileMenuOpen && (
-        <div className="mobile-menu-dropdown-drawer">
-          <div className="mobile-menu-links-list">
-            <button
-              className="mobile-menu-item"
-              onClick={() => handleMobileNav(onGoToStudio)}
-            >
-              <Home size={18} />
-              <span>Beranda</span>
-            </button>
+        <div
+          style={{
+            position: 'absolute',
+            top: '100%',
+            left: 0,
+            right: 0,
+            background: '#FFFFFF',
+            borderBottom: '1px solid #EFE4D8',
+            padding: '1rem 1.5rem',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '0.85rem',
+            boxShadow: '0 12px 24px rgba(0,0,0,0.08)',
+          }}
+        >
+          <button
+            onClick={() => handleMobileNav(onGoToStudio)}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', padding: '0.5rem 0', fontSize: '0.95rem', fontWeight: 700, color: 'var(--color-burgundy-deep)' }}
+          >
+            <Home size={18} />
+            <span>Beranda</span>
+          </button>
 
-            <button
-              className="mobile-menu-item"
-              onClick={() => handleMobileNav(onGoToAllFrames || onGoToStudio)}
-            >
-              <LayoutGrid size={18} />
-              <span>Pilih Frame</span>
-            </button>
+          <button
+            onClick={() => handleMobileNav(onGoToAllFrames || onGoToStudio)}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', padding: '0.5rem 0', fontSize: '0.95rem', fontWeight: 600, color: '#4B5563' }}
+          >
+            <LayoutGrid size={18} />
+            <span>Pilih Frame</span>
+          </button>
 
-            <button
-              className="mobile-menu-item"
-              onClick={() => handleMobileNav(onGoToHowToUse || onGoToStudio)}
-            >
-              <HelpCircle size={18} />
-              <span>Cara Pakai</span>
-            </button>
+          <button
+            onClick={() => handleMobileNav(onGoToHowToUse || onGoToStudio)}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', padding: '0.5rem 0', fontSize: '0.95rem', fontWeight: 600, color: '#4B5563' }}
+          >
+            <HelpCircle size={18} />
+            <span>Cara Pakai</span>
+          </button>
 
-            <button
-              className="mobile-menu-item"
-              onClick={() => handleMobileNav(onGoToAbout || onGoToStudio)}
-            >
-              <Info size={18} />
-              <span>Tentang</span>
-            </button>
+          <button
+            onClick={() => handleMobileNav(onGoToAbout || onGoToStudio)}
+            style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', padding: '0.5rem 0', fontSize: '0.95rem', fontWeight: 600, color: '#4B5563' }}
+          >
+            <Info size={18} />
+            <span>Tentang</span>
+          </button>
 
-            {onFilterFavorites && (
-              <button
-                className={`mobile-menu-item ${isShowingFavoritesOnly ? 'active' : ''}`}
-                onClick={() => handleMobileNav(onFilterFavorites)}
-              >
-                <Heart size={18} fill={isShowingFavoritesOnly ? 'currentColor' : 'none'} />
-                <span>Favorit ({favoritesCount})</span>
-              </button>
-            )}
-
+          {onFilterFavorites && (
             <button
-              className="mobile-menu-item"
               onClick={() => handleMobileNav(onFilterFavorites)}
+              style={{ display: 'flex', alignItems: 'center', gap: '0.65rem', padding: '0.5rem 0', fontSize: '0.95rem', fontWeight: 700, color: 'var(--color-burgundy-deep)' }}
             >
-              <Camera size={18} />
-              <span>Riwayat Foto</span>
+              <Heart size={18} />
+              <span>Favorit ({favoritesCount})</span>
             </button>
-          </div>
+          )}
         </div>
       )}
     </header>
