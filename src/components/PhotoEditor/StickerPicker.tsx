@@ -1,6 +1,6 @@
 import React from 'react';
 import type { PlacedSticker } from '../../types/editor';
-import { Smile, Trash2, RotateCw, Maximize2, Move } from 'lucide-react';
+import { Smile, Trash2, RotateCw, Maximize2, Move, ZoomIn, ZoomOut } from 'lucide-react';
 import { StickerIllustration } from '../Common/StickerIllustration';
 
 interface StickerPickerProps {
@@ -29,6 +29,20 @@ export const StickerPicker: React.FC<StickerPickerProps> = ({
 }) => {
   const activeSticker = placedStickers.find((s) => s.id === selectedStickerId);
 
+  const handleAdjustScale = (delta: number) => {
+    if (!activeSticker || !onUpdateSticker) return;
+    const currentScale = activeSticker.scale || 1;
+    const newScale = Math.max(0.3, Math.min(3.5, Math.round((currentScale + delta) * 100) / 100));
+    onUpdateSticker(activeSticker.id, { scale: newScale });
+  };
+
+  const handleAdjustRotation = (delta: number) => {
+    if (!activeSticker || !onUpdateSticker) return;
+    const currentRot = activeSticker.rotation || 0;
+    const newRot = (currentRot + delta) % 360;
+    onUpdateSticker(activeSticker.id, { rotation: newRot });
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: '1.1rem' }}>
       <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
@@ -36,7 +50,7 @@ export const StickerPicker: React.FC<StickerPickerProps> = ({
           <Smile size={18} color="#f59e0b" /> STIKER SCRAPBOOK & 3D CUTOUT
         </label>
         <span style={{ fontSize: '0.72rem', color: 'var(--color-neutral-sub)', fontWeight: 600 }}>
-          Geser & tempel di foto ✨
+          Geser, perbesar & putar stiker ✨
         </span>
       </div>
 
@@ -130,12 +144,12 @@ export const StickerPicker: React.FC<StickerPickerProps> = ({
             })}
           </div>
 
-          {/* Active Selected Sticker Fine-Tuning Sliders */}
+          {/* Active Selected Sticker Fine-Tuning Sliders & Quick Buttons */}
           {activeSticker && onUpdateSticker && (
-            <div style={{ marginTop: '0.5rem', paddingTop: '0.75rem', borderTop: '1px dashed var(--color-border)', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
+            <div style={{ marginTop: '0.5rem', paddingTop: '0.75rem', borderTop: '1px dashed var(--color-border)', display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
               <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <span style={{ fontSize: '0.78rem', fontWeight: 700, color: 'var(--color-burgundy-deep)', display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
-                  <Move size={14} /> Pengaturan Stiker {activeSticker.content}
+                <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--color-burgundy-deep)', display: 'flex', alignItems: 'center', gap: '0.4rem' }}>
+                  <Move size={14} /> Edit Ukuran & Posisi Stiker
                 </span>
                 <button
                   onClick={() => onRemoveSticker(activeSticker.id)}
@@ -145,76 +159,148 @@ export const StickerPicker: React.FC<StickerPickerProps> = ({
                 </button>
               </div>
 
-              {/* Scale Slider & Quick Buttons */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', flexWrap: 'wrap' }}>
-                <Maximize2 size={14} color="var(--color-neutral-sub)" />
-                <span style={{ fontSize: '0.75rem', width: '48px', color: 'var(--color-neutral-sub)', fontWeight: 600 }}>Ukuran</span>
-                
-                <button
-                  type="button"
-                  onClick={() => onUpdateSticker(activeSticker.id, { scale: Math.max(0.3, Math.round(((activeSticker.scale || 1) - 0.15) * 100) / 100) })}
-                  style={{
-                    padding: '0.2rem 0.5rem',
-                    borderRadius: '8px',
-                    border: '1px solid var(--color-border)',
-                    background: '#ffffff',
-                    fontSize: '0.75rem',
-                    fontWeight: 800,
-                    cursor: 'pointer',
-                    color: 'var(--color-burgundy-deep)',
-                  }}
-                  title="Perkecil Stiker"
-                >
-                  ➖ Perkecil
-                </button>
+              {/* Scale Control with Tap Buttons (+ / -) */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--color-neutral-sub)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                    <Maximize2 size={13} /> UKURAN STIKER:
+                  </span>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--color-burgundy-deep)' }}>
+                    {Math.round((activeSticker.scale || 1) * 100)}%
+                  </span>
+                </div>
 
-                <input
-                  type="range"
-                  min="0.3"
-                  max="3.0"
-                  step="0.05"
-                  value={activeSticker.scale || 1}
-                  onChange={(e) => onUpdateSticker(activeSticker.id, { scale: parseFloat(e.target.value) })}
-                  style={{ flex: 1, accentColor: 'var(--color-burgundy-deep)', minWidth: '80px' }}
-                />
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <button
+                    onClick={() => handleAdjustScale(-0.15)}
+                    style={{
+                      padding: '0.35rem 0.6rem',
+                      borderRadius: '8px',
+                      border: '1px solid var(--color-border)',
+                      background: '#ffffff',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.2rem',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                    }}
+                    title="Perkecil stiker (-15%)"
+                  >
+                    <ZoomOut size={13} /> Perkecil
+                  </button>
 
-                <button
-                  type="button"
-                  onClick={() => onUpdateSticker(activeSticker.id, { scale: Math.min(3.0, Math.round(((activeSticker.scale || 1) + 0.15) * 100) / 100) })}
-                  style={{
-                    padding: '0.2rem 0.5rem',
-                    borderRadius: '8px',
-                    border: '1px solid var(--color-border)',
-                    background: '#ffffff',
-                    fontSize: '0.75rem',
-                    fontWeight: 800,
-                    cursor: 'pointer',
-                    color: 'var(--color-burgundy-deep)',
-                  }}
-                  title="Perbesar Stiker"
-                >
-                  ➕ Perbesar
-                </button>
+                  <input
+                    type="range"
+                    min="0.3"
+                    max="3.0"
+                    step="0.05"
+                    value={activeSticker.scale || 1}
+                    onChange={(e) => onUpdateSticker(activeSticker.id, { scale: parseFloat(e.target.value) })}
+                    style={{ flex: 1, accentColor: 'var(--color-burgundy-deep)' }}
+                  />
 
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, width: '38px', textAlign: 'right' }}>
-                  {Math.round((activeSticker.scale || 1) * 100)}%
-                </span>
+                  <button
+                    onClick={() => handleAdjustScale(0.15)}
+                    style={{
+                      padding: '0.35rem 0.6rem',
+                      borderRadius: '8px',
+                      border: '1px solid var(--color-burgundy-deep)',
+                      background: 'var(--color-pink-soft)',
+                      color: 'var(--color-burgundy-deep)',
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.2rem',
+                      fontSize: '0.75rem',
+                      fontWeight: 800,
+                    }}
+                    title="Perbesar stiker (+15%)"
+                  >
+                    <ZoomIn size={13} /> Perbesar
+                  </button>
+                </div>
+
+                {/* Size Presets Pills */}
+                <div style={{ display: 'flex', gap: '0.35rem', overflowX: 'auto', paddingTop: '0.2rem' }}>
+                  {[0.5, 0.75, 1.0, 1.3, 1.7, 2.2].map((sVal) => {
+                    const isCur = Math.abs((activeSticker.scale || 1) - sVal) < 0.05;
+                    return (
+                      <button
+                        key={sVal}
+                        onClick={() => onUpdateSticker(activeSticker.id, { scale: sVal })}
+                        style={{
+                          padding: '0.2rem 0.5rem',
+                          borderRadius: '6px',
+                          border: isCur ? '1px solid var(--color-burgundy-deep)' : '1px solid #e2e8f0',
+                          background: isCur ? 'var(--color-burgundy-deep)' : '#ffffff',
+                          color: isCur ? '#ffffff' : '#64748b',
+                          fontSize: '0.7rem',
+                          fontWeight: 700,
+                          cursor: 'pointer',
+                        }}
+                      >
+                        {Math.round(sVal * 100)}%
+                      </button>
+                    );
+                  })}
+                </div>
               </div>
 
-              {/* Rotation Slider */}
-              <div style={{ display: 'flex', alignItems: 'center', gap: '0.6rem' }}>
-                <RotateCw size={14} color="var(--color-neutral-sub)" />
-                <span style={{ fontSize: '0.75rem', width: '50px', color: 'var(--color-neutral-sub)', fontWeight: 600 }}>Putar</span>
-                <input
-                  type="range"
-                  min="-180"
-                  max="180"
-                  step="5"
-                  value={activeSticker.rotation || 0}
-                  onChange={(e) => onUpdateSticker(activeSticker.id, { rotation: parseInt(e.target.value, 10) })}
-                  style={{ flex: 1, accentColor: 'var(--color-burgundy-deep)' }}
-                />
-                <span style={{ fontSize: '0.75rem', fontWeight: 700, width: '32px' }}>{activeSticker.rotation || 0}°</span>
+              {/* Rotation Controls */}
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.4rem', marginTop: '0.2rem' }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  <span style={{ fontSize: '0.75rem', color: 'var(--color-neutral-sub)', fontWeight: 700, display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+                    <RotateCw size={13} /> ROTASI / PUTAR:
+                  </span>
+                  <span style={{ fontSize: '0.8rem', fontWeight: 800, color: 'var(--color-burgundy-deep)' }}>
+                    {activeSticker.rotation || 0}°
+                  </span>
+                </div>
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+                  <button
+                    onClick={() => handleAdjustRotation(-15)}
+                    style={{
+                      padding: '0.35rem 0.6rem',
+                      borderRadius: '8px',
+                      border: '1px solid var(--color-border)',
+                      background: '#ffffff',
+                      cursor: 'pointer',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                    }}
+                    title="Putar ke kiri (-15°)"
+                  >
+                    ↺ -15°
+                  </button>
+
+                  <input
+                    type="range"
+                    min="-180"
+                    max="180"
+                    step="5"
+                    value={activeSticker.rotation || 0}
+                    onChange={(e) => onUpdateSticker(activeSticker.id, { rotation: parseInt(e.target.value, 10) })}
+                    style={{ flex: 1, accentColor: 'var(--color-burgundy-deep)' }}
+                  />
+
+                  <button
+                    onClick={() => handleAdjustRotation(15)}
+                    style={{
+                      padding: '0.35rem 0.6rem',
+                      borderRadius: '8px',
+                      border: '1px solid var(--color-border)',
+                      background: '#ffffff',
+                      cursor: 'pointer',
+                      fontSize: '0.75rem',
+                      fontWeight: 700,
+                    }}
+                    title="Putar ke kanan (+15°)"
+                  >
+                    ↻ +15°
+                  </button>
+                </div>
               </div>
             </div>
           )}

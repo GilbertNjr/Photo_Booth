@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Download } from 'lucide-react';
+import { Download, Eye, EyeOff, Plus, Minus, RotateCw, Check, ArrowLeft } from 'lucide-react';
 import type { TemplateData } from '../types/template';
 import type { PhotoFilterType, PlacedSticker } from '../types/editor';
 import { FilterPicker } from '../components/PhotoEditor/FilterPicker';
@@ -33,6 +33,9 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
   const [selectedStickerId, setSelectedStickerId] = useState<string | null>(null);
   const [skinSmoothness, setSkinSmoothness] = useState<number>(50);
   const [beautyBrightness, setBeautyBrightness] = useState<number>(50);
+
+  // Full Screen / Clean View Mode (Hides editor drawer so user can inspect canvas clearly)
+  const [isFullViewMode, setIsFullViewMode] = useState<boolean>(false);
 
   // Live Canvas Rendering State
   const [livePreviewUrl, setLivePreviewUrl] = useState<string>('');
@@ -81,8 +84,8 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
       id: newId,
       stickerId: content,
       content,
-      x: 30 + Math.random() * 40,
-      y: 30 + Math.random() * 40,
+      x: 35 + (Math.random() * 30 - 15),
+      y: 35 + (Math.random() * 30 - 15),
       scale: 1,
       rotation: Math.floor(Math.random() * 30) - 15,
     };
@@ -103,7 +106,35 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
     );
   };
 
-  // Interactive Drag Event Handlers for Stickers on Canvas
+  // Direct Scale (+ / -) Handler
+  const handleScaleSticker = (id: string, delta: number) => {
+    setPlacedStickers((prev) =>
+      prev.map((st) => {
+        if (st.id === id) {
+          const currentScale = st.scale || 1;
+          const newScale = Math.max(0.3, Math.min(3.5, Math.round((currentScale + delta) * 100) / 100));
+          return { ...st, scale: newScale };
+        }
+        return st;
+      })
+    );
+  };
+
+  // Direct Rotate Handler
+  const handleRotateSticker = (id: string, angleDelta: number) => {
+    setPlacedStickers((prev) =>
+      prev.map((st) => {
+        if (st.id === id) {
+          const currentRot = st.rotation || 0;
+          const newRot = (currentRot + angleDelta) % 360;
+          return { ...st, rotation: newRot };
+        }
+        return st;
+      })
+    );
+  };
+
+  // Pointer Drag Handlers
   const handlePointerDownSticker = (e: React.PointerEvent, id: string, initX: number, initY: number) => {
     e.stopPropagation();
     setSelectedStickerId(id);
@@ -145,41 +176,45 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
     }
   };
 
+  const activeStickerObj = placedStickers.find((st) => st.id === selectedStickerId);
+
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem', paddingBottom: '140px' }}>
-      {/* Header Bar matching "Make It Yours" */}
+    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem', paddingBottom: isFullViewMode ? '20px' : '100px' }}>
+      {/* Header Bar with Action Controls */}
       <div
         style={{
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'space-between',
-          padding: '0.5rem 0',
+          padding: '0.4rem 0',
           borderBottom: '1px solid var(--color-border-soft)',
         }}
       >
         <button
           onClick={onBackToCamera}
-          title="Retake Photos"
+          title="Foto Ulang"
           style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '50%',
-            border: '1.5px dashed var(--color-burgundy-deep)',
+            padding: '0.4rem 0.75rem',
+            borderRadius: '9999px',
+            border: '1.5px solid var(--color-border)',
             background: 'white',
             display: 'flex',
             alignItems: 'center',
-            justifyContent: 'center',
+            gap: '0.35rem',
             cursor: 'pointer',
-            color: 'var(--color-burgundy-deep)',
+            color: 'var(--color-neutral-dark)',
+            fontSize: '0.82rem',
+            fontWeight: 700,
           }}
         >
-          ✕
+          <ArrowLeft size={15} />
+          <span>Foto Ulang</span>
         </button>
 
         <h1
           style={{
             fontFamily: 'var(--font-heading)',
-            fontSize: '1.8rem',
+            fontSize: '1.5rem',
             fontWeight: 800,
             color: 'var(--color-burgundy-deep)',
             margin: 0,
@@ -188,25 +223,53 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
           Make It Yours
         </h1>
 
-        <button
-          onClick={handleApply}
-          disabled={isRendering}
-          title="Done Customizing"
-          style={{
-            width: '40px',
-            height: '40px',
-            borderRadius: '50%',
-            border: '1.5px dashed var(--color-burgundy-deep)',
-            background: 'white',
-            display: 'flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            cursor: 'pointer',
-            color: 'var(--color-burgundy-deep)',
-          }}
-        >
-          ✓
-        </button>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
+          {/* Toggle Full View Canvas Button */}
+          <button
+            onClick={() => setIsFullViewMode(!isFullViewMode)}
+            title={isFullViewMode ? "Tampilkan Panel Editor" : "Sembunyikan Panel (Clean View)"}
+            style={{
+              padding: '0.4rem 0.75rem',
+              borderRadius: '9999px',
+              border: isFullViewMode ? '1.5px solid var(--color-burgundy-deep)' : '1.5px solid var(--color-border)',
+              background: isFullViewMode ? 'var(--color-pink-soft)' : 'white',
+              color: 'var(--color-burgundy-deep)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              cursor: 'pointer',
+              fontSize: '0.8rem',
+              fontWeight: 800,
+            }}
+          >
+            {isFullViewMode ? <EyeOff size={15} /> : <Eye size={15} />}
+            <span>{isFullViewMode ? 'Buka Panel' : 'Clean View'}</span>
+          </button>
+
+          {/* Done & Apply Button */}
+          <button
+            onClick={handleApply}
+            disabled={isRendering}
+            title="Selesai & Unduh"
+            style={{
+              padding: '0.45rem 0.9rem',
+              borderRadius: '9999px',
+              border: 'none',
+              background: 'var(--color-burgundy-deep)',
+              color: 'white',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              cursor: 'pointer',
+              fontSize: '0.82rem',
+              fontWeight: 800,
+              boxShadow: '0 4px 12px rgba(122, 28, 40, 0.25)',
+            }}
+          >
+            <Check size={15} />
+            <span>Unduh</span>
+          </button>
+        </div>
       </div>
 
       {/* Main Workspace */}
@@ -220,8 +283,8 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
             borderRadius: 'var(--radius-xl)',
             padding: '0.25rem',
             width: '100%',
-            maxWidth: 'min(calc(100vw - 32px), 380px)',
-            height: 'clamp(300px, 46vh, 480px)',
+            maxWidth: 'min(calc(100vw - 32px), 420px)',
+            height: isFullViewMode ? 'clamp(450px, 75vh, 680px)' : 'clamp(320px, 48vh, 500px)',
             margin: '0 auto',
             display: 'flex',
             alignItems: 'center',
@@ -229,84 +292,16 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
             position: 'relative',
             userSelect: 'none',
             touchAction: 'pan-y',
-            overflow: 'hidden',
+            overflow: 'visible',
             boxSizing: 'border-box',
             minWidth: 0,
             minHeight: 0,
+            transition: 'height 0.3s cubic-bezier(0.16, 1, 0.3, 1)',
           }}
           onClick={() => setSelectedStickerId(null)}
         >
           {livePreviewUrl ? (
-            <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', minWidth: 0, minHeight: 0, margin: '0 auto' }}>
-              
-              {/* Quick Floating Toolbar for Active Sticker */}
-              {selectedStickerId && (
-                <div
-                  style={{
-                    position: 'absolute',
-                    top: '12px',
-                    left: '50%',
-                    transform: 'translateX(-50%)',
-                    zIndex: 120,
-                    background: 'rgba(122, 28, 40, 0.92)',
-                    backdropFilter: 'blur(12px)',
-                    color: 'white',
-                    padding: '0.35rem 0.75rem',
-                    borderRadius: '9999px',
-                    display: 'flex',
-                    alignItems: 'center',
-                    gap: '0.4rem',
-                    boxShadow: '0 8px 24px rgba(0,0,0,0.3)',
-                  }}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const st = placedStickers.find((s) => s.id === selectedStickerId);
-                      if (st) handleUpdateSticker(st.id, { scale: Math.max(0.3, Math.round(((st.scale || 1) - 0.15) * 100) / 100) });
-                    }}
-                    style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', padding: '0.2rem 0.5rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 800, cursor: 'pointer' }}
-                    title="Perkecil Stiker"
-                  >
-                    ➖ Perkecil
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const st = placedStickers.find((s) => s.id === selectedStickerId);
-                      if (st) handleUpdateSticker(st.id, { scale: Math.min(3.0, Math.round(((st.scale || 1) + 0.15) * 100) / 100) });
-                    }}
-                    style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', padding: '0.2rem 0.5rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 800, cursor: 'pointer' }}
-                    title="Perbesar Stiker"
-                  >
-                    ➕ Perbesar
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => {
-                      const st = placedStickers.find((s) => s.id === selectedStickerId);
-                      if (st) handleUpdateSticker(st.id, { rotation: ((st.rotation || 0) + 15) % 360 });
-                    }}
-                    style={{ background: 'rgba(255,255,255,0.2)', border: 'none', color: 'white', padding: '0.2rem 0.5rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 800, cursor: 'pointer' }}
-                    title="Putar Stiker"
-                  >
-                    🔄
-                  </button>
-
-                  <button
-                    type="button"
-                    onClick={() => handleRemoveSticker(selectedStickerId)}
-                    style={{ background: '#ef4444', border: 'none', color: 'white', padding: '0.2rem 0.5rem', borderRadius: '12px', fontSize: '0.75rem', fontWeight: 800, cursor: 'pointer' }}
-                    title="Hapus Stiker"
-                  >
-                    ✕
-                  </button>
-                </div>
-              )}
-
+            <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 0, minHeight: 0, margin: '0 auto' }}>
               <img
                 src={livePreviewUrl}
                 alt="Live Customized Preview"
@@ -324,7 +319,110 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                 }}
               />
 
-              {/* Interactive Draggable Stickers Layer */}
+              {/* On-Canvas Floating Sticker Controls Toolbar */}
+              {selectedStickerId && activeStickerObj && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    top: '-42px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    zIndex: 90,
+                    background: 'rgba(20, 20, 22, 0.92)',
+                    backdropFilter: 'blur(12px)',
+                    color: 'white',
+                    padding: '0.35rem 0.75rem',
+                    borderRadius: '9999px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '0.5rem',
+                    boxShadow: '0 8px 24px rgba(0,0,0,0.35)',
+                    border: '1px solid rgba(255,255,255,0.2)',
+                    fontSize: '0.78rem',
+                    whiteSpace: 'nowrap',
+                    animation: 'fadeIn 0.2s ease',
+                  }}
+                  onClick={(e) => e.stopPropagation()}
+                >
+                  <span style={{ fontWeight: 800, color: '#fcd34d' }}>
+                    Ukuran: {Math.round((activeStickerObj.scale || 1) * 100)}%
+                  </span>
+
+                  <button
+                    onClick={() => handleScaleSticker(selectedStickerId, -0.15)}
+                    style={{
+                      background: 'rgba(255,255,255,0.15)',
+                      border: 'none',
+                      color: 'white',
+                      borderRadius: '6px',
+                      padding: '0.2rem 0.5rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.2rem',
+                    }}
+                    title="Perkecil (-15%)"
+                  >
+                    <Minus size={12} /> Perkecil
+                  </button>
+
+                  <button
+                    onClick={() => handleScaleSticker(selectedStickerId, 0.15)}
+                    style={{
+                      background: 'var(--color-pink-primary)',
+                      border: 'none',
+                      color: 'white',
+                      borderRadius: '6px',
+                      padding: '0.2rem 0.5rem',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.2rem',
+                    }}
+                    title="Perbesar (+15%)"
+                  >
+                    <Plus size={12} /> Perbesar
+                  </button>
+
+                  <button
+                    onClick={() => handleRotateSticker(selectedStickerId, 15)}
+                    style={{
+                      background: 'rgba(255,255,255,0.15)',
+                      border: 'none',
+                      color: 'white',
+                      borderRadius: '6px',
+                      padding: '0.2rem 0.5rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '0.2rem',
+                    }}
+                    title="Putar (+15°)"
+                  >
+                    <RotateCw size={12} />
+                  </button>
+
+                  <button
+                    onClick={() => setSelectedStickerId(null)}
+                    style={{
+                      background: 'rgba(255,255,255,0.25)',
+                      border: 'none',
+                      color: 'white',
+                      borderRadius: '6px',
+                      padding: '0.2rem 0.5rem',
+                      fontWeight: 700,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    OK
+                  </button>
+                </div>
+              )}
+
+              {/* Interactive Draggable & Resizable Stickers Layer */}
               <div style={{ position: 'absolute', inset: 0, pointerEvents: 'auto', touchAction: 'pan-y' }}>
                 {placedStickers.map((st) => {
                   const isSelected = st.id === selectedStickerId;
@@ -337,6 +435,11 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                       onPointerDown={(e) => handlePointerDownSticker(e, st.id, st.x, st.y)}
                       onPointerMove={handlePointerMoveSticker}
                       onPointerUp={handlePointerUpSticker}
+                      onWheel={(e) => {
+                        e.stopPropagation();
+                        const delta = e.deltaY < 0 ? 0.1 : -0.1;
+                        handleScaleSticker(st.id, delta);
+                      }}
                       style={{
                         position: 'absolute',
                         left: `${st.x}%`,
@@ -344,15 +447,15 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                         transform: `translate(-50%, -50%) rotate(${rotation}deg) scale(${scale})`,
                         cursor: 'grab',
                         touchAction: 'none',
-                        zIndex: isSelected ? 50 : 20,
-                        padding: '6px',
-                        borderRadius: '12px',
+                        zIndex: isSelected ? 60 : 20,
+                        padding: '8px',
+                        borderRadius: '14px',
                         border: isSelected ? '2px dashed var(--color-burgundy-deep)' : '2px solid transparent',
-                        background: isSelected ? 'rgba(255, 255, 255, 0.45)' : 'transparent',
+                        background: isSelected ? 'rgba(255, 255, 255, 0.55)' : 'transparent',
                         backdropFilter: isSelected ? 'blur(4px)' : 'none',
                         transition: 'border 0.15s ease, background 0.15s ease',
                       }}
-                      title="Klik & Geser stiker ke mana saja!"
+                      title="Geser stiker, gunakan tombol di sudut untuk perbesar/perkecil!"
                     >
                       <div
                         style={{
@@ -364,10 +467,100 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                         <StickerIllustration content={st.content} size={48} />
                       </div>
 
-                      {/* Interactive control handles when selected */}
+                      {/* Interactive Corner Action Handles when Selected */}
                       {isSelected && (
                         <>
-                          {/* Top-Right: Delete Handle */}
+                          {/* Top-Right: Perbesar (+) Handle */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleScaleSticker(st.id, 0.15);
+                            }}
+                            style={{
+                              position: 'absolute',
+                              top: '-12px',
+                              right: '-12px',
+                              width: '26px',
+                              height: '26px',
+                              borderRadius: '50%',
+                              background: '#10b981',
+                              color: 'white',
+                              border: '2px solid white',
+                              fontSize: '14px',
+                              fontWeight: 'bold',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.35)',
+                              zIndex: 70,
+                            }}
+                            title="Perbesar Stiker (+15%)"
+                          >
+                            +
+                          </button>
+
+                          {/* Top-Left: Perkecil (-) Handle */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleScaleSticker(st.id, -0.15);
+                            }}
+                            style={{
+                              position: 'absolute',
+                              top: '-12px',
+                              left: '-12px',
+                              width: '26px',
+                              height: '26px',
+                              borderRadius: '50%',
+                              background: '#f59e0b',
+                              color: 'white',
+                              border: '2px solid white',
+                              fontSize: '14px',
+                              fontWeight: 'bold',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.35)',
+                              zIndex: 70,
+                            }}
+                            title="Perkecil Stiker (-15%)"
+                          >
+                            −
+                          </button>
+
+                          {/* Bottom-Right: Putar (↺) Handle */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleRotateSticker(st.id, 15);
+                            }}
+                            style={{
+                              position: 'absolute',
+                              bottom: '-12px',
+                              right: '-12px',
+                              width: '26px',
+                              height: '26px',
+                              borderRadius: '50%',
+                              background: '#3b82f6',
+                              color: 'white',
+                              border: '2px solid white',
+                              fontSize: '12px',
+                              fontWeight: 'bold',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.35)',
+                              zIndex: 70,
+                            }}
+                            title="Putar Stiker (+15°)"
+                          >
+                            ↺
+                          </button>
+
+                          {/* Bottom-Left: Hapus (✕) Handle */}
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -375,119 +568,26 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                             }}
                             style={{
                               position: 'absolute',
-                              top: '-12px',
-                              right: '-12px',
-                              width: '24px',
-                              height: '24px',
+                              bottom: '-12px',
+                              left: '-12px',
+                              width: '26px',
+                              height: '26px',
                               borderRadius: '50%',
                               background: '#ef4444',
                               color: 'white',
-                              border: '2px solid #ffffff',
+                              border: '2px solid white',
                               fontSize: '12px',
-                              fontWeight: 800,
+                              fontWeight: 'bold',
                               cursor: 'pointer',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                              zIndex: 60,
+                              boxShadow: '0 2px 8px rgba(0,0,0,0.35)',
+                              zIndex: 70,
                             }}
                             title="Hapus Stiker"
                           >
                             ✕
-                          </button>
-
-                          {/* Bottom-Right: Scale Up (Perbesar) Handle */}
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              const newScale = Math.min(3.0, Math.round(((st.scale || 1) + 0.15) * 100) / 100);
-                              handleUpdateSticker(st.id, { scale: newScale });
-                            }}
-                            style={{
-                              position: 'absolute',
-                              bottom: '-12px',
-                              right: '-12px',
-                              width: '24px',
-                              height: '24px',
-                              borderRadius: '50%',
-                              background: 'var(--color-burgundy-deep)',
-                              color: 'white',
-                              border: '2px solid #ffffff',
-                              fontSize: '13px',
-                              fontWeight: 800,
-                              cursor: 'pointer',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                              zIndex: 60,
-                            }}
-                            title="Perbesar Stiker (+)"
-                          >
-                            ➕
-                          </button>
-
-                          {/* Bottom-Left: Scale Down (Perkecil) Handle */}
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              const newScale = Math.max(0.3, Math.round(((st.scale || 1) - 0.15) * 100) / 100);
-                              handleUpdateSticker(st.id, { scale: newScale });
-                            }}
-                            style={{
-                              position: 'absolute',
-                              bottom: '-12px',
-                              left: '-12px',
-                              width: '24px',
-                              height: '24px',
-                              borderRadius: '50%',
-                              background: 'var(--color-burgundy-deep)',
-                              color: 'white',
-                              border: '2px solid #ffffff',
-                              fontSize: '13px',
-                              fontWeight: 800,
-                              cursor: 'pointer',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                              zIndex: 60,
-                            }}
-                            title="Perkecil Stiker (-)"
-                          >
-                            ➖
-                          </button>
-
-                          {/* Top-Left: Rotate Handle */}
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              const newRot = ((st.rotation || 0) + 15) % 360;
-                              handleUpdateSticker(st.id, { rotation: newRot });
-                            }}
-                            style={{
-                              position: 'absolute',
-                              top: '-12px',
-                              left: '-12px',
-                              width: '24px',
-                              height: '24px',
-                              borderRadius: '50%',
-                              background: '#3b82f6',
-                              color: 'white',
-                              border: '2px solid #ffffff',
-                              fontSize: '11px',
-                              fontWeight: 800,
-                              cursor: 'pointer',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
-                              zIndex: 60,
-                            }}
-                            title="Putar Stiker (15°)"
-                          >
-                            🔄
                           </button>
                         </>
                       )}
@@ -501,232 +601,231 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
           )}
         </div>
 
-        {/* Right Column: Customization Controls Panel */}
-        <div
-          style={{
-            background: 'white',
-            borderRadius: 'var(--radius-xl)',
-            padding: '0.9rem 0.85rem',
-            boxShadow: 'var(--shadow-card)',
-            border: '1px solid var(--color-border-soft)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '1rem',
-            width: '100%',
-            maxWidth: '100%',
-            boxSizing: 'border-box',
-            overflow: 'hidden',
-          }}
-        >
-          {/* Sheet Handle Indicator */}
-          <div style={{ width: '40px', height: '4px', background: 'var(--color-border)', borderRadius: '2px', margin: '0 auto' }} />
+        {/* Right Column: Customization Controls Panel (Hidden in Full View Mode to prevent obstruction) */}
+        {!isFullViewMode && (
+          <div
+            style={{
+              background: 'white',
+              borderRadius: 'var(--radius-xl)',
+              padding: '0.9rem 0.85rem',
+              boxShadow: 'var(--shadow-card)',
+              border: '1px solid var(--color-border-soft)',
+              display: 'flex',
+              flexDirection: 'column',
+              gap: '1rem',
+              width: '100%',
+              maxWidth: '100%',
+              boxSizing: 'border-box',
+              overflow: 'hidden',
+            }}
+          >
+            {/* Sheet Handle Indicator */}
+            <div style={{ width: '40px', height: '4px', background: 'var(--color-border)', borderRadius: '2px', margin: '0 auto' }} />
 
-          {/* Navigation Tabs (STICKERS, FRAME, BG, TEXT, FILTER) */}
-          <div style={{ display: 'flex', borderBottom: '1px solid var(--color-border-soft)', overflowX: 'auto' }}>
-            {[
-              { id: 'stickers', label: 'STICKERS' },
-              { id: 'frame', label: 'FRAME' },
-              { id: 'bg', label: 'BG' },
-              { id: 'text', label: 'TEXT' },
-              { id: 'filter', label: 'FILTER' },
-            ].map((tab, idx) => {
-              const isActive = activeTab === tab.id;
-              return (
-                <button
-                  key={idx}
-                  onClick={() => setActiveTab(tab.id as any)}
-                  style={{
-                    flex: 1,
-                    padding: '0.6rem 0.5rem',
-                    background: 'none',
-                    border: 'none',
-                    borderBottom: isActive ? '2px solid var(--color-burgundy-deep)' : '2px solid transparent',
-                    color: isActive ? 'var(--color-burgundy-deep)' : 'var(--color-neutral-sub)',
-                    fontWeight: isActive ? 800 : 600,
-                    fontSize: '0.78rem',
-                    letterSpacing: '0.04em',
-                    cursor: 'pointer',
-                    whiteSpace: 'nowrap',
-                  }}
-                >
-                  {tab.label}
-                </button>
-              );
-            })}
-          </div>
-
-          {/* Active Tab Content */}
-          {activeTab === 'stickers' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
-              <StickerPicker
-                onAddSticker={handleAddSticker}
-                placedStickers={placedStickers}
-                onRemoveSticker={handleRemoveSticker}
-                onUpdateSticker={handleUpdateSticker}
-                selectedStickerId={selectedStickerId}
-                onSelectSticker={setSelectedStickerId}
-              />
-            </div>
-          )}
-
-          {activeTab === 'filter' && (
-            <FilterPicker
-              selectedFilter={selectedFilter}
-              onSelectFilter={setSelectedFilter}
-              skinSmoothness={skinSmoothness}
-              onSkinSmoothnessChange={setSkinSmoothness}
-              beautyBrightness={beautyBrightness}
-              onBeautyBrightnessChange={setBeautyBrightness}
-            />
-          )}
-
-          {activeTab === 'frame' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <label style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-neutral-sub)', textTransform: 'uppercase' }}>
-                WARNA FRAME FOTO
-              </label>
-
-              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.65rem' }}>
-                {template.colorPalettes.map((c, i) => (
+            {/* Navigation Tabs (STICKERS, FRAME, BG, TEXT, FILTER) */}
+            <div style={{ display: 'flex', borderBottom: '1px solid var(--color-border-soft)', overflowX: 'auto' }}>
+              {[
+                { id: 'stickers', label: 'STICKERS' },
+                { id: 'frame', label: 'FRAME' },
+                { id: 'bg', label: 'BG' },
+                { id: 'text', label: 'TEXT' },
+                { id: 'filter', label: 'FILTER' },
+              ].map((tab, idx) => {
+                const isActive = activeTab === tab.id;
+                return (
                   <button
-                    key={i}
-                    onClick={() => setBackgroundColor(c)}
+                    key={idx}
+                    onClick={() => setActiveTab(tab.id as any)}
                     style={{
-                      width: '38px',
-                      height: '38px',
-                      borderRadius: '50%',
-                      backgroundColor: c,
-                      border: backgroundColor === c ? '3px solid var(--color-burgundy-deep)' : '1px solid rgba(0,0,0,0.15)',
+                      flex: 1,
+                      padding: '0.6rem 0.5rem',
+                      background: 'none',
+                      border: 'none',
+                      borderBottom: isActive ? '2px solid var(--color-burgundy-deep)' : '2px solid transparent',
+                      color: isActive ? 'var(--color-burgundy-deep)' : 'var(--color-neutral-sub)',
+                      fontWeight: isActive ? 800 : 600,
+                      fontSize: '0.78rem',
+                      letterSpacing: '0.04em',
                       cursor: 'pointer',
-                      boxShadow: backgroundColor === c ? '0 4px 10px rgba(0,0,0,0.2)' : 'none',
-                      transition: 'transform 0.15s ease',
+                      whiteSpace: 'nowrap',
                     }}
-                    title={`Pilih Warna ${c}`}
-                  />
-                ))}
-              </div>
+                  >
+                    {tab.label}
+                  </button>
+                );
+              })}
             </div>
-          )}
 
-          {activeTab === 'bg' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <label style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-neutral-sub)', textTransform: 'uppercase' }}>
-                TEKSTUR & PATTERN BACKGROUND
-              </label>
-
-              <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.65rem' }}>
-                {[
-                  { id: 'none', label: 'Polos Solid', icon: '🎨' },
-                  { id: 'dots', label: 'Polka Dots', icon: '✨' },
-                  { id: 'grid', label: 'Grid Lines', icon: '📐' },
-                  { id: 'gingham', label: 'Kain Gingham', icon: '🧺' },
-                  { id: 'paper', label: 'Vintage Paper', icon: '📜' },
-                  { id: 'film-grain', label: 'Retro Grain', icon: '🎞️' },
-                ].map((pat) => {
-                  const isSelected = backgroundTexture === pat.id;
-                  return (
-                    <button
-                      key={pat.id}
-                      onClick={() => setBackgroundTexture(pat.id)}
-                      style={{
-                        padding: '0.65rem 0.85rem',
-                        borderRadius: 'var(--radius-md)',
-                        border: isSelected ? '2px solid var(--color-burgundy-deep)' : '1px solid var(--color-border)',
-                        background: isSelected ? 'var(--color-pink-soft)' : '#ffffff',
-                        color: isSelected ? 'var(--color-burgundy-deep)' : 'var(--color-neutral-dark)',
-                        fontWeight: isSelected ? 800 : 600,
-                        fontSize: '0.82rem',
-                        display: 'flex',
-                        alignItems: 'center',
-                        gap: '0.5rem',
-                        cursor: 'pointer',
-                        transition: 'all 0.15s ease',
-                      }}
-                    >
-                      <span style={{ fontSize: '1.1rem' }}>{pat.icon}</span>
-                      <span>{pat.label}</span>
-                    </button>
-                  );
-                })}
-              </div>
-            </div>
-          )}
-
-          {activeTab === 'text' && (
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-              <TextEditor
-                textElements={template.textElements}
-                customTexts={customTexts}
-                onChangeText={handleTextChange}
-              />
-              <div style={{ background: 'var(--color-cream-bg)', padding: '0.85rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border-soft)' }}>
-                <label style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--color-neutral-sub)', display: 'block', marginBottom: '0.4rem' }}>
-                  FOOTER TEKS:
-                </label>
-                <input
-                  type="text"
-                  value={customBottomText}
-                  onChange={(e) => setCustomBottomText(e.target.value)}
-                  placeholder="2026.08.28 • PHOTO BOOTH STUDIO"
-                  style={{
-                    width: '100%',
-                    padding: '0.55rem 0.75rem',
-                    borderRadius: 'var(--radius-md)',
-                    border: '1px solid var(--color-border)',
-                    fontSize: '0.88rem',
-                    boxSizing: 'border-box',
-                  }}
+            {/* Active Tab Content */}
+            {activeTab === 'stickers' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.85rem' }}>
+                <StickerPicker
+                  onAddSticker={handleAddSticker}
+                  placedStickers={placedStickers}
+                  onRemoveSticker={handleRemoveSticker}
+                  onUpdateSticker={handleUpdateSticker}
+                  selectedStickerId={selectedStickerId}
+                  onSelectSticker={setSelectedStickerId}
                 />
               </div>
-            </div>
-          )}
-        </div>
+            )}
+
+            {activeTab === 'filter' && (
+              <FilterPicker
+                selectedFilter={selectedFilter}
+                onSelectFilter={setSelectedFilter}
+                skinSmoothness={skinSmoothness}
+                onSkinSmoothnessChange={setSkinSmoothness}
+                beautyBrightness={beautyBrightness}
+                onBeautyBrightnessChange={setBeautyBrightness}
+              />
+            )}
+
+            {activeTab === 'frame' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <label style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-neutral-sub)', textTransform: 'uppercase' }}>
+                  WARNA FRAME FOTO
+                </label>
+
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.65rem' }}>
+                  {template.colorPalettes.map((c, i) => (
+                    <button
+                      key={i}
+                      onClick={() => setBackgroundColor(c)}
+                      style={{
+                        width: '38px',
+                        height: '38px',
+                        borderRadius: '50%',
+                        backgroundColor: c,
+                        border: backgroundColor === c ? '3px solid var(--color-burgundy-deep)' : '1px solid rgba(0,0,0,0.15)',
+                        cursor: 'pointer',
+                        boxShadow: backgroundColor === c ? '0 4px 10px rgba(0,0,0,0.2)' : 'none',
+                        transition: 'transform 0.15s ease',
+                      }}
+                      title={`Pilih Warna ${c}`}
+                    />
+                  ))}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'bg' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <label style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-neutral-sub)', textTransform: 'uppercase' }}>
+                  TEKSTUR & PATTERN BACKGROUND
+                </label>
+
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.65rem' }}>
+                  {[
+                    { id: 'none', label: 'Polos Solid', icon: '🎨' },
+                    { id: 'dots', label: 'Polka Dots', icon: '✨' },
+                    { id: 'grid', label: 'Grid Lines', icon: '📐' },
+                    { id: 'gingham', label: 'Kain Gingham', icon: '🧺' },
+                    { id: 'paper', label: 'Vintage Paper', icon: '📜' },
+                    { id: 'film-grain', label: 'Retro Grain', icon: '🎞️' },
+                  ].map((pat) => {
+                    const isSelected = backgroundTexture === pat.id;
+                    return (
+                      <button
+                        key={pat.id}
+                        onClick={() => setBackgroundTexture(pat.id)}
+                        style={{
+                          padding: '0.65rem 0.85rem',
+                          borderRadius: 'var(--radius-md)',
+                          border: isSelected ? '2px solid var(--color-burgundy-deep)' : '1px solid var(--color-border)',
+                          background: isSelected ? 'var(--color-pink-soft)' : '#ffffff',
+                          color: isSelected ? 'var(--color-burgundy-deep)' : 'var(--color-neutral-dark)',
+                          fontWeight: isSelected ? 800 : 600,
+                          fontSize: '0.82rem',
+                          display: 'flex',
+                          alignItems: 'center',
+                          gap: '0.5rem',
+                          cursor: 'pointer',
+                          transition: 'all 0.15s ease',
+                        }}
+                      >
+                        <span style={{ fontSize: '1.1rem' }}>{pat.icon}</span>
+                        <span>{pat.label}</span>
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {activeTab === 'text' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                <TextEditor
+                  textElements={template.textElements}
+                  customTexts={customTexts}
+                  onChangeText={handleTextChange}
+                />
+                <div style={{ background: 'var(--color-cream-bg)', padding: '0.85rem', borderRadius: 'var(--radius-md)', border: '1px solid var(--color-border-soft)' }}>
+                  <label style={{ fontSize: '0.82rem', fontWeight: 700, color: 'var(--color-neutral-sub)', display: 'block', marginBottom: '0.4rem' }}>
+                    FOOTER TEKS:
+                  </label>
+                  <input
+                    type="text"
+                    value={customBottomText}
+                    onChange={(e) => setCustomBottomText(e.target.value)}
+                    placeholder="2026.08.28 • PHOTO BOOTH STUDIO"
+                    style={{
+                      width: '100%',
+                      padding: '0.55rem 0.75rem',
+                      borderRadius: 'var(--radius-md)',
+                      border: '1px solid var(--color-border)',
+                      fontSize: '0.88rem',
+                      boxSizing: 'border-box',
+                    }}
+                  />
+                </div>
+              </div>
+            )}
+          </div>
+        )}
       </div>
 
-      {/* Sticky Bottom "Print & Save" Action Bar */}
-      <div
-        style={{
-          position: 'fixed',
-          bottom: 0,
-          left: 0,
-          right: 0,
-          zIndex: 1000,
-          padding: '0.75rem 1rem',
-          background: 'rgba(255, 255, 255, 0.94)',
-          backdropFilter: 'blur(16px)',
-          WebkitBackdropFilter: 'blur(16px)',
-          borderTop: '1px solid var(--color-border-soft)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-        }}
-      >
-        <button
-          onClick={handleApply}
-          disabled={isRendering}
+      {/* Floating Bottom Download Action Bar (Auto-hides when a sticker is selected to avoid obstruction) */}
+      {!selectedStickerId && (
+        <div
           style={{
-            width: '100%',
+            position: 'fixed',
+            bottom: '24px',
+            left: '50%',
+            transform: 'translateX(-50%)',
+            zIndex: 100,
+            width: 'calc(100% - 32px)',
             maxWidth: '380px',
-            background: 'var(--color-burgundy-deep)',
-            color: '#ffffff',
-            padding: '0.9rem 1.75rem',
-            borderRadius: '9999px',
-            fontSize: '1rem',
-            fontWeight: 800,
-            border: 'none',
-            boxShadow: '0 8px 25px rgba(128, 0, 32, 0.3)',
-            cursor: 'pointer',
             display: 'flex',
-            alignItems: 'center',
             justifyContent: 'center',
-            gap: '0.6rem',
-            transition: 'transform 0.2s ease, background 0.2s ease',
           }}
         >
-          <Download size={20} />
-          <span>{isRendering ? 'Menyiapkan Foto...' : 'Unduh Foto (PNG)'}</span>
-        </button>
-      </div>
+          <button
+            onClick={handleApply}
+            disabled={isRendering}
+            style={{
+              width: '100%',
+              background: 'var(--color-pink-primary)',
+              color: '#ffffff',
+              padding: '0.9rem 1.75rem',
+              borderRadius: '9999px',
+              fontSize: '1rem',
+              fontWeight: 800,
+              border: 'none',
+              boxShadow: '0 10px 30px rgba(211, 47, 47, 0.35)',
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              gap: '0.6rem',
+              transition: 'transform 0.2s ease, background 0.2s ease',
+            }}
+          >
+            <Download size={19} />
+            <span>Unduh Foto (PNG)</span>
+          </button>
+        </div>
+      )}
     </div>
   );
 };
