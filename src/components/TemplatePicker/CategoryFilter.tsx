@@ -33,9 +33,14 @@ export const CategoryFilter: React.FC<CategoryFilterProps> = ({
   onSelectCategory,
   categoryCounts,
 }) => {
+  const visibleCategories = CATEGORIES.filter((cat) => {
+    if (cat.id === 'all') return true;
+    return (categoryCounts[cat.id] || 0) > 0;
+  });
+
   return (
     <div className="category-filter-container">
-      {CATEGORIES.map((cat) => {
+      {visibleCategories.map((cat) => {
         const isActive = selectedCategory === cat.id;
         const count = categoryCounts[cat.id] || 0;
 

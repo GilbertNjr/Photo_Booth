@@ -1,9 +1,5 @@
 import type { TemplateData } from '../../types/template';
-import {
-  templateCatchYoursStrip,
-} from './catchYours';
 import { templateCaramelClick } from './caramelClick';
-import { templatePinkScrapbookCollage } from './pinkScrapbookCollage';
 import {
   templateSweetMoment,
   templateSpecialDay,
@@ -11,7 +7,6 @@ import {
   templateMovieLove,
   templateDailyChronicle,
 } from './masterTemplates';
-import { cardBurgundyGinghamScrapbook } from './burgundyScrapbook';
 import {
   cardFavoritePersonScrapbook,
   cardDarkRomanceCherries,
@@ -31,12 +26,6 @@ import {
   tokyoPurikura,
 } from './globalCountry';
 import {
-  gradNavyVictory,
-  gradBurgundyHonors,
-  gradEmeraldScholar,
-  gradGazettePress,
-} from './graduation';
-import {
   friendshipBestieForever,
   friendshipSquadGoals,
   friendshipY2KGingham,
@@ -49,45 +38,36 @@ import {
 } from './birthday';
 
 export const TEMPLATES: TemplateData[] = [
-  // 💖 1. Romantic (5)
+  // 💖 1. Romantic
   templateSweetMoment,
   cardFavoritePersonScrapbook,
   cardDarkRomanceCherries,
   cardILoveYouFloralGrid,
   templateMovieLove,
 
-  // 👯 2. Friendship / Bestie (5)
+  // 👯 2. Friendship / Bestie
   friendshipBestieForever,
   friendshipSquadGoals,
   templateCaramelClick,
   friendshipY2KGingham,
-  cardBurgundyGinghamScrapbook,
 
-  // 🎓 3. Graduation (4)
-  gradNavyVictory,
-  gradBurgundyHonors,
-  gradEmeraldScholar,
-  gradGazettePress,
-
-  // 🎀 4. Cute (4)
-  templateCatchYoursStrip,
-  templatePinkScrapbookCollage,
+  // 🎀 3. Cute
   seoulLife4Cuts,
   tokyoPurikura,
 
-  // 📷 5. Vintage (4)
+  // 📷 4. Vintage
   templateSpecialDay,
   templateFilmStory,
   templateDailyChronicle,
   jogjaHeritage,
 
-  // 💎 6. Minimal (4)
+  // 💎 5. Minimal
   cardMinimalLuxury,
   cardSilverDigicamGingham,
   bandungDigicam,
   cardY2K,
 
-  // 🎂 7. Birthday (4)
+  // 🎂 6. Birthday
   bdayPartyCelebration,
   bdayGoldenJubilee,
   bdaySweetSixteen,
