@@ -1,8 +1,11 @@
 import React, { useState } from 'react';
 import { Camera, Heart, Menu, X, Home, LayoutGrid, HelpCircle, Info } from 'lucide-react';
 
+export type NavSection = 'hero' | 'frames' | 'how-to-use' | 'about' | 'favorites';
+
 interface NavbarProps {
   favoritesCount?: number;
+  activeSection?: NavSection;
   onFilterFavorites?: () => void;
   onGoToStudio?: () => void;
   onGoToAllFrames?: () => void;
@@ -13,6 +16,7 @@ interface NavbarProps {
 
 export const Navbar: React.FC<NavbarProps> = ({
   favoritesCount = 0,
+  activeSection = 'hero',
   onFilterFavorites,
   onGoToStudio,
   onGoToAllFrames,
@@ -48,16 +52,28 @@ export const Navbar: React.FC<NavbarProps> = ({
 
         {/* Center Nav Links (Desktop) */}
         <nav className="navbar-center-links desktop-only">
-          <button className={`nav-link-item ${!isShowingFavoritesOnly ? 'active' : ''}`} onClick={onGoToStudio}>
+          <button
+            className={`nav-link-item ${activeSection === 'hero' && !isShowingFavoritesOnly ? 'active' : ''}`}
+            onClick={onGoToStudio}
+          >
             Beranda
           </button>
-          <button className="nav-link-item" onClick={onGoToAllFrames || onGoToStudio}>
+          <button
+            className={`nav-link-item ${activeSection === 'frames' && !isShowingFavoritesOnly ? 'active' : ''}`}
+            onClick={onGoToAllFrames || onGoToStudio}
+          >
             Pilih Frame
           </button>
-          <button className="nav-link-item" onClick={onGoToHowToUse || onGoToStudio}>
+          <button
+            className={`nav-link-item ${activeSection === 'how-to-use' && !isShowingFavoritesOnly ? 'active' : ''}`}
+            onClick={onGoToHowToUse || onGoToStudio}
+          >
             Cara Pakai
           </button>
-          <button className="nav-link-item" onClick={onGoToAbout || onGoToStudio}>
+          <button
+            className={`nav-link-item ${activeSection === 'about' && !isShowingFavoritesOnly ? 'active' : ''}`}
+            onClick={onGoToAbout || onGoToStudio}
+          >
             Tentang
           </button>
         </nav>
@@ -103,7 +119,7 @@ export const Navbar: React.FC<NavbarProps> = ({
         <div className="mobile-menu-dropdown-drawer">
           <div className="mobile-menu-links-list">
             <button
-              className="mobile-menu-item"
+              className={`mobile-menu-item ${activeSection === 'hero' && !isShowingFavoritesOnly ? 'active' : ''}`}
               onClick={() => handleMobileNav(onGoToStudio)}
             >
               <Home size={18} />
@@ -111,7 +127,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             <button
-              className="mobile-menu-item"
+              className={`mobile-menu-item ${activeSection === 'frames' && !isShowingFavoritesOnly ? 'active' : ''}`}
               onClick={() => handleMobileNav(onGoToAllFrames || onGoToStudio)}
             >
               <LayoutGrid size={18} />
@@ -119,7 +135,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             <button
-              className="mobile-menu-item"
+              className={`mobile-menu-item ${activeSection === 'how-to-use' && !isShowingFavoritesOnly ? 'active' : ''}`}
               onClick={() => handleMobileNav(onGoToHowToUse || onGoToStudio)}
             >
               <HelpCircle size={18} />
@@ -127,7 +143,7 @@ export const Navbar: React.FC<NavbarProps> = ({
             </button>
 
             <button
-              className="mobile-menu-item"
+              className={`mobile-menu-item ${activeSection === 'about' && !isShowingFavoritesOnly ? 'active' : ''}`}
               onClick={() => handleMobileNav(onGoToAbout || onGoToStudio)}
             >
               <Info size={18} />

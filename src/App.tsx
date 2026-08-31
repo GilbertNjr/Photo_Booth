@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import './assets/styles/main.css';
-import { Navbar } from './components/Layout/Navbar';
+import { Navbar, type NavSection } from './components/Layout/Navbar';
 import { Footer } from './components/Layout/Footer';
 import { StepProgress, type StepId } from './components/Common/StepProgress';
 import { FramePickerView } from './views/FramePickerView';
@@ -29,14 +29,46 @@ export function App() {
 
   const [favoritesCount, setFavoritesCount] = useState(0);
   const [activeBottomTab, setActiveBottomTab] = useState<'home' | 'gallery' | 'about'>('home');
+  const [activeNavSection, setActiveNavSection] = useState<NavSection>('hero');
 
   useEffect(() => {
     setFavoritesCount(StorageService.getFavorites().length);
   }, [isShowingFavoritesOnly, currentStep]);
 
+  // 📜 ScrollSpy system for automatic Navbar active tab highlighting as user scrolls
+  useEffect(() => {
+    if (currentStep !== 'picker' || isShowingFavoritesOnly || isShowingHowToUse) return;
+
+    const handleScroll = () => {
+      const scrollPos = window.scrollY + 180;
+
+      const framesEl = document.getElementById('frame-showcase-section');
+      const howToUseEl = document.getElementById('how-to-use-section');
+      const aboutEl = document.getElementById('about-section');
+
+      const aboutOffset = aboutEl ? aboutEl.offsetTop : Infinity;
+      const howToUseOffset = howToUseEl ? howToUseEl.offsetTop : Infinity;
+      const framesOffset = framesEl ? framesEl.offsetTop : Infinity;
+
+      if (scrollPos >= aboutOffset - 60) {
+        setActiveNavSection('about');
+      } else if (scrollPos >= howToUseOffset - 60) {
+        setActiveNavSection('how-to-use');
+      } else if (scrollPos >= framesOffset - 60) {
+        setActiveNavSection('frames');
+      } else {
+        setActiveNavSection('hero');
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll, { passive: true });
+    handleScroll();
+
+    return () => window.removeEventListener('scroll', handleScroll);
+  }, [currentStep, isShowingFavoritesOnly, isShowingHowToUse]);
+
   // Browser Back Button (popstate) Step-by-Step Navigation
   useEffect(() => {
-    // Set initial history state if empty
     if (!window.history.state?.step) {
       window.history.replaceState({ step: 'picker' }, '');
     }
@@ -92,16 +124,26 @@ export function App() {
     }
   };
 
+  const scrollToElementWithOffset = (elementId: string) => {
+    const el = document.getElementById(elementId);
+    if (el) {
+      const topOffset = el.getBoundingClientRect().top + window.pageYOffset - 90;
+      window.scrollTo({ top: topOffset, behavior: 'smooth' });
+    }
+  };
+
   return (
     <div className="app-container" style={{ position: 'relative', overflowX: 'clip' }}>
       <Navbar
         favoritesCount={favoritesCount}
+        activeSection={activeNavSection}
         onGoToStudio={() => {
           setCurrentStep('picker');
           setIsShowingFavoritesOnly(false);
           setIsShowingHowToUse(false);
           setIsAllFramesCatalog(false);
           setActiveBottomTab('home');
+          setActiveNavSection('hero');
           window.scrollTo({ top: 0, behavior: 'smooth' });
         }}
         onGoToAllFrames={() => {
@@ -110,15 +152,16 @@ export function App() {
           setIsShowingHowToUse(false);
           setIsAllFramesCatalog(false);
           setActiveBottomTab('home');
+          setActiveNavSection('frames');
           setTimeout(() => {
-            const el = document.getElementById('frame-showcase-section');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
+            scrollToElementWithOffset('frame-showcase-section');
           }, 100);
         }}
         onFilterFavorites={() => {
           setCurrentStep('picker');
           setIsShowingFavoritesOnly(true);
           setIsShowingHowToUse(false);
+          setActiveNavSection('favorites');
         }}
         onGoToHowToUse={() => {
           setCurrentStep('picker');
@@ -126,9 +169,9 @@ export function App() {
           setIsShowingHowToUse(false);
           setIsAllFramesCatalog(false);
           setActiveBottomTab('home');
+          setActiveNavSection('how-to-use');
           setTimeout(() => {
-            const el = document.getElementById('how-to-use-section');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
+            scrollToElementWithOffset('how-to-use-section');
           }, 100);
         }}
         onGoToAbout={() => {
@@ -136,10 +179,10 @@ export function App() {
           setIsShowingFavoritesOnly(false);
           setIsShowingHowToUse(false);
           setIsAllFramesCatalog(false);
-          setActiveBottomTab('about');
+          setActiveBottomTab('home');
+          setActiveNavSection('about');
           setTimeout(() => {
-            const el = document.getElementById('about-section');
-            if (el) el.scrollIntoView({ behavior: 'smooth' });
+            scrollToElementWithOffset('about-section');
           }, 100);
         }}
         isShowingFavoritesOnly={isShowingFavoritesOnly}
@@ -215,4 +258,3 @@ export function App() {
 }
 
 export default App;
-
