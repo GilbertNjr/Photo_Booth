@@ -58,7 +58,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
         backgroundTexture,
         customTexts,
         customBottomText,
-        placedStickers,
+        placedStickers: [], // Exclude stickers from background to eliminate ghosting
       });
 
       if (!isCancelled) {
@@ -72,7 +72,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
     return () => {
       isCancelled = true;
     };
-  }, [template, capturedPhotos, selectedFilter, backgroundColor, backgroundTexture, customTexts, customBottomText, placedStickers, skinSmoothness, beautyBrightness]);
+  }, [template, capturedPhotos, selectedFilter, backgroundColor, backgroundTexture, customTexts, customBottomText, skinSmoothness, beautyBrightness]);
 
   const handleTextChange = (id: string, value: string) => {
     setCustomTexts((prev) => ({ ...prev, [id]: value }));
@@ -170,9 +170,26 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
     }
   };
 
-  const handleApply = () => {
-    if (livePreviewUrl) {
-      onApplyCustomization(livePreviewUrl);
+  const handleApply = async () => {
+    setIsRendering(true);
+    try {
+      const canvas = document.createElement('canvas');
+      const finalDataUrl = await CanvasEngine.renderFullCanvas(canvas, template, capturedPhotos, {
+        filter: selectedFilter,
+        backgroundColor,
+        backgroundTexture,
+        customTexts,
+        customBottomText,
+        placedStickers,
+      });
+      onApplyCustomization(finalDataUrl);
+    } catch (e) {
+      console.error('Error rendering final canvas:', e);
+      if (livePreviewUrl) {
+        onApplyCustomization(livePreviewUrl);
+      }
+    } finally {
+      setIsRendering(false);
     }
   };
 
@@ -301,15 +318,26 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
           onClick={() => setSelectedStickerId(null)}
         >
           {livePreviewUrl ? (
-            <div style={{ position: 'relative', width: '100%', height: '100%', display: 'flex', alignItems: 'center', justifyContent: 'center', minWidth: 0, minHeight: 0, margin: '0 auto' }}>
+            <div
+              style={{
+                position: 'relative',
+                height: '100%',
+                maxHeight: '100%',
+                aspectRatio: `${template.canvasWidth} / ${template.canvasHeight}`,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                minWidth: 0,
+                minHeight: 0,
+                margin: '0 auto',
+              }}
+            >
               <img
                 src={livePreviewUrl}
                 alt="Live Customized Preview"
                 style={{
-                  maxWidth: '100%',
-                  maxHeight: '100%',
-                  width: 'auto',
-                  height: 'auto',
+                  width: '100%',
+                  height: '100%',
                   objectFit: 'contain',
                   display: 'block',
                   margin: '0 auto',

@@ -28,8 +28,17 @@ export const FrameModal: React.FC<FrameModalProps> = ({
   return (
     <Modal isOpen={isOpen} onClose={onClose}>
       <div className="frame-modal-grid">
-        {/* Left column: Frame preview */}
-        <div className="frame-modal-preview-box">
+        {/* Left column: Frame preview with authentic proportions */}
+        <div
+          className="frame-modal-preview-box"
+          style={{
+            aspectRatio: `${template.canvasWidth} / ${template.canvasHeight}`,
+            maxHeight: '480px',
+            margin: '0 auto',
+            width: '100%',
+            maxWidth: template.canvasWidth > template.canvasHeight ? '340px' : '200px',
+          }}
+        >
           <FrameRender template={template} />
         </div>
 

@@ -39,6 +39,12 @@ export const FrameCard: React.FC<FrameCardProps> = React.memo(
       ? '0 12px 28px rgba(128, 0, 32, 0.25), 0 0 0 3px rgba(128, 0, 32, 0.15)'
       : '0 4px 16px rgba(0, 0, 0, 0.05)';
 
+    const cardAspectRatio = template.canvasWidth && template.canvasHeight
+      ? `${template.canvasWidth} / ${template.canvasHeight}`
+      : template.aspectRatio === '2:6' || template.aspectRatio === '2x6'
+      ? '1 / 3'
+      : '2 / 3';
+
     const textColor = isDarkCard ? '#FFFFFF' : 'var(--color-neutral-dark)';
 
     return (
@@ -173,7 +179,17 @@ export const FrameCard: React.FC<FrameCardProps> = React.memo(
         </div>
 
         {/* Frame Preview Container */}
-        <div className="frame-card-preview-wrapper" style={{ width: '100%', minWidth: 0 }}>
+        <div
+          className="frame-card-preview-wrapper"
+          style={{
+            width: '100%',
+            minWidth: 0,
+            aspectRatio: cardAspectRatio,
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+          }}
+        >
           <FrameRender template={template} />
         </div>
 

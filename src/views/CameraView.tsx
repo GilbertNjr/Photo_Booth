@@ -84,6 +84,63 @@ export const CameraView: React.FC<CameraViewProps> = ({
     return () => clearInterval(interval);
   }, [isAISmileEnabled, isCameraReady, isCapturingSequence, isAllPhotosDone]);
 
+  const currentSlot = template.photoSlots[activeSlotIndex] || template.photoSlots[0];
+  const currentSlotRatio = currentSlot
+    ? (currentSlot.width * template.canvasWidth) / (currentSlot.height * template.canvasHeight)
+    : 4 / 3;
+
+  // Single Slot Capture / Retake Handler
+  const captureSingleSlot = async (slot: number) => {
+    if (isCapturingSequence || !videoRef.current) return;
+
+    setIsSessionStarted(true);
+    setIsCapturingSequence(true);
+    setActiveSlotIndex(slot);
+
+    try {
+      for (let count = countdownSeconds; count > 0; count--) {
+        setCurrentCountdown(count);
+        try {
+          if (soundEnabled) CaptureService.playCountdownBeep(false);
+        } catch {}
+        await new Promise((r) => setTimeout(r, 1000));
+      }
+
+      setCurrentCountdown(0);
+      try {
+        if (soundEnabled) {
+          CaptureService.playCountdownBeep(true);
+          CaptureService.playShutterSound();
+        }
+      } catch {}
+
+      if (isFlashActive) {
+        setShowFlash(true);
+        setTimeout(() => setShowFlash(false), 250);
+      }
+
+      if (videoRef.current) {
+        const slotObj = template.photoSlots[slot] || template.photoSlots[0];
+        const ratio = slotObj
+          ? (slotObj.width * template.canvasWidth) / (slotObj.height * template.canvasHeight)
+          : 4 / 3;
+        const photoData = CaptureService.captureFrame(videoRef.current, mirror, activePreset.filterCss, ratio);
+        setCapturedPhotos((prev) => {
+          const updated = [...prev];
+          updated[slot] = photoData;
+          return updated;
+        });
+      }
+
+      await new Promise((r) => setTimeout(r, 500));
+    } catch (err) {
+      console.error('Single slot capture error:', err);
+    } finally {
+      setIsCapturingSequence(false);
+      setCurrentCountdown(null);
+    }
+  };
+
   // Handle Capture Sequence (Failsafe & Robust for All Slots)
   const startCaptureSequence = async () => {
     if (isCapturingSequence || !videoRef.current || isAllPhotosDone) return;
@@ -128,9 +185,13 @@ export const CameraView: React.FC<CameraViewProps> = ({
           setTimeout(() => setShowFlash(false), 250);
         }
 
-        // Capture frame with failsafe & live cinematic filter
+        // Capture frame with failsafe, live cinematic filter & exact slot aspect ratio
         if (videoRef.current) {
-          const photoData = CaptureService.captureFrame(videoRef.current, mirror, activePreset.filterCss);
+          const slotObj = template.photoSlots[slot] || template.photoSlots[0];
+          const ratio = slotObj
+            ? (slotObj.width * template.canvasWidth) / (slotObj.height * template.canvasHeight)
+            : 4 / 3;
+          const photoData = CaptureService.captureFrame(videoRef.current, mirror, activePreset.filterCss, ratio);
           setCapturedPhotos((prev) => {
             const updated = [...prev];
             updated[slot] = photoData;
@@ -216,7 +277,65 @@ export const CameraView: React.FC<CameraViewProps> = ({
             }}
           />
 
-          {/* ⏱️ Clean Top Floating Countdown Overlay (Placed at Top Center to keep face area 100% clean) */}
+          {/* 🎯 WYSIWYG Live Framing Guide Overlay (Shows precise active slot aspect ratio & boundary) */}
+          {isCameraReady && currentCountdown === null && (
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                pointerEvents: 'none',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                zIndex: 15,
+              }}
+            >
+              <div
+                style={{
+                  width: currentSlotRatio > 1.33 ? '92%' : `${Math.min(92, Math.round(92 * (currentSlotRatio / 1.33)))}%`,
+                  aspectRatio: `${currentSlotRatio}`,
+                  maxHeight: '94%',
+                  borderRadius: currentSlot?.shape === 'arch' ? '40% 40% 10px 10px' : '14px',
+                  boxShadow: '0 0 0 9999px rgba(10, 10, 14, 0.46)',
+                  border: '2px dashed rgba(255, 255, 255, 0.88)',
+                  position: 'relative',
+                  transition: 'all 0.3s ease',
+                  boxSizing: 'border-box',
+                }}
+              >
+                {/* 4 Corner Crop Marks */}
+                <div style={{ position: 'absolute', top: '-2px', left: '-2px', width: '14px', height: '14px', borderTop: '3px solid #D90429', borderLeft: '3px solid #D90429' }} />
+                <div style={{ position: 'absolute', top: '-2px', right: '-2px', width: '14px', height: '14px', borderTop: '3px solid #D90429', borderRight: '3px solid #D90429' }} />
+                <div style={{ position: 'absolute', bottom: '-2px', left: '-2px', width: '14px', height: '14px', borderBottom: '3px solid #D90429', borderLeft: '3px solid #D90429' }} />
+                <div style={{ position: 'absolute', bottom: '-2px', right: '-2px', width: '14px', height: '14px', borderBottom: '3px solid #D90429', borderRight: '3px solid #D90429' }} />
+
+                {/* Badge Tag */}
+                <div
+                  style={{
+                    position: 'absolute',
+                    bottom: '8px',
+                    left: '50%',
+                    transform: 'translateX(-50%)',
+                    background: 'rgba(26, 24, 23, 0.75)',
+                    backdropFilter: 'blur(8px)',
+                    color: '#ffffff',
+                    padding: '2px 10px',
+                    borderRadius: '9999px',
+                    fontSize: '0.68rem',
+                    fontWeight: 700,
+                    letterSpacing: '0.03em',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                    whiteSpace: 'nowrap',
+                    boxShadow: '0 2px 8px rgba(0,0,0,0.3)',
+                  }}
+                >
+                  Area Foto #{activeSlotIndex + 1}
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* ⏱️ Clean Top Floating Countdown Overlay */}
           {currentCountdown !== null && (
             <div
               style={{
@@ -260,7 +379,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
             </div>
           )}
 
-          {/* 📐 Screen 3: Live Mini Frame Layout Grid Blueprint Overlay (Hidden during Countdown to prevent overlap) */}
+          {/* 📐 Screen 3: Live Mini Frame Layout Grid Blueprint Overlay (Clickable Slots for Retake) */}
           {currentCountdown === null && (
             <div
               style={{
@@ -268,7 +387,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
                 top: '12px',
                 right: '12px',
                 width: '76px',
-                height: template.aspectRatio === '2x6' ? '140px' : '105px',
+                height: template.aspectRatio === '2x6' || template.aspectRatio === '2:6' ? '140px' : '105px',
                 background: template.backgroundColor || 'rgba(255, 255, 255, 0.95)',
                 borderRadius: '12px',
                 border: '2px solid rgba(128, 0, 32, 0.35)',
@@ -276,7 +395,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
                 padding: '5px',
                 boxSizing: 'border-box',
                 zIndex: 25,
-                pointerEvents: 'none',
+                pointerEvents: 'auto',
                 overflow: 'hidden',
                 backdropFilter: 'blur(4px)',
                 display: 'flex',
@@ -288,10 +407,16 @@ export const CameraView: React.FC<CameraViewProps> = ({
               <div style={{ position: 'relative', width: '100%', height: '100%' }}>
                 {template.photoSlots.map((slot, i) => {
                   const img = capturedPhotos[i];
-                  const isActive = (i === activeSlotIndex && isCapturingSequence) || (currentCountdown !== null && i === activeSlotIndex);
+                  const isActive = (i === activeSlotIndex && isCapturingSequence) || (currentCountdown !== null && i === activeSlotIndex) || (i === activeSlotIndex);
                   return (
                     <div
                       key={slot.id || i}
+                      onClick={() => {
+                        if (!isCapturingSequence) {
+                          setActiveSlotIndex(i);
+                        }
+                      }}
+                      title={`Klik untuk memilih / foto ulang slot #${i + 1}`}
                       style={{
                         position: 'absolute',
                         left: `${slot.x}%`,
@@ -317,6 +442,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
                         justifyContent: 'center',
                         boxShadow: isActive ? '0 0 10px rgba(217, 4, 41, 0.9)' : 'none',
                         transition: 'all 0.25s ease',
+                        cursor: isCapturingSequence ? 'default' : 'pointer',
                       }}
                     >
                       {img ? (
@@ -477,9 +603,19 @@ export const CameraView: React.FC<CameraViewProps> = ({
           {/* Clean Main Camera Shutter Button */}
           <button
             className="mockup-main-shutter-btn"
-            onClick={startCaptureSequence}
-            disabled={isCapturingSequence || !isCameraReady || isAllPhotosDone}
-            title="Klik untuk Ambil Foto 📸"
+            onClick={() => {
+              if (capturedPhotos[activeSlotIndex]) {
+                captureSingleSlot(activeSlotIndex);
+              } else {
+                startCaptureSequence();
+              }
+            }}
+            disabled={isCapturingSequence || !isCameraReady}
+            title={
+              capturedPhotos[activeSlotIndex]
+                ? `Foto ulang slot #${activeSlotIndex + 1} 📸`
+                : "Klik untuk Ambil Foto 📸"
+            }
           >
             <div className="shutter-inner-icon">
               <CameraIcon size={28} color="#FFFFFF" />
@@ -513,6 +649,33 @@ export const CameraView: React.FC<CameraViewProps> = ({
               <Sparkles size={18} />
               <span>Lihat Hasil & Edit Bingkai ✨</span>
             </Button>
+
+            {/* Retake specific slot button */}
+            {capturedPhotos[activeSlotIndex] && (
+              <button
+                type="button"
+                onClick={() => captureSingleSlot(activeSlotIndex)}
+                disabled={isCapturingSequence}
+                style={{
+                  width: '100%',
+                  padding: '0.65rem',
+                  borderRadius: '9999px',
+                  background: '#FFF5F6',
+                  border: '1.5px solid var(--color-burgundy-deep)',
+                  color: 'var(--color-burgundy-deep)',
+                  fontSize: '0.85rem',
+                  fontWeight: 800,
+                  cursor: 'pointer',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  gap: '0.4rem',
+                }}
+              >
+                <RefreshCw size={15} />
+                <span>Foto Ulang Slot #{activeSlotIndex + 1} Saja</span>
+              </button>
+            )}
 
             <button
               type="button"

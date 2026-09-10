@@ -110,15 +110,39 @@ export class CaptureService {
   }
 
   /**
-   * Capture a single frame from video element as base64 JPEG with live cinematic filter & studio portrait enhancement
+   * Capture a single frame from video element as base64 JPEG with live cinematic filter & optional target aspect ratio cropping
    */
-  static captureFrame(videoElement: HTMLVideoElement, mirror: boolean = true, filterCss?: string): string {
+  static captureFrame(
+    videoElement: HTMLVideoElement,
+    mirror: boolean = true,
+    filterCss?: string,
+    targetAspectRatio?: number
+  ): string {
     try {
+      const vW = videoElement.videoWidth || 1920;
+      const vH = videoElement.videoHeight || 1080;
+
+      let cropX = 0;
+      let cropY = 0;
+      let cropW = vW;
+      let cropH = vH;
+
+      if (targetAspectRatio && targetAspectRatio > 0) {
+        const videoRatio = vW / vH;
+        if (videoRatio > targetAspectRatio) {
+          // Video is wider than target slot -> crop left/right sides
+          cropW = vH * targetAspectRatio;
+          cropX = (vW - cropW) / 2;
+        } else {
+          // Video is taller than target slot -> crop top/bottom
+          cropH = vW / targetAspectRatio;
+          cropY = (vH - cropH) / 2;
+        }
+      }
+
       const canvas = document.createElement('canvas');
-      const w = videoElement.videoWidth || 1920;
-      const h = videoElement.videoHeight || 1080;
-      canvas.width = w;
-      canvas.height = h;
+      canvas.width = Math.round(cropW);
+      canvas.height = Math.round(cropH);
       const ctx = canvas.getContext('2d');
 
       if (ctx) {
@@ -127,9 +151,19 @@ export class CaptureService {
           ctx.scale(-1, 1);
         }
 
-        // Apply Live Cinematic Filter or Auto Studio Lighting Enhancement
-        ctx.filter = filterCss || 'brightness(1.08) contrast(1.06) saturate(1.08)';
-        ctx.drawImage(videoElement, 0, 0, canvas.width, canvas.height);
+        // Apply Live Cinematic Filter if provided
+        ctx.filter = filterCss || 'none';
+        ctx.drawImage(
+          videoElement,
+          cropX,
+          cropY,
+          cropW,
+          cropH,
+          0,
+          0,
+          canvas.width,
+          canvas.height
+        );
         ctx.filter = 'none';
       }
 

@@ -3,6 +3,7 @@ import { Button } from '../components/Common/Button';
 import { Modal } from '../components/Common/Modal';
 import { PrintService } from '../services/printing/printService';
 import { CloudStorageService } from '../services/cloud/cloudStorageService';
+import { CanvasEngine } from '../services/canvas/canvasEngine';
 import type { CloudUploadResponse } from '../services/cloud/cloudStorageService';
 import type { PrintLayoutType } from '../services/printing/printService';
 import {
@@ -11,6 +12,7 @@ import {
   Edit3,
   CheckCircle,
   Share2,
+  Scissors,
 } from 'lucide-react';
 
 interface FinalPreviewViewProps {
@@ -30,20 +32,37 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
   const [copiedLink, setCopiedLink] = useState(false);
   const [cloudData, setCloudData] = useState<CloudUploadResponse | null>(null);
 
+  // Export Format State: Single Strip (2x6) or Double Strip Pair (4x6)
+  const [exportFormat, setExportFormat] = useState<'single' | 'double'>('single');
+  const [doubleStripUrl, setDoubleStripUrl] = useState<string>('');
+
   useEffect(() => {
     async function syncToCloud() {
       const resp = await CloudStorageService.uploadSessionData(finalImageDataUrl);
       setCloudData(resp);
     }
     syncToCloud();
+
+    async function generateDoubleStrip() {
+      if (!finalImageDataUrl) return;
+      try {
+        const canvas = document.createElement('canvas');
+        const doubleUrl = await CanvasEngine.renderDoubleStripCanvas(canvas, finalImageDataUrl, 1200, 1800);
+        setDoubleStripUrl(doubleUrl);
+      } catch (err) {
+        console.warn('Double strip generation fallback:', err);
+      }
+    }
+    generateDoubleStrip();
   }, [finalImageDataUrl]);
 
   const handleDownload = () => {
-    if (!finalImageDataUrl) return;
+    const targetUrl = (exportFormat === 'double' && doubleStripUrl) ? doubleStripUrl : finalImageDataUrl;
+    if (!targetUrl) return;
 
     try {
       // 1. Convert Data URL to Blob for seamless mobile & desktop PNG download
-      const parts = finalImageDataUrl.split(';');
+      const parts = targetUrl.split(';');
       const raw = atob(parts[1].split(',')[1]);
       const rawLength = raw.length;
       const uInt8Array = new Uint8Array(rawLength);
@@ -55,7 +74,8 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
       const blob = new Blob([uInt8Array], { type: 'image/png' });
       const blobUrl = URL.createObjectURL(blob);
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
-      const fileName = `PixBooth_${timestamp}.png`;
+      const suffix = exportFormat === 'double' ? '_DoubleStrip' : '_SingleStrip';
+      const fileName = `PixBooth_${timestamp}${suffix}.png`;
 
       // 2. Trigger anchor download safely
       const link = document.createElement('a');
@@ -74,7 +94,7 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
     } catch (err) {
       console.warn('Blob conversion fallback to direct link download:', err);
       const link = document.createElement('a');
-      link.href = finalImageDataUrl;
+      link.href = targetUrl;
       link.download = `PixBooth_${Date.now()}.png`;
       link.target = '_blank';
       document.body.appendChild(link);
@@ -88,7 +108,8 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
   };
 
   const handlePrint = () => {
-    PrintService.printCanvas(finalImageDataUrl, selectedPrintLayout);
+    const targetUrl = (exportFormat === 'double' && doubleStripUrl) ? doubleStripUrl : finalImageDataUrl;
+    PrintService.printCanvas(targetUrl, selectedPrintLayout);
     setIsPrintModalOpen(false);
   };
 
@@ -114,10 +135,57 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
           </button>
         </div>
 
+        {/* Format Selector Pill Switcher */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', margin: '0.4rem 0 0.8rem' }}>
+          <button
+            type="button"
+            onClick={() => setExportFormat('single')}
+            style={{
+              padding: '0.35rem 0.85rem',
+              borderRadius: '9999px',
+              border: exportFormat === 'single' ? '2px solid var(--color-burgundy-deep)' : '1px solid var(--color-border)',
+              background: exportFormat === 'single' ? 'var(--color-burgundy-deep)' : '#ffffff',
+              color: exportFormat === 'single' ? '#ffffff' : 'var(--color-neutral-dark)',
+              fontSize: '0.8rem',
+              fontWeight: 800,
+              cursor: 'pointer',
+              boxShadow: exportFormat === 'single' ? '0 4px 12px rgba(128, 0, 32, 0.25)' : 'none',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            Strip Tunggal (1x)
+          </button>
+
+          {doubleStripUrl && (
+            <button
+              type="button"
+              onClick={() => setExportFormat('double')}
+              style={{
+                padding: '0.35rem 0.85rem',
+                borderRadius: '9999px',
+                border: exportFormat === 'double' ? '2px solid var(--color-burgundy-deep)' : '1px solid var(--color-border)',
+                background: exportFormat === 'double' ? 'var(--color-burgundy-deep)' : '#ffffff',
+                color: exportFormat === 'double' ? '#ffffff' : 'var(--color-neutral-dark)',
+                fontSize: '0.8rem',
+                fontWeight: 800,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                boxShadow: exportFormat === 'double' ? '0 4px 12px rgba(128, 0, 32, 0.25)' : 'none',
+                transition: 'all 0.2s ease',
+              }}
+            >
+              <Scissors size={13} />
+              <span>Strip Kembar (2x 4x6)</span>
+            </button>
+          )}
+        </div>
+
         {/* Center Photo Strip Render Container */}
         <div className="camera-mockup-viewport-wrapper" style={{ aspectRatio: 'auto', height: 'clamp(300px, 46vh, 460px)', padding: '0.25rem', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', minWidth: 0, minHeight: 0, touchAction: 'pan-y', margin: '0 auto' }}>
           <img
-            src={finalImageDataUrl}
+            src={exportFormat === 'double' && doubleStripUrl ? doubleStripUrl : finalImageDataUrl}
             alt="Hasil Akhir Frame PNG"
             style={{
               maxHeight: '100%',
@@ -151,13 +219,13 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              gap: '0.55rem',
-              boxShadow: '0 6px 20px rgba(92, 6, 18, 0.35)',
+              gap: '0.5rem',
+              boxShadow: '0 8px 24px rgba(122, 28, 40, 0.32)',
               transition: 'all 0.2s ease',
             }}
           >
             <Download size={20} />
-            <span>Unduh Foto (PNG High Quality)</span>
+            <span>{exportFormat === 'double' ? 'Unduh Strip Kembar (4x6) ✂️' : 'Unduh Foto PNG (2x6) 📸'}</span>
           </button>
 
           {/* Secondary Row: Edit Bingkai & Sesi Baru */}

@@ -810,7 +810,7 @@ export class CanvasEngine {
 
       const svgString = this.getStickerSvg(st.content);
       const scaleFactor = st.scale || 1;
-      const baseSize = 80 * scaleFactor;
+      const baseSize = Math.round(width * 0.14) * scaleFactor;
 
       if (svgString) {
         try {
@@ -858,6 +858,55 @@ export class CanvasEngine {
     ctx.restore();
 
     return canvas.toDataURL('image/png', 1.0);
+  }
+
+  /**
+   * Render authentic double strip (pair of identical 2x6 strips side-by-side on 4x6 print sheet)
+   */
+  static async renderDoubleStripCanvas(
+    canvas: HTMLCanvasElement,
+    singleStripDataUrl: string,
+    width: number = 1200,
+    height: number = 1800
+  ): Promise<string> {
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return singleStripDataUrl;
+
+    canvas.width = width;
+    canvas.height = height;
+
+    try {
+      const stripImg = await this.loadImage(singleStripDataUrl);
+      const halfW = width / 2;
+
+      // Draw Left Strip
+      ctx.drawImage(stripImg, 0, 0, halfW, height);
+
+      // Draw Right Strip
+      ctx.drawImage(stripImg, halfW, 0, halfW, height);
+
+      // Draw Center Cutting Guideline
+      ctx.save();
+      ctx.strokeStyle = 'rgba(160, 160, 160, 0.45)';
+      ctx.lineWidth = 2;
+      ctx.setLineDash([10, 10]);
+      ctx.beginPath();
+      ctx.moveTo(halfW, 25);
+      ctx.lineTo(halfW, height - 25);
+      ctx.stroke();
+
+      // Mini Scissor Icon in center
+      ctx.fillStyle = 'rgba(100, 100, 100, 0.65)';
+      ctx.font = '22px sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('✂', halfW, height / 2);
+      ctx.restore();
+
+      return canvas.toDataURL('image/png', 1.0);
+    } catch {
+      return singleStripDataUrl;
+    }
   }
 }
 
