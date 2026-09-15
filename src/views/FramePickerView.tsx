@@ -1,9 +1,11 @@
 import React, { useState, useMemo, useEffect, useRef } from 'react';
-import type { FrameCategory, TemplateData } from '../types/template';
+import type { FrameCategory, TemplateData, GridAspectRatio } from '../types/template';
 import { TemplateService } from '../services/template/templateService';
 import { StorageService } from '../services/storage/storageService';
+import { LayoutBlueprintService } from '../services/layout/layoutBlueprintService';
 import { CategoryFilter } from '../components/TemplatePicker/CategoryFilter';
 import { SearchBar } from '../components/TemplatePicker/SearchBar';
+import { GridAspectSelector } from '../components/TemplatePicker/GridAspectSelector';
 import { TemplateGrid } from '../components/TemplatePicker/TemplateGrid';
 import { FrameModal } from '../components/FramePreview/FrameModal';
 import { Hero3DFanDisplay } from '../components/Home/Hero3DFanDisplay';
@@ -28,6 +30,8 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
   onExploreAllFrames,
 }) => {
   const [selectedCategory, setSelectedCategory] = useState<FrameCategory | 'all'>('all');
+  const [selectedRatio, setSelectedRatio] = useState<GridAspectRatio | 'all'>('all');
+  const [selectedSlotsCount, setSelectedSlotsCount] = useState<number | 'all'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [favorites, setFavorites] = useState<string[]>([]);
   const [selectedTemplateForModal, setSelectedTemplateForModal] = useState<TemplateData | null>(null);
@@ -69,18 +73,45 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
   }, [isShowingFavoritesOnly, favorites]);
 
   const filteredTemplates = useMemo(() => {
-    if (isHomeView && !isShowingFavoritesOnly && !searchQuery && selectedCategory === 'all') {
-      // Show top 4 signature popular/iconic templates for Home
-      const allTpls = TemplateService.getAllTemplates();
-      const featured = allTpls.filter((t) => t.isPopular || t.isNew);
-      return featured.length >= 4 ? featured.slice(0, 4) : allTpls.slice(0, 4);
-    }
     let result = TemplateService.searchTemplates(searchQuery, selectedCategory);
     if (isShowingFavoritesOnly) {
       result = result.filter((t) => favorites.includes(t.id));
     }
+
+    if (selectedRatio !== 'all') {
+      result = result.filter((t) => t.aspectRatio === selectedRatio);
+    }
+
+    if (selectedSlotsCount !== 'all') {
+      result = result.filter((t) => t.photoSlotsCount === selectedSlotsCount);
+    }
+
+    // Dynamic adaptation fallback if specific ratio is chosen and has few results
+    if (result.length === 0 && selectedRatio !== 'all') {
+      const allTemplates = TemplateService.getAllTemplates();
+      result = allTemplates.slice(0, 6).map((tpl) =>
+        LayoutBlueprintService.adaptTemplate(
+          tpl,
+          selectedRatio,
+          selectedSlotsCount !== 'all' ? selectedSlotsCount : 4
+        )
+      );
+    }
+
+    if (
+      isHomeView &&
+      !isShowingFavoritesOnly &&
+      !searchQuery &&
+      selectedCategory === 'all' &&
+      selectedRatio === 'all' &&
+      selectedSlotsCount === 'all'
+    ) {
+      const featured = result.filter((t) => t.isPopular || t.isNew);
+      return featured.length >= 4 ? featured.slice(0, 4) : result.slice(0, 4);
+    }
+
     return result;
-  }, [searchQuery, selectedCategory, isShowingFavoritesOnly, favorites, isHomeView]);
+  }, [searchQuery, selectedCategory, isShowingFavoritesOnly, favorites, isHomeView, selectedRatio, selectedSlotsCount]);
 
   const [activeSelectedFrame, setActiveSelectedFrame] = useState<TemplateData | null>(null);
 
@@ -192,6 +223,16 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
               categoryCounts={categoryCounts}
             />
           </div>
+        )}
+
+        {/* Dynamic Aspect Ratio & Slot Count Selector */}
+        {!isHomeView && (
+          <GridAspectSelector
+            selectedRatio={selectedRatio}
+            selectedSlotsCount={selectedSlotsCount}
+            onSelectRatio={setSelectedRatio}
+            onSelectSlotsCount={setSelectedSlotsCount}
+          />
         )}
 
         {/* High-Fidelity Frame Template Grid */}

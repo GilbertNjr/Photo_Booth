@@ -1,3 +1,17 @@
+## [1.2.0] - 2026-09-15 (Dynamic Grid Aspect Ratios, Paper Textures & Physical Photobooth Accents)
+
+### Added & Enhanced
+- **Dynamic Grid & Aspect Ratio System (`LayoutBlueprintService.ts`, `GridAspectSelector.tsx`):**
+  - Instant selection of aspect ratios: Strip 2x6 (Life Four Cuts), Postcard 4x6, Square 1:1 (Instagram Polaroid), Portrait 3:4, and Story 9:16 (TikTok/Reels).
+  - Slot count selector (1, 2, 3, 4, 6 photos) and dynamic template adaptation engine.
+  - On-the-fly "GRID" layout switcher tab inside `CustomizeView.tsx`.
+- **Procedural Canvas Paper Textures (`canvasEngine.ts`):**
+  - Added realistic shaders: Matte Paper, Polaroid Gloss, Linen Fabric, and Holographic Foil.
+- **Physical Photobooth Accents (`canvasEngine.ts`):**
+  - Semi-transparent washi tape with jagged paper cut edges and color palette.
+  - Live rubber postal date stamp with dynamic current date and seal graphics.
+  - Korea photobox serial barcode accent.
+
 ## [1.1.0] - 2026-08-28 (Enhanced Camera Viewport & Right Sidebar Card Layout)
 
 ### Added & Refactored

@@ -18,6 +18,31 @@ export type FrameStyle =
   | 'polaroid' 
   | 'minimal-modern';
 
+export type GridAspectRatio = 
+  | '1:1' 
+  | '3:4' 
+  | '4:3' 
+  | '2:6' 
+  | '4:6' 
+  | '9:16' 
+  | 'custom';
+
+export type PaperTextureType = 
+  | 'none' 
+  | 'matte' 
+  | 'polaroid-gloss' 
+  | 'linen' 
+  | 'vintage-paper' 
+  | 'film-grain' 
+  | 'gingham' 
+  | 'gingham-red' 
+  | 'holographic' 
+  | 'wood' 
+  | 'paper' 
+  | 'grid' 
+  | 'dots'
+  | 'leica';
+
 export interface PhotoSlot {
   id: string;
   x: number;          // % x position (0 to 100)
@@ -27,8 +52,12 @@ export interface PhotoSlot {
   rotation?: number;  // degrees tilt (-45 to 45)
   borderRadius?: number; // px
   aspectRatio?: number; // width / height
-  shape?: 'rect' | 'arch' | 'circle'; // Slot shape
+  shape?: 'rect' | 'arch' | 'circle' | 'heart'; // Slot shape
   frameStyle?: 'polaroid' | 'digicam' | 'ticket' | 'normal'; // Frame wrapper style
+  cropAnchor?: 'center' | 'top' | 'face'; // Smart crop placement
+  borderStyle?: 'solid' | 'dashed' | 'polaroid-frame' | 'none';
+  borderColor?: string;
+  borderWidth?: number;
 }
 
 export interface DecorativeElement {
@@ -67,19 +96,25 @@ export interface TemplateData {
   category: FrameCategory;
   style: FrameStyle;
   photoSlotsCount: number;
-  aspectRatio: string; // e.g. "2:6", "4:6", "1:1", "4:5"
+  aspectRatio: string; // e.g. "2:6", "4:6", "1:1", "4:5", "3:4", "9:16"
   canvasWidth: number; // default rendering resolution e.g. 1200
   canvasHeight: number; // default rendering resolution e.g. 1800
   
   // Visual properties
   backgroundColor: string; // hex or CSS background
-  backgroundTexture?: 'none' | 'paper' | 'film-grain' | 'grid' | 'dots' | 'vintage-paper' | 'gingham' | 'gingham-red' | 'leica' | 'wood';
+  backgroundTexture?: PaperTextureType;
   backgroundGradient?: string;
   frameBorderColor: string;
   frameBorderWidth: number;
   frameBorderRadius: number;
   accentColor: string;
   textColor: string;
+  
+  // Physical Accents
+  showWashiTape?: boolean;
+  showLiveStamp?: boolean;
+  showBarcode?: boolean;
+  washiTapeColor?: string;
   
   // Color palette choices for customization
   colorPalettes: string[];

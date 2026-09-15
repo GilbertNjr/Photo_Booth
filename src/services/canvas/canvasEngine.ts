@@ -1,5 +1,18 @@
-import type { TemplateData } from '../../types/template';
+import type { TemplateData, PaperTextureType } from '../../types/template';
 import type { PhotoFilterType, PlacedSticker } from '../../types/editor';
+
+export interface RenderCanvasOptions {
+  filter?: PhotoFilterType;
+  backgroundColor?: string;
+  backgroundTexture?: PaperTextureType;
+  customTexts?: Record<string, string>;
+  customBottomText?: string;
+  placedStickers?: PlacedSticker[];
+  showWashiTape?: boolean;
+  showLiveStamp?: boolean;
+  showBarcode?: boolean;
+  washiTapeColor?: string;
+}
 
 export class CanvasEngine {
   /**
@@ -46,6 +59,132 @@ export class CanvasEngine {
       img.onerror = (e) => reject(e);
       img.src = src;
     });
+  }
+
+  /**
+   * Helper to draw realistic semi-transparent washi tape with paper edges
+   */
+  private static drawWashiTape(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    angleDeg: number,
+    tapeColor: string = 'rgba(255, 235, 210, 0.8)'
+  ): void {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate((angleDeg * Math.PI) / 180);
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.18)';
+    ctx.shadowBlur = 5;
+    ctx.shadowOffsetY = 2;
+
+    ctx.fillStyle = tapeColor;
+    ctx.fillRect(-w / 2, -h / 2, w, h);
+
+    // Jagged cut tape edges on top & bottom
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.35)';
+    ctx.fillRect(-w / 2, -h / 2, w, 2.5);
+    ctx.fillRect(-w / 2, h / 2 - 2.5, w, 2.5);
+
+    // Delicate tape fiber lines
+    ctx.strokeStyle = 'rgba(0, 0, 0, 0.04)';
+    ctx.lineWidth = 1;
+    for (let lx = -w / 2 + 5; lx < w / 2; lx += 6) {
+      ctx.beginPath();
+      ctx.moveTo(lx, -h / 2);
+      ctx.lineTo(lx, h / 2);
+      ctx.stroke();
+    }
+    ctx.restore();
+  }
+
+  /**
+   * Helper to draw dynamic live circular rubber postal stamp with current date
+   */
+  private static drawLiveStamp(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    r: number,
+    color: string = '#8C2635'
+  ): void {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.rotate((-12 * Math.PI) / 180);
+    ctx.strokeStyle = color;
+    ctx.fillStyle = color;
+    ctx.globalAlpha = 0.88;
+
+    // Outer border
+    ctx.lineWidth = Math.max(2, r * 0.05);
+    ctx.beginPath();
+    ctx.arc(0, 0, r, 0, Math.PI * 2);
+    ctx.stroke();
+
+    // Inner dashed circle
+    ctx.lineWidth = Math.max(1, r * 0.025);
+    ctx.setLineDash([Math.max(3, r * 0.08), Math.max(2, r * 0.05)]);
+    ctx.beginPath();
+    ctx.arc(0, 0, r * 0.84, 0, Math.PI * 2);
+    ctx.stroke();
+    ctx.setLineDash([]);
+
+    // Live formatted date
+    const d = new Date();
+    const year = d.getFullYear();
+    const month = String(d.getMonth() + 1).padStart(2, '0');
+    const day = String(d.getDate()).padStart(2, '0');
+    const dateStr = `${year}.${month}.${day}`;
+
+    ctx.font = `700 ${Math.round(r * 0.22)}px monospace, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText('PHOTO STUDIO', 0, -r * 0.42);
+
+    ctx.font = `900 ${Math.round(r * 0.26)}px monospace, sans-serif`;
+    ctx.fillText(dateStr, 0, 0);
+
+    ctx.font = `700 ${Math.round(r * 0.17)}px sans-serif`;
+    ctx.fillText('★ ORIGINAL SHOT ★', 0, r * 0.42);
+
+    ctx.restore();
+  }
+
+  /**
+   * Helper to draw clean modern barcode accent
+   */
+  private static drawBarcode(
+    ctx: CanvasRenderingContext2D,
+    x: number,
+    y: number,
+    w: number,
+    h: number,
+    color: string = '#1E293B'
+  ): void {
+    ctx.save();
+    ctx.translate(x, y);
+    ctx.fillStyle = color;
+
+    const pattern = [2, 1, 3, 1, 2, 4, 1, 2, 1, 3, 2, 1, 4, 2, 1, 3, 1, 2, 3, 1, 2, 1, 4, 1, 2];
+    const totalUnits = pattern.reduce((acc, val) => acc + val, 0) + 10;
+    const unitWidth = w / totalUnits;
+    let curX = -w / 2;
+
+    for (let i = 0; i < pattern.length; i++) {
+      const barW = pattern[i] * unitWidth;
+      if (i % 2 === 0) {
+        ctx.fillRect(curX, -h / 2, barW, h * 0.72);
+      }
+      curX += barW + (unitWidth * 0.5);
+    }
+
+    ctx.font = `bold ${Math.round(h * 0.24)}px monospace, sans-serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'bottom';
+    ctx.fillText('№ PB-2026-KR', 0, h / 2);
+    ctx.restore();
   }
 
   /**
@@ -217,14 +356,7 @@ export class CanvasEngine {
     canvas: HTMLCanvasElement,
     template: TemplateData,
     capturedPhotos: string[],
-    options: {
-      filter?: PhotoFilterType;
-      backgroundColor?: string;
-      backgroundTexture?: string;
-      customTexts?: Record<string, string>;
-      customBottomText?: string;
-      placedStickers?: PlacedSticker[];
-    } = {}
+    options: RenderCanvasOptions = {}
   ): Promise<string> {
     const ctx = canvas.getContext('2d');
     if (!ctx) return '';
@@ -328,6 +460,61 @@ export class CanvasEngine {
       ctx.setLineDash([8, 8]);
       ctx.stroke();
       ctx.setLineDash([]);
+      ctx.restore();
+    } else if (bgTexture === 'matte') {
+      ctx.save();
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.06)';
+      for (let i = 0; i < 2000; i++) {
+        const rx = Math.random() * width;
+        const ry = Math.random() * height;
+        ctx.fillRect(rx, ry, Math.max(1, width * 0.002), Math.max(1, width * 0.002));
+      }
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
+      for (let i = 0; i < 2000; i++) {
+        const rx = Math.random() * width;
+        const ry = Math.random() * height;
+        ctx.fillRect(rx, ry, Math.max(1, width * 0.002), Math.max(1, width * 0.002));
+      }
+      ctx.restore();
+    } else if (bgTexture === 'polaroid-gloss') {
+      ctx.save();
+      const glossGrad = ctx.createLinearGradient(0, 0, width, height);
+      glossGrad.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
+      glossGrad.addColorStop(0.35, 'rgba(255, 255, 255, 0.03)');
+      glossGrad.addColorStop(0.7, 'rgba(0, 0, 0, 0.02)');
+      glossGrad.addColorStop(1, 'rgba(0, 0, 0, 0.12)');
+      ctx.fillStyle = glossGrad;
+      ctx.fillRect(0, 0, width, height);
+      ctx.restore();
+    } else if (bgTexture === 'linen') {
+      ctx.save();
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
+      ctx.lineWidth = 1;
+      const lStep = Math.max(3, Math.round(width * 0.008));
+      for (let x = 0; x < width; x += lStep) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+      }
+      for (let y = 0; y < height; y += lStep) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+      }
+      ctx.restore();
+    } else if (bgTexture === 'holographic') {
+      ctx.save();
+      const holoGrad = ctx.createLinearGradient(0, 0, width, height);
+      holoGrad.addColorStop(0, 'rgba(255, 192, 203, 0.28)');
+      holoGrad.addColorStop(0.25, 'rgba(173, 216, 230, 0.28)');
+      holoGrad.addColorStop(0.5, 'rgba(255, 255, 224, 0.28)');
+      holoGrad.addColorStop(0.75, 'rgba(221, 160, 221, 0.28)');
+      holoGrad.addColorStop(1, 'rgba(152, 251, 152, 0.28)');
+      ctx.fillStyle = holoGrad;
+      ctx.fillRect(0, 0, width, height);
+      // Iridescent light flare across card
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.lineWidth = Math.max(8, width * 0.03);
+      ctx.beginPath();
+      ctx.moveTo(-width * 0.2, height * 0.7);
+      ctx.lineTo(width * 1.2, -height * 0.1);
+      ctx.stroke();
       ctx.restore();
     }
 
@@ -708,6 +895,29 @@ export class CanvasEngine {
       ctx.restore();
     }
 
+    // 3b. Render Realistic Washi Tapes over Photo Slots if enabled
+    const showWashi = options.showWashiTape !== undefined ? options.showWashiTape : template.showWashiTape;
+    if (showWashi) {
+      for (const slot of template.photoSlots) {
+        const slotX = (slot.x / 100) * width;
+        const slotY = (slot.y / 100) * height;
+        const slotW = (slot.width / 100) * width;
+        const slotH = (slot.height / 100) * height;
+        const tapeColor = options.washiTapeColor || template.washiTapeColor || 'rgba(255, 230, 205, 0.82)';
+
+        // Top-left corner washi tape
+        this.drawWashiTape(
+          ctx,
+          slotX + slotW * 0.08,
+          slotY + 2,
+          Math.max(28, slotW * 0.28),
+          Math.max(10, slotH * 0.06),
+          -10,
+          tapeColor
+        );
+      }
+    }
+
     // 4. Render Template Decorative Elements
     for (const el of template.decorativeElements) {
       ctx.save();
@@ -845,6 +1055,25 @@ export class CanvasEngine {
       }
 
       ctx.restore();
+    }
+
+    // 6b. Render Live Rubber Postal Stamp if enabled
+    const showStamp = options.showLiveStamp !== undefined ? options.showLiveStamp : template.showLiveStamp;
+    if (showStamp) {
+      const stampRadius = Math.min(width * 0.12, 70);
+      const stampX = width * 0.82;
+      const stampY = height * 0.90;
+      this.drawLiveStamp(ctx, stampX, stampY, stampRadius, template.accentColor || '#8C2635');
+    }
+
+    // 6c. Render Barcode Accent if enabled
+    const showBar = options.showBarcode !== undefined ? options.showBarcode : template.showBarcode;
+    if (showBar) {
+      const barW = Math.min(width * 0.35, 240);
+      const barH = Math.max(24, height * 0.035);
+      const barX = width * 0.25;
+      const barY = height * 0.94;
+      this.drawBarcode(ctx, barX, barY, barW, barH, template.textColor || '#1E293B');
     }
 
     // 7. Render Glossy Sheen Overlay on final export

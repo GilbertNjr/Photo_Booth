@@ -1,11 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
 import { Download, Eye, EyeOff, Plus, Minus, RotateCw, Check, ArrowLeft } from 'lucide-react';
-import type { TemplateData } from '../types/template';
+import type { TemplateData, PaperTextureType, GridAspectRatio } from '../types/template';
 import type { PhotoFilterType, PlacedSticker } from '../types/editor';
 import { FilterPicker } from '../components/PhotoEditor/FilterPicker';
 import { TextEditor } from '../components/PhotoEditor/TextEditor';
 import { StickerPicker } from '../components/PhotoEditor/StickerPicker';
 import { StickerIllustration } from '../components/Common/StickerIllustration';
+import { GridAspectSelector } from '../components/TemplatePicker/GridAspectSelector';
+import { LayoutBlueprintService } from '../services/layout/layoutBlueprintService';
 import { CanvasEngine } from '../services/canvas/canvasEngine';
 
 interface CustomizeViewProps {
@@ -21,18 +23,25 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
   onBackToCamera,
   onApplyCustomization,
 }) => {
-  const [activeTab, setActiveTab] = useState<'filter' | 'frame' | 'bg' | 'text' | 'stickers'>('stickers');
+  const [currentTemplate, setCurrentTemplate] = useState<TemplateData>(template);
+  const [activeTab, setActiveTab] = useState<'stickers' | 'frame' | 'bg' | 'text' | 'filter' | 'layout'>('stickers');
 
   // Customization State
   const [selectedFilter, setSelectedFilter] = useState<PhotoFilterType>('original');
   const [backgroundColor, setBackgroundColor] = useState<string>(template.backgroundColor);
-  const [backgroundTexture, setBackgroundTexture] = useState<string>(template.backgroundTexture || 'none');
+  const [backgroundTexture, setBackgroundTexture] = useState<PaperTextureType>(template.backgroundTexture || 'none');
   const [customTexts, setCustomTexts] = useState<Record<string, string>>({});
-  const [customBottomText, setCustomBottomText] = useState<string>('2026.08.28 • PHOTO BOOTH STUDIO');
+  const [customBottomText, setCustomBottomText] = useState<string>('2026.09.15 • PHOTO BOOTH STUDIO');
   const [placedStickers, setPlacedStickers] = useState<PlacedSticker[]>([]);
   const [selectedStickerId, setSelectedStickerId] = useState<string | null>(null);
   const [skinSmoothness, setSkinSmoothness] = useState<number>(50);
   const [beautyBrightness, setBeautyBrightness] = useState<number>(50);
+
+  // Physical Photobooth Accents
+  const [showWashiTape, setShowWashiTape] = useState<boolean>(template.showWashiTape ?? true);
+  const [showLiveStamp, setShowLiveStamp] = useState<boolean>(template.showLiveStamp ?? false);
+  const [showBarcode, setShowBarcode] = useState<boolean>(template.showBarcode ?? true);
+  const [washiTapeColor, setWashiTapeColor] = useState<string>(template.washiTapeColor || 'rgba(255, 230, 205, 0.85)');
 
   // Full Screen / Clean View Mode (Hides editor drawer so user can inspect canvas clearly)
   const [isFullViewMode, setIsFullViewMode] = useState<boolean>(false);
@@ -52,13 +61,17 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
     async function updatePreview() {
       setIsRendering(true);
       const canvas = document.createElement('canvas');
-      const dataUrl = await CanvasEngine.renderFullCanvas(canvas, template, capturedPhotos, {
+      const dataUrl = await CanvasEngine.renderFullCanvas(canvas, currentTemplate, capturedPhotos, {
         filter: selectedFilter,
         backgroundColor,
         backgroundTexture,
         customTexts,
         customBottomText,
         placedStickers: [], // Exclude stickers from background to eliminate ghosting
+        showWashiTape,
+        showLiveStamp,
+        showBarcode,
+        washiTapeColor,
       });
 
       if (!isCancelled) {
@@ -72,7 +85,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
     return () => {
       isCancelled = true;
     };
-  }, [template, capturedPhotos, selectedFilter, backgroundColor, backgroundTexture, customTexts, customBottomText, skinSmoothness, beautyBrightness]);
+  }, [currentTemplate, capturedPhotos, selectedFilter, backgroundColor, backgroundTexture, customTexts, customBottomText, skinSmoothness, beautyBrightness, showWashiTape, showLiveStamp, showBarcode, washiTapeColor]);
 
   const handleTextChange = (id: string, value: string) => {
     setCustomTexts((prev) => ({ ...prev, [id]: value }));
@@ -170,17 +183,37 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
     }
   };
 
+  const handleSelectRatio = (ratio: GridAspectRatio | 'all') => {
+    if (ratio === 'all') return;
+    const adapted = LayoutBlueprintService.adaptTemplate(currentTemplate, ratio, currentTemplate.photoSlotsCount);
+    setCurrentTemplate(adapted);
+  };
+
+  const handleSelectSlotsCount = (count: number | 'all') => {
+    if (count === 'all') return;
+    const adapted = LayoutBlueprintService.adaptTemplate(
+      currentTemplate,
+      currentTemplate.aspectRatio as GridAspectRatio,
+      count
+    );
+    setCurrentTemplate(adapted);
+  };
+
   const handleApply = async () => {
     setIsRendering(true);
     try {
       const canvas = document.createElement('canvas');
-      const finalDataUrl = await CanvasEngine.renderFullCanvas(canvas, template, capturedPhotos, {
+      const finalDataUrl = await CanvasEngine.renderFullCanvas(canvas, currentTemplate, capturedPhotos, {
         filter: selectedFilter,
         backgroundColor,
         backgroundTexture,
         customTexts,
         customBottomText,
         placedStickers,
+        showWashiTape,
+        showLiveStamp,
+        showBarcode,
+        washiTapeColor,
       });
       onApplyCustomization(finalDataUrl);
     } catch (e) {
@@ -650,12 +683,13 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
             {/* Sheet Handle Indicator */}
             <div style={{ width: '40px', height: '4px', background: 'var(--color-border)', borderRadius: '2px', margin: '0 auto' }} />
 
-            {/* Navigation Tabs (STICKERS, FRAME, BG, TEXT, FILTER) */}
+            {/* Navigation Tabs (STICKERS, FRAME, BG, LAYOUT, TEXT, FILTER) */}
             <div style={{ display: 'flex', borderBottom: '1px solid var(--color-border-soft)', overflowX: 'auto' }}>
               {[
                 { id: 'stickers', label: 'STICKERS' },
                 { id: 'frame', label: 'FRAME' },
-                { id: 'bg', label: 'BG' },
+                { id: 'bg', label: 'TEKSTUR' },
+                { id: 'layout', label: 'GRID' },
                 { id: 'text', label: 'TEXT' },
                 { id: 'filter', label: 'FILTER' },
               ].map((tab, idx) => {
@@ -710,29 +744,87 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
             )}
 
             {activeTab === 'frame' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <label style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-neutral-sub)', textTransform: 'uppercase' }}>
-                  WARNA FRAME FOTO
-                </label>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                <div>
+                  <label style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-neutral-sub)', textTransform: 'uppercase', display: 'block', marginBottom: '0.5rem' }}>
+                    WARNA FRAME FOTO
+                  </label>
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.65rem' }}>
+                    {currentTemplate.colorPalettes.map((c, i) => (
+                      <button
+                        key={i}
+                        onClick={() => setBackgroundColor(c)}
+                        style={{
+                          width: '38px',
+                          height: '38px',
+                          borderRadius: '50%',
+                          backgroundColor: c,
+                          border: backgroundColor === c ? '3px solid var(--color-burgundy-deep)' : '1px solid rgba(0,0,0,0.15)',
+                          cursor: 'pointer',
+                          boxShadow: backgroundColor === c ? '0 4px 10px rgba(0,0,0,0.2)' : 'none',
+                          transition: 'transform 0.15s ease',
+                        }}
+                        title={`Pilih Warna ${c}`}
+                      />
+                    ))}
+                  </div>
+                </div>
 
-                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '0.65rem' }}>
-                  {template.colorPalettes.map((c, i) => (
-                    <button
-                      key={i}
-                      onClick={() => setBackgroundColor(c)}
-                      style={{
-                        width: '38px',
-                        height: '38px',
-                        borderRadius: '50%',
-                        backgroundColor: c,
-                        border: backgroundColor === c ? '3px solid var(--color-burgundy-deep)' : '1px solid rgba(0,0,0,0.15)',
-                        cursor: 'pointer',
-                        boxShadow: backgroundColor === c ? '0 4px 10px rgba(0,0,0,0.2)' : 'none',
-                        transition: 'transform 0.15s ease',
-                      }}
-                      title={`Pilih Warna ${c}`}
-                    />
-                  ))}
+                {/* Physical Photobooth Accents Toggle */}
+                <div style={{ borderTop: '1px solid var(--color-border-soft)', paddingTop: '0.85rem' }}>
+                  <label style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-neutral-sub)', textTransform: 'uppercase', display: 'block', marginBottom: '0.6rem' }}>
+                    AKSEN PHOTOBOOTH ASLI
+                  </label>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '0.6rem' }}>
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.85rem', cursor: 'pointer' }}>
+                      <input
+                        type="checkbox"
+                        checked={showWashiTape}
+                        onChange={(e) => setShowWashiTape(e.target.checked)}
+                        style={{ accentColor: 'var(--color-burgundy-deep)', width: '16px', height: '16px' }}
+                      />
+                      <span>📌 Selotip Washi Tape Semi-Transparan</span>
+                    </label>
+
+                    {showWashiTape && (
+                      <div style={{ display: 'flex', gap: '0.4rem', marginLeft: '1.6rem' }}>
+                        {['rgba(255, 230, 205, 0.85)', 'rgba(255, 200, 215, 0.85)', 'rgba(215, 235, 215, 0.85)', 'rgba(210, 230, 255, 0.85)', 'rgba(255, 255, 255, 0.85)'].map((col, idx) => (
+                          <button
+                            key={idx}
+                            onClick={() => setWashiTapeColor(col)}
+                            style={{
+                              width: '24px',
+                              height: '14px',
+                              borderRadius: '3px',
+                              backgroundColor: col,
+                              border: washiTapeColor === col ? '2px solid var(--color-burgundy-deep)' : '1px solid #ccc',
+                              cursor: 'pointer',
+                            }}
+                          />
+                        ))}
+                      </div>
+                    )}
+
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.85rem', cursor: 'pointer' }}>
+                      <input
+                        type="checkbox"
+                        checked={showLiveStamp}
+                        onChange={(e) => setShowLiveStamp(e.target.checked)}
+                        style={{ accentColor: 'var(--color-burgundy-deep)', width: '16px', height: '16px' }}
+                      />
+                      <span>📮 Stempel Pos Tanggal Live ({new Date().toISOString().slice(0, 10)})</span>
+                    </label>
+
+                    <label style={{ display: 'flex', alignItems: 'center', gap: '0.6rem', fontSize: '0.85rem', cursor: 'pointer' }}>
+                      <input
+                        type="checkbox"
+                        checked={showBarcode}
+                        onChange={(e) => setShowBarcode(e.target.checked)}
+                        style={{ accentColor: 'var(--color-burgundy-deep)', width: '16px', height: '16px' }}
+                      />
+                      <span>🏷️ Barcode Photobox Korea (Serial Number)</span>
+                    </label>
+                  </div>
                 </div>
               </div>
             )}
@@ -746,17 +838,21 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.65rem' }}>
                   {[
                     { id: 'none', label: 'Polos Solid', icon: '🎨' },
+                    { id: 'matte', label: 'Matte Paper', icon: '📜' },
+                    { id: 'polaroid-gloss', label: 'Polaroid Gloss', icon: '📸' },
+                    { id: 'linen', label: 'Linen Fabric', icon: '🧵' },
+                    { id: 'holographic', label: 'Holographic', icon: '🌈' },
                     { id: 'dots', label: 'Polka Dots', icon: '✨' },
                     { id: 'grid', label: 'Grid Lines', icon: '📐' },
                     { id: 'gingham', label: 'Kain Gingham', icon: '🧺' },
-                    { id: 'paper', label: 'Vintage Paper', icon: '📜' },
+                    { id: 'paper', label: 'Vintage Paper', icon: '📰' },
                     { id: 'film-grain', label: 'Retro Grain', icon: '🎞️' },
                   ].map((pat) => {
                     const isSelected = backgroundTexture === pat.id;
                     return (
                       <button
                         key={pat.id}
-                        onClick={() => setBackgroundTexture(pat.id)}
+                        onClick={() => setBackgroundTexture(pat.id as any)}
                         style={{
                           padding: '0.65rem 0.85rem',
                           borderRadius: 'var(--radius-md)',
@@ -778,6 +874,17 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                     );
                   })}
                 </div>
+              </div>
+            )}
+
+            {activeTab === 'layout' && (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.75rem' }}>
+                <GridAspectSelector
+                  selectedRatio={currentTemplate.aspectRatio as any}
+                  selectedSlotsCount={currentTemplate.photoSlotsCount}
+                  onSelectRatio={handleSelectRatio}
+                  onSelectSlotsCount={handleSelectSlotsCount}
+                />
               </div>
             )}
 
