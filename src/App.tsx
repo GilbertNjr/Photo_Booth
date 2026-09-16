@@ -31,6 +31,75 @@ export function App() {
   const [activeBottomTab, setActiveBottomTab] = useState<'home' | 'gallery' | 'about'>('home');
   const [activeNavSection, setActiveNavSection] = useState<NavSection>('hero');
 
+  // Kiosk Mode & 60s Idle Auto-Reset
+  const [isKioskMode, setIsKioskMode] = useState(false);
+  const [idleSecondsLeft, setIdleSecondsLeft] = useState<number | null>(null);
+
+  const toggleKioskMode = () => {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen().catch(() => {});
+      setIsKioskMode(true);
+    } else {
+      if (document.exitFullscreen) {
+        document.exitFullscreen().catch(() => {});
+      }
+      setIsKioskMode(false);
+    }
+  };
+
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsKioskMode(!!document.fullscreenElement);
+    };
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+  const navigateToStep = (newStep: Step) => {
+    setCurrentStep(newStep);
+    window.history.pushState({ step: newStep }, '');
+  };
+
+  const handleNewSession = () => {
+    setSelectedFrame(null);
+    setCapturedPhotos([]);
+    setFinalImageDataUrl('');
+    navigateToStep('picker');
+  };
+
+  // 60-Second Auto-Reset Idle Purge on 'final' step
+  useEffect(() => {
+    if (currentStep !== 'final') {
+      setIdleSecondsLeft(null);
+      return;
+    }
+
+    let remaining = 60;
+    setIdleSecondsLeft(remaining);
+
+    const resetIdle = () => {
+      remaining = 60;
+      setIdleSecondsLeft(remaining);
+    };
+
+    const interval = setInterval(() => {
+      remaining -= 1;
+      setIdleSecondsLeft(remaining);
+      if (remaining <= 0) {
+        clearInterval(interval);
+        handleNewSession();
+      }
+    }, 1000);
+
+    const events = ['mousemove', 'mousedown', 'touchstart', 'keydown', 'scroll'];
+    events.forEach((ev) => window.addEventListener(ev, resetIdle, { passive: true }));
+
+    return () => {
+      clearInterval(interval);
+      events.forEach((ev) => window.removeEventListener(ev, resetIdle));
+    };
+  }, [currentStep]);
+
   useEffect(() => {
     setFavoritesCount(StorageService.getFavorites().length);
   }, [isShowingFavoritesOnly, currentStep]);
@@ -85,11 +154,6 @@ export function App() {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  const navigateToStep = (newStep: Step) => {
-    setCurrentStep(newStep);
-    window.history.pushState({ step: newStep }, '');
-  };
-
   const handleSelectFrame = (template: TemplateData) => {
     setSelectedFrame(template);
     navigateToStep('camera');
@@ -103,13 +167,6 @@ export function App() {
   const handleApplyCustomization = (imageDataUrl: string) => {
     setFinalImageDataUrl(imageDataUrl);
     navigateToStep('final');
-  };
-
-  const handleNewSession = () => {
-    setSelectedFrame(null);
-    setCapturedPhotos([]);
-    setFinalImageDataUrl('');
-    navigateToStep('picker');
   };
 
   const handleStepClick = (stepId: StepId) => {
@@ -186,6 +243,8 @@ export function App() {
           }, 100);
         }}
         isShowingFavoritesOnly={isShowingFavoritesOnly}
+        isKioskMode={isKioskMode}
+        onToggleKiosk={toggleKioskMode}
       />
 
       <main className="main-content" style={{ position: 'relative', zIndex: 1 }}>
@@ -249,6 +308,36 @@ export function App() {
             onEditCustomization={() => setCurrentStep('customize')}
             onNewSession={handleNewSession}
           />
+        )}
+
+        {/* 60s Idle Auto-Reset Notification Alert Banner */}
+        {idleSecondsLeft !== null && idleSecondsLeft <= 20 && (
+          <div
+            style={{
+              position: 'fixed',
+              bottom: '24px',
+              left: '50%',
+              transform: 'translateX(-50%)',
+              background: 'rgba(239, 68, 68, 0.96)',
+              backdropFilter: 'blur(8px)',
+              color: '#ffffff',
+              padding: '0.65rem 1.25rem',
+              borderRadius: '9999px',
+              zIndex: 99999,
+              fontSize: '0.84rem',
+              fontWeight: 800,
+              boxShadow: '0 8px 30px rgba(239, 68, 68, 0.45)',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.55rem',
+              border: '1.5px solid rgba(255, 255, 255, 0.4)',
+              cursor: 'pointer',
+            }}
+            onClick={() => setIdleSecondsLeft(60)}
+          >
+            <span style={{ fontSize: '1rem' }}>⏱️</span>
+            <span>Sesi foto akan otomatis direset dalam {idleSecondsLeft} detik... Sentuh layar untuk lanjut.</span>
+          </div>
         )}
       </main>
 

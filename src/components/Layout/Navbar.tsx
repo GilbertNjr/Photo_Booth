@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Camera, Heart, Menu, X, Home, LayoutGrid, HelpCircle, Info } from 'lucide-react';
+import { Camera, Heart, Menu, X, Home, LayoutGrid, HelpCircle, Info, Maximize, Minimize } from 'lucide-react';
 
 export type NavSection = 'hero' | 'frames' | 'how-to-use' | 'about' | 'favorites';
 
@@ -12,6 +12,8 @@ interface NavbarProps {
   onGoToHowToUse?: () => void;
   onGoToAbout?: () => void;
   isShowingFavoritesOnly?: boolean;
+  isKioskMode?: boolean;
+  onToggleKiosk?: () => void;
 }
 
 export const Navbar: React.FC<NavbarProps> = ({
@@ -23,6 +25,8 @@ export const Navbar: React.FC<NavbarProps> = ({
   onGoToHowToUse,
   onGoToAbout,
   isShowingFavoritesOnly = false,
+  isKioskMode = false,
+  onToggleKiosk,
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
@@ -100,6 +104,23 @@ export const Navbar: React.FC<NavbarProps> = ({
             <Camera size={15} />
             <span>Riwayat Foto</span>
           </button>
+
+          {onToggleKiosk && (
+            <button
+              className="nav-action-pill"
+              onClick={onToggleKiosk}
+              title={isKioskMode ? 'Keluar Mode Kiosk' : 'Masuk Mode Kiosk (Layar Penuh)'}
+              style={{
+                background: isKioskMode ? '#10B981' : 'transparent',
+                color: isKioskMode ? '#ffffff' : 'inherit',
+                borderColor: isKioskMode ? '#10B981' : 'var(--color-border)',
+                fontWeight: 700,
+              }}
+            >
+              {isKioskMode ? <Minimize size={15} /> : <Maximize size={15} />}
+              <span>{isKioskMode ? 'Kiosk ON' : 'Mode Kiosk'}</span>
+            </button>
+          )}
         </div>
 
         {/* Hamburger Toggle Button (Mobile Only) */}
@@ -167,6 +188,17 @@ export const Navbar: React.FC<NavbarProps> = ({
               <Camera size={18} />
               <span>Riwayat Foto</span>
             </button>
+
+            {onToggleKiosk && (
+              <button
+                className="mobile-menu-item"
+                onClick={() => handleMobileNav(onToggleKiosk)}
+                style={{ color: isKioskMode ? '#10B981' : 'inherit', fontWeight: 700 }}
+              >
+                {isKioskMode ? <Minimize size={18} /> : <Maximize size={18} />}
+                <span>{isKioskMode ? 'Keluar Mode Kiosk (Aktif)' : 'Mode Kiosk (Layar Penuh)'}</span>
+              </button>
+            )}
           </div>
         </div>
       )}

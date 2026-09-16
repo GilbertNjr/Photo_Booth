@@ -3,6 +3,10 @@ import type { TemplateData } from '../types/template';
 import { CameraService } from '../services/camera/cameraService';
 import { CaptureService } from '../services/capture/captureService';
 import { GestureService } from '../services/ai/gestureService';
+import { ARFilterService } from '../services/ai/arFilterService';
+import type { ARFilterType } from '../services/ai/arFilterService';
+import { ARFilterBar } from '../components/Camera/ARFilterBar';
+import { GifRecorderService } from '../services/gif/gifRecorderService';
 import { FILM_PRESETS } from '../services/filters/colorShaderService';
 import type { FilmGradeType } from '../services/filters/colorShaderService';
 import { Button } from '../components/Common/Button';
@@ -25,12 +29,14 @@ export const CameraView: React.FC<CameraViewProps> = ({
   onPhotosCaptured,
 }) => {
   const videoRef = useRef<HTMLVideoElement | null>(null);
+  const arCanvasRef = useRef<HTMLCanvasElement | null>(null);
   const [isCameraReady, setIsCameraReady] = useState(false);
   const [mirror, setMirror] = useState(true);
   const [soundEnabled] = useState(true);
   const [isFlashActive] = useState(true);
   const [countdownSeconds, setCountdownSeconds] = useState<number>(3);
   const [selectedFilmPreset, setSelectedFilmPreset] = useState<FilmGradeType>('original');
+  const [activeARFilter, setActiveARFilter] = useState<ARFilterType>('none');
   const [isAISmileEnabled] = useState(true);
 
   // Capture State
@@ -65,6 +71,42 @@ export const CameraView: React.FC<CameraViewProps> = ({
     };
   }, []);
 
+  // AR Filter Overlay Real-Time Render Loop (60 FPS)
+  useEffect(() => {
+    let animId: number;
+
+    const renderLoop = () => {
+      if (
+        isCameraReady &&
+        videoRef.current &&
+        arCanvasRef.current &&
+        activeARFilter !== 'none'
+      ) {
+        const vW = videoRef.current.videoWidth || 640;
+        const vH = videoRef.current.videoHeight || 480;
+        if (arCanvasRef.current.width !== vW || arCanvasRef.current.height !== vH) {
+          arCanvasRef.current.width = vW;
+          arCanvasRef.current.height = vH;
+        }
+
+        ARFilterService.renderAROverlay(
+          videoRef.current,
+          arCanvasRef.current,
+          activeARFilter,
+          mirror
+        );
+      } else if (arCanvasRef.current) {
+        const ctx = arCanvasRef.current.getContext('2d');
+        if (ctx) ctx.clearRect(0, 0, arCanvasRef.current.width, arCanvasRef.current.height);
+      }
+
+      animId = requestAnimationFrame(renderLoop);
+    };
+
+    animId = requestAnimationFrame(renderLoop);
+    return () => cancelAnimationFrame(animId);
+  }, [isCameraReady, activeARFilter, mirror]);
+
   // AI Real-Time Smile & Pose Auto-Capture Loop (STOPS completely when isAllPhotosDone is true)
   useEffect(() => {
     if (!isAISmileEnabled || !isCameraReady || isCapturingSequence || isAllPhotosDone) return;
@@ -96,6 +138,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
     setIsSessionStarted(true);
     setIsCapturingSequence(true);
     setActiveSlotIndex(slot);
+    GifRecorderService.startSlotRecording(slot);
 
     try {
       for (let count = countdownSeconds; count > 0; count--) {
@@ -103,7 +146,19 @@ export const CameraView: React.FC<CameraViewProps> = ({
         try {
           if (soundEnabled) CaptureService.playCountdownBeep(false);
         } catch {}
-        await new Promise((r) => setTimeout(r, 1000));
+
+        // Grab burst frames for Live Photo Boomerang during countdown
+        if (count <= 2 && videoRef.current) {
+          for (let b = 0; b < 3; b++) {
+            const burstData = activeARFilter !== 'none'
+              ? ARFilterService.compositeARWithFrame(videoRef.current, mirror, activePreset.filterCss, currentSlotRatio, activeARFilter)
+              : CaptureService.captureFrame(videoRef.current, mirror, activePreset.filterCss, currentSlotRatio);
+            if (burstData) GifRecorderService.addFrame(burstData, slot);
+            await new Promise((r) => setTimeout(r, 160));
+          }
+        } else {
+          await new Promise((r) => setTimeout(r, 1000));
+        }
       }
 
       setCurrentCountdown(0);
@@ -124,7 +179,11 @@ export const CameraView: React.FC<CameraViewProps> = ({
         const ratio = slotObj
           ? (slotObj.width * template.canvasWidth) / (slotObj.height * template.canvasHeight)
           : 4 / 3;
-        const photoData = CaptureService.captureFrame(videoRef.current, mirror, activePreset.filterCss, ratio);
+
+        const photoData = activeARFilter !== 'none'
+          ? ARFilterService.compositeARWithFrame(videoRef.current, mirror, activePreset.filterCss, ratio, activeARFilter)
+          : CaptureService.captureFrame(videoRef.current, mirror, activePreset.filterCss, ratio);
+
         setCapturedPhotos((prev) => {
           const updated = [...prev];
           updated[slot] = photoData;
@@ -142,7 +201,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
   };
 
   // Handle Capture Sequence (Failsafe & Robust for All Slots)
-  const startCaptureSequence = async () => {
+  async function startCaptureSequence() {
     if (isCapturingSequence || !videoRef.current || isAllPhotosDone) return;
 
     setIsSessionStarted(true);
@@ -154,6 +213,12 @@ export const CameraView: React.FC<CameraViewProps> = ({
 
       for (let slot = startSlot; slot < totalSlots; slot++) {
         setActiveSlotIndex(slot);
+        GifRecorderService.startSlotRecording(slot);
+
+        const slotObj = template.photoSlots[slot] || template.photoSlots[0];
+        const ratio = slotObj
+          ? (slotObj.width * template.canvasWidth) / (slotObj.height * template.canvasHeight)
+          : 4 / 3;
 
         // Countdown loop (e.g. 3, 2, 1)
         for (let count = countdownSeconds; count > 0; count--) {
@@ -165,7 +230,19 @@ export const CameraView: React.FC<CameraViewProps> = ({
           } catch {
             // Audio silent fallback
           }
-          await new Promise((r) => setTimeout(r, 1000));
+
+          // Record burst frames for Boomerang GIF during last 2 counts
+          if (count <= 2 && videoRef.current) {
+            for (let b = 0; b < 3; b++) {
+              const burstData = activeARFilter !== 'none'
+                ? ARFilterService.compositeARWithFrame(videoRef.current, mirror, activePreset.filterCss, ratio, activeARFilter)
+                : CaptureService.captureFrame(videoRef.current, mirror, activePreset.filterCss, ratio);
+              if (burstData) GifRecorderService.addFrame(burstData, slot);
+              await new Promise((r) => setTimeout(r, 160));
+            }
+          } else {
+            await new Promise((r) => setTimeout(r, 1000));
+          }
         }
 
         // Final capture trigger
@@ -185,13 +262,12 @@ export const CameraView: React.FC<CameraViewProps> = ({
           setTimeout(() => setShowFlash(false), 250);
         }
 
-        // Capture frame with failsafe, live cinematic filter & exact slot aspect ratio
+        // Capture frame with failsafe, live cinematic filter, AR compositing & exact slot aspect ratio
         if (videoRef.current) {
-          const slotObj = template.photoSlots[slot] || template.photoSlots[0];
-          const ratio = slotObj
-            ? (slotObj.width * template.canvasWidth) / (slotObj.height * template.canvasHeight)
-            : 4 / 3;
-          const photoData = CaptureService.captureFrame(videoRef.current, mirror, activePreset.filterCss, ratio);
+          const photoData = activeARFilter !== 'none'
+            ? ARFilterService.compositeARWithFrame(videoRef.current, mirror, activePreset.filterCss, ratio, activeARFilter)
+            : CaptureService.captureFrame(videoRef.current, mirror, activePreset.filterCss, ratio);
+
           setCapturedPhotos((prev) => {
             const updated = [...prev];
             updated[slot] = photoData;
@@ -274,6 +350,20 @@ export const CameraView: React.FC<CameraViewProps> = ({
             style={{
               transform: mirror ? 'scaleX(-1)' : 'none',
               filter: FILM_PRESETS.find((p) => p.id === selectedFilmPreset)?.filterCss || 'brightness(1.08)',
+            }}
+          />
+
+          {/* 🌟 AR Face Filter Overlay Canvas */}
+          <canvas
+            ref={arCanvasRef}
+            style={{
+              position: 'absolute',
+              inset: 0,
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              pointerEvents: 'none',
+              zIndex: 12,
             }}
           />
 
@@ -511,6 +601,11 @@ export const CameraView: React.FC<CameraViewProps> = ({
             ? 'Klik tombol kamera 📸 atau berikan pose ✌️ untuk mulai'
             : `Foto ${activeSlotIndex + 1} dari ${template.photoSlotsCount} • Bersiap!`}
         </p>
+
+        {/* 🌟 Real-Time TikTok-Style AR Face Filter Bar */}
+        <div style={{ width: '100%', margin: '0.35rem 0 0.15rem' }}>
+          <ARFilterBar activeFilter={activeARFilter} onSelectFilter={setActiveARFilter} />
+        </div>
 
         {/* 🎨 Live Pre-Capture Film Filter Selector Bar */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '0.35rem', width: '100%', margin: '0.5rem 0 0.25rem' }}>

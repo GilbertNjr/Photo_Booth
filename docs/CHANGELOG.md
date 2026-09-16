@@ -1,3 +1,28 @@
+## [1.3.0] - 2026-09-16 (TikTok AR Face Filters, Boomerang Motion GIF & Kiosk Mode)
+
+### Added & Enhanced
+- **TikTok-Style AR Face Filter Engine (`arFilterService.ts`, `ARFilterBar.tsx`):**
+  - Real-time 60 FPS face detection & procedural AR rendering engine (zero heavy WASM / external AI dependency).
+  - 6 interactive AR filter presets:
+    - `beauty`: Korean glass-skin smoothing & rosy cheek blush
+    - `bunny`: Interactive cute bunny ears with pink inner fluff + whisker dots
+    - `cat`: Kitty cat ears with inner blush and nose tip
+    - `y2k`: Cyberpunk neon-tinted sunglasses with mirror shine streaks
+    - `angel`: Radiant golden angel halo with cherub wings
+    - `sparkles`: Dynamic twinkling golden sparkles & cosmetic glitters
+    - `hearts`: Floating pastel pink love hearts with subtle pulse
+  - WYSIWYG Composite Capture: AR props and beauty effects are burned directly into captured photos at full resolution.
+- **Pure TypeScript Boomerang GIF Engine (`gifRecorderService.ts`):**
+  - Self-contained LZW Animated GIF generator producing true `.gif` binary Blobs without external libraries.
+  - Multi-frame countdown burst recording (3–5s motion sequence) synchronized with shutter.
+  - Dual Output Switcher in `FinalPreviewView`: Instant toggle between Static 300 DPI Print Strip (PNG) and Live Motion Boomerang (GIF).
+  - Download Animated GIF button with client-side compression and playback preview.
+- **Smartphone Cloud Sync Simulator (`FinalPreviewView.tsx`):**
+  - QR Code generator with mobile receiver simulator modal for instant smartphone testing.
+- **Event Kiosk Mode & Auto-Reset Purge (`App.tsx`, `Navbar.tsx`):**
+  - 1-click Fullscreen Kiosk mode toggle in navigation bar with active status indicators.
+  - 60-second idle auto-purge on final screen with countdown notification banner to ensure user photo privacy at live booth events.
+
 ## [1.2.0] - 2026-09-15 (Dynamic Grid Aspect Ratios, Paper Textures & Physical Photobooth Accents)
 
 ### Added & Enhanced
