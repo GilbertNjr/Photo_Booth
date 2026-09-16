@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Download, Eye, EyeOff, Plus, Minus, RotateCw, Check, ArrowLeft } from 'lucide-react';
+import { Download, Eye, EyeOff, Plus, Minus, RotateCw, Check, ArrowLeft, Maximize2, Trash2, Copy } from 'lucide-react';
 import type { TemplateData, PaperTextureType, GridAspectRatio } from '../types/template';
 import type { PhotoFilterType, PlacedSticker } from '../types/editor';
 import { FilterPicker } from '../components/PhotoEditor/FilterPicker';
@@ -50,9 +50,36 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
   const [livePreviewUrl, setLivePreviewUrl] = useState<string>('');
   const [isRendering, setIsRendering] = useState(false);
 
-  // Dragging sticker ref
+  // Freeform Drag, Rotate & Scale ref
   const previewRef = useRef<HTMLDivElement>(null);
-  const dragRef = useRef<{ isDragging: boolean; startX: number; startY: number; initX: number; initY: number } | null>(null);
+  type DragMode = 'none' | 'move' | 'rotate' | 'scale';
+  const dragRef = useRef<{
+    mode: DragMode;
+    stickerId: string | null;
+    startX: number;
+    startY: number;
+    centerX: number;
+    centerY: number;
+    initX: number;
+    initY: number;
+    initRotation: number;
+    initScale: number;
+    initDist: number;
+    initAngle: number;
+  }>({
+    mode: 'none',
+    stickerId: null,
+    startX: 0,
+    startY: 0,
+    centerX: 0,
+    centerY: 0,
+    initX: 0,
+    initY: 0,
+    initRotation: 0,
+    initScale: 1,
+    initDist: 0,
+    initAngle: 0,
+  });
 
   // Re-render live preview whenever customization state changes
   useEffect(() => {
@@ -147,40 +174,198 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
     );
   };
 
-  // Pointer Drag Handlers
+  // Duplicate Sticker Handler
+  const handleDuplicateSticker = (id: string) => {
+    const st = placedStickers.find((s) => s.id === id);
+    if (!st) return;
+    const newId = `st-${Date.now()}-${Math.random()}`;
+    const duplicated: PlacedSticker = {
+      ...st,
+      id: newId,
+      x: Math.min(94, st.x + 5),
+      y: Math.min(94, st.y + 5),
+    };
+    setPlacedStickers((prev) => [...prev, duplicated]);
+    setSelectedStickerId(newId);
+  };
+
+  // Helper to compute sticker center in screen client coordinates
+  const getStickerScreenCenter = (stickerEl: HTMLElement): { x: number; y: number } => {
+    const rect = stickerEl.getBoundingClientRect();
+    return {
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2,
+    };
+  };
+
+  // Pointer Down on Sticker Body (Move)
   const handlePointerDownSticker = (e: React.PointerEvent, id: string, initX: number, initY: number) => {
     e.stopPropagation();
     setSelectedStickerId(id);
+    const target = e.currentTarget as HTMLElement;
+    const center = getStickerScreenCenter(target);
+    const st = placedStickers.find((s) => s.id === id);
+
     dragRef.current = {
-      isDragging: true,
+      mode: 'move',
+      stickerId: id,
       startX: e.clientX,
       startY: e.clientY,
+      centerX: center.x,
+      centerY: center.y,
       initX,
       initY,
+      initRotation: st?.rotation || 0,
+      initScale: st?.scale || 1,
+      initDist: 0,
+      initAngle: 0,
+    };
+    target.setPointerCapture(e.pointerId);
+  };
+
+  // Pointer Down on Top Rotation Stem & Handle (Free Angle 360° Rotate)
+  const handlePointerDownRotate = (e: React.PointerEvent, id: string, stickerEl: HTMLElement | null) => {
+    e.stopPropagation();
+    setSelectedStickerId(id);
+    const st = placedStickers.find((s) => s.id === id);
+    if (!st || !stickerEl) return;
+
+    const center = getStickerScreenCenter(stickerEl);
+    const initAngle = Math.atan2(e.clientY - center.y, e.clientX - center.x) * (180 / Math.PI);
+
+    dragRef.current = {
+      mode: 'rotate',
+      stickerId: id,
+      startX: e.clientX,
+      startY: e.clientY,
+      centerX: center.x,
+      centerY: center.y,
+      initX: st.x,
+      initY: st.y,
+      initRotation: st.rotation || 0,
+      initScale: st.scale || 1,
+      initDist: 0,
+      initAngle,
     };
     (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
   };
 
+  // Pointer Down on Corner Scale Handle (Continuous Zoom/Scale)
+  const handlePointerDownScale = (e: React.PointerEvent, id: string, stickerEl: HTMLElement | null) => {
+    e.stopPropagation();
+    setSelectedStickerId(id);
+    const st = placedStickers.find((s) => s.id === id);
+    if (!st || !stickerEl) return;
+
+    const center = getStickerScreenCenter(stickerEl);
+    const initDist = Math.max(10, Math.hypot(e.clientX - center.x, e.clientY - center.y));
+
+    dragRef.current = {
+      mode: 'scale',
+      stickerId: id,
+      startX: e.clientX,
+      startY: e.clientY,
+      centerX: center.x,
+      centerY: center.y,
+      initX: st.x,
+      initY: st.y,
+      initRotation: st.rotation || 0,
+      initScale: st.scale || 1,
+      initDist,
+      initAngle: 0,
+    };
+    (e.currentTarget as HTMLElement).setPointerCapture(e.pointerId);
+  };
+
+  // Unified Pointer Move (Move / Rotate / Scale)
   const handlePointerMoveSticker = (e: React.PointerEvent) => {
-    if (!dragRef.current || !dragRef.current.isDragging || !selectedStickerId || !previewRef.current) return;
-    const rect = previewRef.current.getBoundingClientRect();
-    if (rect.width === 0 || rect.height === 0) return;
+    const { mode, stickerId, centerX, centerY, initX, initY, initRotation, initScale, initDist, initAngle } = dragRef.current;
+    if (mode === 'none' || !stickerId || !previewRef.current) return;
 
-    const deltaX = ((e.clientX - dragRef.current.startX) / rect.width) * 100;
-    const deltaY = ((e.clientY - dragRef.current.startY) / rect.height) * 100;
+    if (mode === 'move') {
+      const rect = previewRef.current.getBoundingClientRect();
+      if (rect.width === 0 || rect.height === 0) return;
+      const deltaX = ((e.clientX - dragRef.current.startX) / rect.width) * 100;
+      const deltaY = ((e.clientY - dragRef.current.startY) / rect.height) * 100;
+      const newX = Math.max(2, Math.min(98, initX + deltaX));
+      const newY = Math.max(2, Math.min(98, initY + deltaY));
 
-    const newX = Math.max(2, Math.min(98, dragRef.current.initX + deltaX));
-    const newY = Math.max(2, Math.min(98, dragRef.current.initY + deltaY));
+      setPlacedStickers((prev) =>
+        prev.map((st) => (st.id === stickerId ? { ...st, x: newX, y: newY } : st))
+      );
+    } else if (mode === 'rotate') {
+      const currentAngle = Math.atan2(e.clientY - centerY, e.clientX - centerX) * (180 / Math.PI);
+      const angleDelta = currentAngle - initAngle;
+      let newRot = Math.round((initRotation + angleDelta) % 360);
+      if (newRot < 0) newRot += 360;
 
-    setPlacedStickers((prev) =>
-      prev.map((st) => (st.id === selectedStickerId ? { ...st, x: newX, y: newY } : st))
-    );
+      setPlacedStickers((prev) =>
+        prev.map((st) => (st.id === stickerId ? { ...st, rotation: newRot } : st))
+      );
+    } else if (mode === 'scale') {
+      const currentDist = Math.hypot(e.clientX - centerX, e.clientY - centerY);
+      const ratio = currentDist / Math.max(10, initDist);
+      const newScale = Math.max(0.25, Math.min(3.8, Math.round(initScale * ratio * 100) / 100));
+
+      setPlacedStickers((prev) =>
+        prev.map((st) => (st.id === stickerId ? { ...st, scale: newScale } : st))
+      );
+    }
   };
 
   const handlePointerUpSticker = () => {
-    if (dragRef.current) {
-      dragRef.current.isDragging = false;
+    dragRef.current.mode = 'none';
+    dragRef.current.stickerId = null;
+  };
+
+  // Multi-Touch Pinch-to-Zoom & Two-Finger Twist Rotation for Mobile
+  const touchStateRef = useRef<{
+    initialDist: number;
+    initialAngle: number;
+    initialScale: number;
+    initialRotation: number;
+  } | null>(null);
+
+  const handleTouchStart = (e: React.TouchEvent, id: string) => {
+    if (e.touches.length === 2) {
+      e.stopPropagation();
+      const t1 = e.touches[0];
+      const t2 = e.touches[1];
+      const dist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+      const angle = Math.atan2(t2.clientY - t1.clientY, t2.clientX - t1.clientX) * (180 / Math.PI);
+      const st = placedStickers.find((s) => s.id === id);
+      touchStateRef.current = {
+        initialDist: dist,
+        initialAngle: angle,
+        initialScale: st?.scale || 1,
+        initialRotation: st?.rotation || 0,
+      };
     }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent, id: string) => {
+    if (e.touches.length === 2 && touchStateRef.current) {
+      e.stopPropagation();
+      const t1 = e.touches[0];
+      const t2 = e.touches[1];
+      const dist = Math.hypot(t2.clientX - t1.clientX, t2.clientY - t1.clientY);
+      const angle = Math.atan2(t2.clientY - t1.clientY, t2.clientX - t1.clientX) * (180 / Math.PI);
+
+      const scaleFactor = dist / Math.max(10, touchStateRef.current.initialDist);
+      const newScale = Math.max(0.25, Math.min(3.8, Math.round(touchStateRef.current.initialScale * scaleFactor * 100) / 100));
+
+      const angleDelta = angle - touchStateRef.current.initialAngle;
+      let newRot = Math.round((touchStateRef.current.initialRotation + angleDelta) % 360);
+      if (newRot < 0) newRot += 360;
+
+      setPlacedStickers((prev) =>
+        prev.map((st) => (st.id === id ? { ...st, scale: newScale, rotation: newRot } : st))
+      );
+    }
+  };
+
+  const handleTouchEnd = () => {
+    touchStateRef.current = null;
   };
 
   const handleSelectRatio = (ratio: GridAspectRatio | 'all') => {
@@ -501,6 +686,9 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                         const delta = e.deltaY < 0 ? 0.1 : -0.1;
                         handleScaleSticker(st.id, delta);
                       }}
+                      onTouchStart={(e) => handleTouchStart(e, st.id)}
+                      onTouchMove={(e) => handleTouchMove(e, st.id)}
+                      onTouchEnd={handleTouchEnd}
                       style={{
                         position: 'absolute',
                         left: `${st.x}%`,
@@ -516,7 +704,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                         backdropFilter: isSelected ? 'blur(4px)' : 'none',
                         transition: 'border 0.15s ease, background 0.15s ease',
                       }}
-                      title="Geser stiker, gunakan tombol di sudut untuk perbesar/perkecil!"
+                      title="Geser stiker, gunakan tuas atas untuk putar bebas atau sudut bawah untuk zoom!"
                     >
                       <div
                         style={{
@@ -528,74 +716,87 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                         <StickerIllustration content={st.content} size={48} />
                       </div>
 
-                      {/* Interactive Corner Action Handles when Selected */}
+                      {/* Interactive Transformer Bounding Box & Handles when Selected */}
                       {isSelected && (
                         <>
-                          {/* Top-Right: Perbesar (+) Handle */}
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleScaleSticker(st.id, 0.15);
+                          {/* Live Angle & Scale Badge */}
+                          <div
+                            style={{
+                              position: 'absolute',
+                              top: '-50px',
+                              left: '50%',
+                              transform: 'translateX(-50%)',
+                              background: 'rgba(20, 20, 26, 0.92)',
+                              backdropFilter: 'blur(8px)',
+                              color: 'white',
+                              padding: '0.2rem 0.6rem',
+                              borderRadius: '9999px',
+                              fontSize: '0.7rem',
+                              fontWeight: 800,
+                              display: 'flex',
+                              alignItems: 'center',
+                              gap: '0.35rem',
+                              whiteSpace: 'nowrap',
+                              pointerEvents: 'none',
+                              zIndex: 80,
+                              boxShadow: '0 4px 12px rgba(0,0,0,0.3)',
+                              border: '1px solid rgba(255,255,255,0.2)',
+                            }}
+                          >
+                            <span style={{ color: '#60A5FA' }}>📐 {Math.round(rotation)}°</span>
+                            <span style={{ opacity: 0.5 }}>|</span>
+                            <span style={{ color: '#34D399' }}>🔍 {Math.round(scale * 100)}%</span>
+                          </div>
+
+                          {/* Top Center Stem connecting to Rotation Handle */}
+                          <div
+                            style={{
+                              position: 'absolute',
+                              top: '-24px',
+                              left: '50%',
+                              transform: 'translateX(-50%)',
+                              width: '2px',
+                              height: '24px',
+                              background: 'var(--color-burgundy-deep)',
+                              pointerEvents: 'none',
+                              zIndex: 69,
+                            }}
+                          />
+
+                          {/* Top Rotation Handle (Free Continuous 360° Rotate) */}
+                          <div
+                            onPointerDown={(e) => {
+                              const parent = (e.currentTarget.parentElement as HTMLElement);
+                              handlePointerDownRotate(e, st.id, parent);
                             }}
                             style={{
                               position: 'absolute',
-                              top: '-12px',
-                              right: '-12px',
+                              top: '-36px',
+                              left: '50%',
+                              transform: 'translateX(-50%)',
                               width: '26px',
                               height: '26px',
                               borderRadius: '50%',
-                              background: '#10b981',
-                              color: 'white',
-                              border: '2px solid white',
-                              fontSize: '14px',
-                              fontWeight: 'bold',
-                              cursor: 'pointer',
+                              background: '#ffffff',
+                              border: '2.5px solid var(--color-burgundy-deep)',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              boxShadow: '0 2px 8px rgba(0,0,0,0.35)',
-                              zIndex: 70,
+                              cursor: 'grab',
+                              boxShadow: '0 3px 10px rgba(128, 0, 32, 0.35)',
+                              zIndex: 75,
+                              touchAction: 'none',
                             }}
-                            title="Perbesar Stiker (+15%)"
+                            title="Tarik untuk Putar Bebas (0° - 360°)"
                           >
-                            +
-                          </button>
+                            <RotateCw size={13} color="var(--color-burgundy-deep)" />
+                          </div>
 
-                          {/* Top-Left: Perkecil (-) Handle */}
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleScaleSticker(st.id, -0.15);
-                            }}
-                            style={{
-                              position: 'absolute',
-                              top: '-12px',
-                              left: '-12px',
-                              width: '26px',
-                              height: '26px',
-                              borderRadius: '50%',
-                              background: '#f59e0b',
-                              color: 'white',
-                              border: '2px solid white',
-                              fontSize: '14px',
-                              fontWeight: 'bold',
-                              cursor: 'pointer',
-                              display: 'flex',
-                              alignItems: 'center',
-                              justifyContent: 'center',
-                              boxShadow: '0 2px 8px rgba(0,0,0,0.35)',
-                              zIndex: 70,
-                            }}
-                            title="Perkecil Stiker (-15%)"
-                          >
-                            −
-                          </button>
-
-                          {/* Bottom-Right: Putar (↺) Handle */}
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              handleRotateSticker(st.id, 15);
+                          {/* Bottom-Right: Corner Scale Handle (Continuous Zoom In/Out) */}
+                          <div
+                            onPointerDown={(e) => {
+                              const parent = (e.currentTarget.parentElement as HTMLElement);
+                              handlePointerDownScale(e, st.id, parent);
                             }}
                             style={{
                               position: 'absolute',
@@ -604,24 +805,23 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                               width: '26px',
                               height: '26px',
                               borderRadius: '50%',
-                              background: '#3b82f6',
+                              background: 'linear-gradient(135deg, #3B82F6 0%, #2563EB 100%)',
                               color: 'white',
                               border: '2px solid white',
-                              fontSize: '12px',
-                              fontWeight: 'bold',
-                              cursor: 'pointer',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              boxShadow: '0 2px 8px rgba(0,0,0,0.35)',
-                              zIndex: 70,
+                              cursor: 'nwse-resize',
+                              boxShadow: '0 3px 10px rgba(37, 99, 235, 0.4)',
+                              zIndex: 75,
+                              touchAction: 'none',
                             }}
-                            title="Putar Stiker (+15°)"
+                            title="Tarik Sudut untuk Zoom In / Zoom Out"
                           >
-                            ↺
-                          </button>
+                            <Maximize2 size={13} />
+                          </div>
 
-                          {/* Bottom-Left: Hapus (✕) Handle */}
+                          {/* Top-Left: Hapus (✕) */}
                           <button
                             onClick={(e) => {
                               e.stopPropagation();
@@ -629,26 +829,52 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
                             }}
                             style={{
                               position: 'absolute',
-                              bottom: '-12px',
+                              top: '-12px',
                               left: '-12px',
-                              width: '26px',
-                              height: '26px',
+                              width: '24px',
+                              height: '24px',
                               borderRadius: '50%',
-                              background: '#ef4444',
+                              background: '#EF4444',
                               color: 'white',
                               border: '2px solid white',
-                              fontSize: '12px',
-                              fontWeight: 'bold',
                               cursor: 'pointer',
                               display: 'flex',
                               alignItems: 'center',
                               justifyContent: 'center',
-                              boxShadow: '0 2px 8px rgba(0,0,0,0.35)',
-                              zIndex: 70,
+                              boxShadow: '0 3px 8px rgba(239, 68, 68, 0.4)',
+                              zIndex: 75,
                             }}
                             title="Hapus Stiker"
                           >
-                            ✕
+                            <Trash2 size={12} />
+                          </button>
+
+                          {/* Bottom-Left: Duplikasi (📄) */}
+                          <button
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDuplicateSticker(st.id);
+                            }}
+                            style={{
+                              position: 'absolute',
+                              bottom: '-12px',
+                              left: '-12px',
+                              width: '24px',
+                              height: '24px',
+                              borderRadius: '50%',
+                              background: '#8B5CF6',
+                              color: 'white',
+                              border: '2px solid white',
+                              cursor: 'pointer',
+                              display: 'flex',
+                              alignItems: 'center',
+                              justifyContent: 'center',
+                              boxShadow: '0 3px 8px rgba(139, 92, 246, 0.4)',
+                              zIndex: 75,
+                            }}
+                            title="Duplikasi Stiker"
+                          >
+                            <Copy size={12} />
                           </button>
                         </>
                       )}

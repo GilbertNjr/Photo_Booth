@@ -37,6 +37,8 @@ export type PaperTextureType =
   | 'gingham' 
   | 'gingham-red' 
   | 'holographic' 
+  | 'cable-knit'
+  | 'water-ripples'
   | 'wood' 
   | 'paper' 
   | 'grid' 
@@ -55,7 +57,7 @@ export interface PhotoSlot {
   shape?: 'rect' | 'arch' | 'circle' | 'heart'; // Slot shape
   frameStyle?: 'polaroid' | 'digicam' | 'ticket' | 'normal'; // Frame wrapper style
   cropAnchor?: 'center' | 'top' | 'face'; // Smart crop placement
-  borderStyle?: 'solid' | 'dashed' | 'polaroid-frame' | 'none';
+  borderStyle?: 'solid' | 'dashed' | 'polaroid-frame' | 'scalloped-stamp' | 'wave-crest' | 'none';
   borderColor?: string;
   borderWidth?: number;
 }
@@ -128,4 +130,11 @@ export interface TemplateData {
   samplePhotos?: string[];
   isPopular?: boolean;
   isNew?: boolean;
+  isBestSeller?: boolean;
+  rating?: number;
+  usageCount?: number;
+  badgeText?: string;
+  scallopedBorder?: boolean;
+  ransomTitle?: string;
+  stampText?: string;
 }

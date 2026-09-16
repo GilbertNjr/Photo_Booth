@@ -303,6 +303,33 @@ export class CanvasEngine {
       case 'doodle-sparkle-white':
       case 'sparkle-doodle':
         return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64"><path d="M32 6C32 20 44 32 58 32C44 32 32 44 32 58C32 44 20 32 6 32C20 32 32 20 32 6Z" fill="#FFFFFF" stroke="rgba(0,0,0,0.2)" stroke-width="1.5"/><circle cx="48" cy="16" r="3" fill="#FFFFFF"/><circle cx="16" cy="48" r="2.5" fill="#FFFFFF"/></svg>`;
+      case 'teddy-bucket-hat':
+      case '🧸-hat':
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><defs><filter id="tds"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-opacity="0.35"/></filter></defs><g filter="url(#tds)"><circle cx="26" cy="38" r="10" fill="#F4E8D8" stroke="#8C6E54" stroke-width="2"/><circle cx="74" cy="38" r="10" fill="#F4E8D8" stroke="#8C6E54" stroke-width="2"/><circle cx="26" cy="38" r="5" fill="#FFB6C1"/><circle cx="74" cy="38" r="5" fill="#FFB6C1"/><ellipse cx="50" cy="56" rx="28" ry="26" fill="#FAF6F0" stroke="#8C6E54" stroke-width="2.5"/><circle cx="40" cy="54" r="3.5" fill="#2C1D14"/><circle cx="60" cy="54" r="3.5" fill="#2C1D14"/><circle cx="39" cy="52" r="1" fill="#FFF"/><circle cx="59" cy="52" r="1" fill="#FFF"/><ellipse cx="50" cy="62" rx="7" ry="5.5" fill="#E8DFD1"/><polygon points="50,60 47,63 53,63" fill="#3D2619"/><ellipse cx="33" cy="62" rx="4.5" ry="3" fill="#FFAEC9" opacity="0.6"/><ellipse cx="67" cy="62" rx="4.5" ry="3" fill="#FFAEC9" opacity="0.6"/><path d="M22 34 Q50 20 78 34 L82 40 Q50 32 18 40 Z" fill="#FFAEC9" stroke="#D1607B" stroke-width="2"/><path d="M28 32 Q50 14 72 32 L70 24 Q50 16 30 24 Z" fill="#FFC0CB" stroke="#D1607B" stroke-width="2"/><ellipse cx="50" cy="78" rx="22" ry="18" fill="#FAF6F0" stroke="#8C6E54" stroke-width="2"/><rect x="42" y="74" width="16" height="18" rx="3" fill="#E67E22" stroke="#B95C0E" stroke-width="1.5"/><ellipse cx="26" cy="80" rx="6" ry="10" fill="#FAF6F0" stroke="#8C6E54" stroke-width="2"/><ellipse cx="74" cy="80" rx="6" ry="10" fill="#FAF6F0" stroke="#8C6E54" stroke-width="2"/></g></svg>`;
+      case 'red-scarf':
+      case '🧣-taylor':
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 110"><defs><filter id="scs"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-opacity="0.35"/></filter></defs><g filter="url(#scs)"><path d="M24 24 Q55 8 86 24 L80 44 Q55 30 30 44 Z" fill="#800020" stroke="#520014" stroke-width="2.5"/><path d="M30 44 L20 86 Q32 90 44 86 L40 44 Z" fill="#990026" stroke="#520014" stroke-width="2.5"/><path d="M20 86 L18 96 M24 86 L22 96 M30 87 L28 97 M36 86 L34 96 M42 85 L40 95" stroke="#FFFFFF" stroke-width="2" stroke-linecap="round"/><text x="26" y="60" fill="#FFFFFF" font-size="7" font-family="'Caveat', cursive, serif" font-style="italic" transform="rotate(-72 26 60)">I remember it</text><text x="32" y="64" fill="#FFFFFF" font-size="7" font-family="'Caveat', cursive, serif" font-style="italic" transform="rotate(-72 32 64)">all too well ♡</text></g></svg>`;
+      case 'london-phone':
+      case '☎️-london':
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 140"><defs><filter id="lps"><feDropShadow dx="0" dy="4" stdDeviation="3" flood-opacity="0.35"/></filter></defs><g filter="url(#lps)"><rect x="12" y="10" width="56" height="120" rx="10" fill="#C9182B" stroke="#7A0E1A" stroke-width="3"/><rect x="14" y="8" width="52" height="16" rx="8" fill="#A81222"/><rect x="20" y="18" width="40" height="9" rx="2" fill="#FAF5ED" stroke="#7A0E1A" stroke-width="1.2"/><text x="40" y="25" fill="#7A0E1A" font-size="5" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" text-anchor="middle" letter-spacing="1">TELEPHONE</text><rect x="18" y="32" width="44" height="90" rx="3" fill="#1C1412" stroke="#7A0E1A" stroke-width="2"/><g fill="#FAF5ED" opacity="0.85"><rect x="21" y="36" width="10" height="16" rx="1"/><rect x="35" y="36" width="10" height="16" rx="1"/><rect x="49" y="36" width="10" height="16" rx="1"/><rect x="21" y="56" width="10" height="16" rx="1"/><rect x="35" y="56" width="10" height="16" rx="1"/><rect x="49" y="56" width="10" height="16" rx="1"/><rect x="21" y="76" width="10" height="16" rx="1"/><rect x="35" y="76" width="10" height="16" rx="1"/><rect x="49" y="76" width="10" height="16" rx="1"/><rect x="21" y="96" width="10" height="20" rx="1"/><rect x="35" y="96" width="10" height="20" rx="1"/><rect x="49" y="96" width="10" height="20" rx="1"/></g></g></svg>`;
+      case 'love-typewriter':
+      case 'you-i-truly-love':
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 140 85"><defs><filter id="lts"><feDropShadow dx="0" dy="3" stdDeviation="3" flood-opacity="0.3"/></filter></defs><g filter="url(#lts)"><rect x="6" y="6" width="128" height="72" rx="4" fill="#FDFBF7" stroke="#D1C2A5" stroke-width="2"/><text x="14" y="24" fill="#6B4226" font-size="10" font-family="'Courier New', monospace" font-weight="bold">you.</text><text x="14" y="42" fill="#6B4226" font-size="9" font-family="'Courier New', monospace" font-weight="bold">I truly love you,</text><text x="14" y="58" fill="#6B4226" font-size="9" font-family="'Courier New', monospace" font-weight="bold">with all my</text><text x="14" y="72" fill="#800020" font-size="10" font-family="'Courier New', monospace" font-weight="bold">heart."</text><path d="M96 22 Q102 14 108 22 Q108 30 96 38 Q84 30 84 22 Q90 14 96 22 Z" fill="#800020" opacity="0.85" transform="scale(0.5) translate(80, 20)"/><path d="M120 48 Q126 40 132 48 Q132 56 120 64 Q108 56 108 48 Q114 40 120 48 Z" fill="#800020" opacity="0.85" transform="scale(0.4) translate(140, 60)"/></g></svg>`;
+      case 'glitter-star-red':
+      case '⭐-red':
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80"><defs><radialGradient id="rg" cx="40" cy="40" r="38" gradientUnits="userSpaceOnUse"><stop offset="0%" stop-color="#E60039"/><stop offset="60%" stop-color="#990026"/><stop offset="100%" stop-color="#5E0017"/></radialGradient></defs><polygon points="40,4 51,27 76,30 57,47 62,72 40,59 18,72 23,47 4,30 29,27" fill="url(#rg)" stroke="#FFFFFF" stroke-width="2.5"/><circle cx="34" cy="30" r="1.5" fill="#FFF"/><circle cx="46" cy="24" r="1.5" fill="#FFF"/><circle cx="42" cy="44" r="1.5" fill="#FFF"/><circle cx="28" cy="46" r="1.5" fill="#FFF"/><circle cx="52" cy="48" r="1.5" fill="#FFF"/></svg>`;
+      case 'great-wave':
+      case '🌊-kanagawa':
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 110 90"><path d="M8 82 Q30 40 60 70 Q75 30 95 40 Q105 45 106 82 Z" fill="#0C4A6E" stroke="#082F49" stroke-width="2.5"/><path d="M12 82 Q34 46 62 72 Q78 38 98 46 L104 82 Z" fill="#0284C7"/><path d="M60 70 Q75 30 95 40 Q88 34 80 36 Q84 28 92 30" fill="none" stroke="#FFFFFF" stroke-width="3" stroke-linecap="round"/><circle cx="76" cy="28" r="2.5" fill="#FFF"/><circle cx="85" cy="22" r="2" fill="#FFF"/><circle cx="94" cy="26" r="2.5" fill="#FFF"/><circle cx="100" cy="34" r="2" fill="#FFF"/><path d="M8 82 Q30 50 50 68" fill="none" stroke="#BAE6FD" stroke-width="2"/></svg>`;
+      case 'area-photobox':
+      case 'seal-area':
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 90 90"><circle cx="45" cy="45" r="40" fill="#FFFFFF" stroke="#1E3A8A" stroke-width="2.5"/><circle cx="45" cy="45" r="36" fill="none" stroke="#1E3A8A" stroke-width="1" stroke-dasharray="3 2"/><text x="45" y="38" fill="#1E3A8A" font-size="15" font-family="'Caveat', cursive, serif" font-weight="bold" font-style="italic" text-anchor="middle">Area</text><text x="45" y="52" fill="#1E3A8A" font-size="7" font-family="'Plus Jakarta Sans', sans-serif" font-weight="900" letter-spacing="1.5" text-anchor="middle">PHOTO BOX</text><polygon points="45,18 47,23 52,23 48,26 50,31 45,28 40,31 42,26 38,23 43,23" fill="#1E3A8A"/><polygon points="45,64 47,69 52,69 48,72 50,77 45,74 40,77 42,72 38,69 43,69" fill="#1E3A8A"/></svg>`;
+      case 'starfish-blue':
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><polygon points="35,4 43,26 66,27 48,41 54,64 35,50 16,64 22,41 4,27 27,26" fill="#0284C7" stroke="#0369A1" stroke-width="2"/><circle cx="35" cy="35" r="3" fill="#BAE6FD"/><circle cx="35" cy="18" r="1.5" fill="#FFF"/><circle cx="50" cy="30" r="1.5" fill="#FFF"/><circle cx="45" cy="48" r="1.5" fill="#FFF"/><circle cx="25" cy="48" r="1.5" fill="#FFF"/><circle cx="20" cy="30" r="1.5" fill="#FFF"/></svg>`;
+      case 'starfish-white':
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><polygon points="35,4 43,26 66,27 48,41 54,64 35,50 16,64 22,41 4,27 27,26" fill="#FDFBF7" stroke="#CBD5E1" stroke-width="2"/><circle cx="35" cy="35" r="3" fill="#94A3B8"/></svg>`;
+      case 'ribbon-blue':
+        return `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 70 70"><path d="M35 30 C20 16 6 22 14 36 C22 50 35 30 35 30 Z" fill="#1E3A8A" stroke="#0F172A" stroke-width="2"/><path d="M35 30 C50 16 64 22 56 36 C48 50 35 30 35 30 Z" fill="#1E3A8A" stroke="#0F172A" stroke-width="2"/><circle cx="35" cy="32" r="6" fill="#3B82F6" stroke="#0F172A" stroke-width="2"/><path d="M30 34 L18 60 L28 56 L34 40 Z" fill="#1E40AF" stroke="#0F172A" stroke-width="1.5"/><path d="M40 34 L52 60 L42 56 L36 40 Z" fill="#1E40AF" stroke="#0F172A" stroke-width="1.5"/></svg>`;
       default:
         return null;
     }
@@ -347,6 +374,88 @@ export class CanvasEngine {
     ctx.lineTo(x + w, y + h);
     ctx.lineTo(x, y + h);
     ctx.closePath();
+  }
+
+  /**
+   * 📰 Render Ransom Note / Magazine Cutout Collage Title (e.g. "HELLO")
+   */
+  private static drawRansomTitle(
+    ctx: CanvasRenderingContext2D,
+    title: string,
+    centerX: number,
+    centerY: number,
+    baseWidth: number
+  ): void {
+    ctx.save();
+    const letters = title.split('');
+    const boxSize = Math.max(34, baseWidth * 0.088);
+    const spacing = boxSize * 1.08;
+    const startX = centerX - ((letters.length - 1) * spacing) / 2;
+
+    const bgColors = ['#1E3A8A', '#2D6A4F', '#D97706', '#0F766E', '#18181B', '#800020', '#C2410C'];
+    const textColors = ['#FFFFFF', '#FFFFFF', '#18181B', '#FFFFFF', '#FFFFFF', '#FFFFFF', '#FFFFFF'];
+
+    letters.forEach((char, i) => {
+      const bx = startX + i * spacing;
+      const by = centerY;
+      const angle = ((i % 2 === 0 ? -1 : 1) * ((i * 3) % 7 + 2) * Math.PI) / 180;
+
+      ctx.save();
+      ctx.translate(bx, by);
+      ctx.rotate(angle);
+
+      // Paper cutout drop shadow
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.38)';
+      ctx.shadowBlur = 8;
+      ctx.shadowOffsetY = 3;
+
+      // Cutout rectangular paper block
+      ctx.fillStyle = bgColors[i % bgColors.length];
+      const padW = boxSize * 0.94;
+      const padH = boxSize * 1.15;
+      ctx.fillRect(-padW / 2, -padH / 2, padW, padH);
+
+      // Inner subtle paper border
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+      ctx.lineWidth = 1.5;
+      ctx.strokeRect(-padW / 2 + 2, -padH / 2 + 2, padW - 4, padH - 4);
+
+      // Bold magazine cutout typography
+      ctx.shadowColor = 'transparent';
+      ctx.fillStyle = textColors[i % textColors.length];
+      ctx.font = `900 ${Math.round(boxSize * 0.72)}px "Playfair Display", "Plus Jakarta Sans", impact, sans-serif`;
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText(char, 0, 0);
+
+      ctx.restore();
+    });
+
+    ctx.restore();
+  }
+
+  /**
+   * 🏷️ Render Distressed Vintage Stamp Title (e.g. "dump")
+   */
+  private static drawStampTitle(
+    ctx: CanvasRenderingContext2D,
+    title: string,
+    centerX: number,
+    centerY: number,
+    baseWidth: number,
+    color: string = '#800020'
+  ): void {
+    ctx.save();
+    ctx.translate(centerX, centerY);
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.22)';
+    ctx.shadowBlur = 6;
+    ctx.shadowOffsetY = 2;
+    ctx.fillStyle = color;
+    ctx.font = `900 ${Math.round(baseWidth * 0.11)}px "Playfair Display", Georgia, serif`;
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(title, 0, 0);
+    ctx.restore();
   }
 
   /**
@@ -516,6 +625,114 @@ export class CanvasEngine {
       ctx.lineTo(width * 1.2, -height * 0.1);
       ctx.stroke();
       ctx.restore();
+    } else if (bgTexture === 'cable-knit') {
+      // 🧶 Cozy Cable Knit Sweater Wool Texture (Autumn Nakatama Theme)
+      ctx.save();
+      ctx.fillStyle = '#F5EFE6';
+      ctx.fillRect(0, 0, width, height);
+
+      const colWidth = width * 0.12;
+      const totalCols = Math.ceil(width / colWidth);
+
+      for (let c = 0; c < totalCols; c++) {
+        const colX = c * colWidth;
+
+        // Vertical rib groove shadow
+        ctx.strokeStyle = 'rgba(160, 140, 120, 0.22)';
+        ctx.lineWidth = 3;
+        ctx.beginPath();
+        ctx.moveTo(colX, 0);
+        ctx.lineTo(colX, height);
+        ctx.stroke();
+
+        // Cable braid loops
+        const stepY = colWidth * 0.7;
+        const totalSteps = Math.ceil(height / stepY);
+
+        for (let s = 0; s < totalSteps; s++) {
+          const cy = s * stepY;
+          ctx.save();
+          ctx.translate(colX + colWidth / 2, cy);
+
+          // Left cable braid curve
+          ctx.strokeStyle = 'rgba(140, 115, 95, 0.25)';
+          ctx.lineWidth = colWidth * 0.18;
+          ctx.lineCap = 'round';
+          ctx.beginPath();
+          ctx.moveTo(-colWidth * 0.35, -stepY * 0.35);
+          ctx.bezierCurveTo(-colWidth * 0.1, -stepY * 0.1, colWidth * 0.2, stepY * 0.1, colWidth * 0.35, stepY * 0.35);
+          ctx.stroke();
+
+          // Highlight on cable strand
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+          ctx.lineWidth = colWidth * 0.08;
+          ctx.beginPath();
+          ctx.moveTo(-colWidth * 0.3, -stepY * 0.3);
+          ctx.bezierCurveTo(-colWidth * 0.08, -stepY * 0.08, colWidth * 0.18, stepY * 0.08, colWidth * 0.3, stepY * 0.3);
+          ctx.stroke();
+
+          ctx.restore();
+        }
+      }
+
+      // Soft wool micro-grain fuzz
+      for (let i = 0; i < 400; i++) {
+        const rx = Math.random() * width;
+        const ry = Math.random() * height;
+        ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255, 255, 255, 0.35)' : 'rgba(150, 130, 110, 0.15)';
+        ctx.beginPath();
+        ctx.arc(rx, ry, Math.random() * 2 + 0.5, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
+    } else if (bgTexture === 'water-ripples') {
+      // 🌊 Marine Ocean Water Ripples & Sea Surface (Ocean Nakatama Theme)
+      ctx.save();
+      // Linen sand paper base
+      ctx.fillStyle = '#F3EFE6';
+      ctx.fillRect(0, 0, width, height);
+
+      // Top Ocean Wave Deep Band
+      const topWaveGrad = ctx.createLinearGradient(0, 0, 0, height * 0.18);
+      topWaveGrad.addColorStop(0, '#0C4A6E');
+      topWaveGrad.addColorStop(0.65, '#0284C7');
+      topWaveGrad.addColorStop(1, 'rgba(14, 165, 233, 0)');
+      ctx.fillStyle = topWaveGrad;
+      ctx.fillRect(0, 0, width, height * 0.18);
+
+      // Bottom Ocean Deep Band
+      const botWaveGrad = ctx.createLinearGradient(0, height * 0.82, 0, height);
+      botWaveGrad.addColorStop(0, 'rgba(14, 165, 233, 0)');
+      botWaveGrad.addColorStop(0.35, '#0284C7');
+      botWaveGrad.addColorStop(1, '#0C4A6E');
+      ctx.fillStyle = botWaveGrad;
+      ctx.fillRect(0, height * 0.82, width, height * 0.18);
+
+      // Caustic Water Light Ripples across the card
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.38)';
+      ctx.lineWidth = 2.5;
+
+      for (let i = 0; i < 18; i++) {
+        const rx = (i % 3) * (width / 2.5) + (Math.random() * 40 - 20);
+        const ry = Math.floor(i / 3) * (height / 6) + (Math.random() * 50 - 25);
+        const rw = width * (0.15 + Math.random() * 0.12);
+        const rh = height * (0.02 + Math.random() * 0.02);
+
+        ctx.beginPath();
+        ctx.ellipse(rx, ry, rw, rh, (Math.PI / 180) * (Math.random() * 20 - 10), 0, Math.PI * 2);
+        ctx.stroke();
+      }
+
+      // Foamy white specks at top and bottom
+      ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+      for (let j = 0; j < 60; j++) {
+        const fx = Math.random() * width;
+        const fy = j % 2 === 0 ? Math.random() * height * 0.14 : height * (0.86 + Math.random() * 0.14);
+        ctx.beginPath();
+        ctx.arc(fx, fy, Math.random() * 3 + 1, 0, Math.PI * 2);
+        ctx.fill();
+      }
+      ctx.restore();
     }
 
     // 1c. Draw 35mm Film Strip Perforations & Frame Exposure Numbers in Canvas Output
@@ -633,6 +850,15 @@ export class CanvasEngine {
       ctx.lineTo(width * 0.95, height * 0.92);
       ctx.stroke();
       ctx.restore();
+    }
+
+    // 1e. Render Scrapbook Title (Ransom Cutout "HELLO" or Vintage Stamp "dump")
+    if (template.ransomTitle) {
+      if (template.ransomTitle.toLowerCase() === 'dump') {
+        this.drawStampTitle(ctx, template.ransomTitle, width / 2, height * 0.052, width, template.accentColor || '#800020');
+      } else {
+        this.drawRansomTitle(ctx, template.ransomTitle, width / 2, height * 0.055, width);
+      }
     }
 
     // 2. Render Outer Border if specified
@@ -879,17 +1105,80 @@ export class CanvasEngine {
         }
         ctx.restore();
 
-        // 3. Draw Crisp White Frame Border
-        ctx.save();
-        if (slot.shape === 'arch') {
-          this.archPath(ctx, slotRectX, slotRectY, slotW, slotH, slotW / 2);
-        } else {
+        // 3. Draw Frame Border (Scalloped Stamp / Wave Crest / Crisp Solid)
+        if (slot.borderStyle === 'scalloped-stamp' || template.scallopedBorder) {
+          // 📮 Authentic Scalloped Postage Stamp Border with White Perforation Holes
+          ctx.save();
+          const frameColor = slot.borderColor || template.frameBorderColor || '#800020';
+          const outerPad = width * 0.014;
+          ctx.strokeStyle = frameColor;
+          ctx.lineWidth = outerPad * 2.2;
+          this.roundRectPath(ctx, slotRectX - outerPad, slotRectY - outerPad, slotW + outerPad * 2, slotH + outerPad * 2, borderRadius + outerPad);
+          ctx.stroke();
+
+          // White Perforated Stamp Holes along the border perimeter
+          ctx.fillStyle = '#FFFFFF';
+          const dotRadius = Math.max(3, width * 0.007);
+          const dotSpacing = dotRadius * 3.3;
+
+          const dotLeft = slotRectX - outerPad;
+          const dotRight = slotRectX + slotW + outerPad;
+          const dotTop = slotRectY - outerPad;
+          const dotBottom = slotRectY + slotH + outerPad;
+
+          // Top and Bottom rows
+          for (let dx = dotLeft; dx <= dotRight; dx += dotSpacing) {
+            ctx.beginPath();
+            ctx.arc(dx, dotTop, dotRadius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(dx, dotBottom, dotRadius, 0, Math.PI * 2);
+            ctx.fill();
+          }
+          // Left and Right columns
+          for (let dy = dotTop; dy <= dotBottom; dy += dotSpacing) {
+            ctx.beginPath();
+            ctx.arc(dotLeft, dy, dotRadius, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(dotRight, dy, dotRadius, 0, Math.PI * 2);
+            ctx.fill();
+          }
+
+          // Inner crisp white guideline
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+          ctx.lineWidth = Math.max(1.5, width * 0.003);
           this.roundRectPath(ctx, slotRectX, slotRectY, slotW, slotH, borderRadius);
+          ctx.stroke();
+          ctx.restore();
+        } else if (slot.borderStyle === 'wave-crest') {
+          // 🌊 Scalloped Wavy Sea Frame Border
+          ctx.save();
+          const waveColor = slot.borderColor || '#0284C7';
+          ctx.strokeStyle = waveColor;
+          ctx.lineWidth = Math.max(3, width * 0.008);
+          this.roundRectPath(ctx, slotRectX, slotRectY, slotW, slotH, borderRadius);
+          ctx.stroke();
+
+          // Subtle wavy crest accents at four corners
+          ctx.strokeStyle = '#FFFFFF';
+          ctx.lineWidth = 2;
+          this.roundRectPath(ctx, slotRectX + 3, slotRectY + 3, slotW - 6, slotH - 6, Math.max(2, borderRadius - 2));
+          ctx.stroke();
+          ctx.restore();
+        } else {
+          // Standard Crisp White Frame Border
+          ctx.save();
+          if (slot.shape === 'arch') {
+            this.archPath(ctx, slotRectX, slotRectY, slotW, slotH, slotW / 2);
+          } else {
+            this.roundRectPath(ctx, slotRectX, slotRectY, slotW, slotH, borderRadius);
+          }
+          ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+          ctx.lineWidth = Math.max(2, width * 0.006);
+          ctx.stroke();
+          ctx.restore();
         }
-        ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
-        ctx.lineWidth = Math.max(2, width * 0.006);
-        ctx.stroke();
-        ctx.restore();
       }
 
       ctx.restore();

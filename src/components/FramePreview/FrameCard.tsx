@@ -121,8 +121,46 @@ export const FrameCard: React.FC<FrameCardProps> = React.memo(
             <span>{template.photoSlotsCount} Foto</span>
           </Badge>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '0.2rem', flexWrap: 'wrap' }}>
-            {template.isPopular && (
+          <div style={{ display: 'flex', alignItems: 'center', gap: '0.25rem', flexWrap: 'wrap' }}>
+            {template.isBestSeller && (
+              <span
+                style={{
+                  background: 'linear-gradient(135deg, #F59E0B, #D97706)',
+                  color: '#FFFFFF',
+                  fontSize: '0.56rem',
+                  fontWeight: 900,
+                  padding: '0.14rem 0.45rem',
+                  borderRadius: '9999px',
+                  letterSpacing: '0.03em',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.15rem',
+                  boxShadow: '0 2px 8px rgba(245, 158, 11, 0.35)',
+                }}
+              >
+                <span>⭐</span> BEST SELLER
+              </span>
+            )}
+            {template.isNew && (
+              <span
+                style={{
+                  background: 'linear-gradient(135deg, #EC4899, #8B5CF6)',
+                  color: '#FFFFFF',
+                  fontSize: '0.56rem',
+                  fontWeight: 900,
+                  padding: '0.14rem 0.45rem',
+                  borderRadius: '9999px',
+                  letterSpacing: '0.03em',
+                  display: 'inline-flex',
+                  alignItems: 'center',
+                  gap: '0.15rem',
+                  boxShadow: '0 2px 8px rgba(236, 72, 153, 0.35)',
+                }}
+              >
+                <span>✨</span> NEW
+              </span>
+            )}
+            {!template.isBestSeller && !template.isNew && template.isPopular && (
               <span
                 style={{
                   background: '#F97316',
@@ -136,22 +174,6 @@ export const FrameCard: React.FC<FrameCardProps> = React.memo(
                 }}
               >
                 POPULER
-              </span>
-            )}
-            {template.isNew && !template.isPopular && (
-              <span
-                style={{
-                  background: '#EF4444',
-                  color: '#FFFFFF',
-                  fontSize: '0.55rem',
-                  fontWeight: 800,
-                  padding: '0.12rem 0.35rem',
-                  borderRadius: '9999px',
-                  letterSpacing: '0.02em',
-                  boxShadow: '0 2px 6px rgba(239, 68, 68, 0.3)',
-                }}
-              >
-                NEW
               </span>
             )}
 
@@ -227,6 +249,15 @@ export const FrameCard: React.FC<FrameCardProps> = React.memo(
             >
               {template.category} • {template.photoSlotsCount} Foto
             </p>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.35rem', marginTop: '0.2rem', fontSize: '0.74rem' }}>
+              <span style={{ color: '#F59E0B', fontWeight: 800, display: 'inline-flex', alignItems: 'center', gap: '0.15rem' }}>
+                ★ {template.rating ? template.rating.toFixed(1) : (template.isBestSeller ? '5.0' : '4.9')}
+              </span>
+              <span style={{ color: isDarkCard ? 'rgba(255,255,255,0.45)' : 'var(--color-neutral-sub)', fontSize: '0.72rem', fontWeight: 600 }}>
+                • {template.usageCount ? `${(template.usageCount / 1000).toFixed(1)}k` : (template.isBestSeller ? '4.8k' : '2.9k')} dipakai
+              </span>
+            </div>
           </div>
 
           {/* Clean "Pakai Bingkai" Button under each card */}

@@ -5,6 +5,7 @@ import { PrintService } from '../services/printing/printService';
 import { CloudStorageService } from '../services/cloud/cloudStorageService';
 import { CanvasEngine } from '../services/canvas/canvasEngine';
 import { GifRecorderService } from '../services/gif/gifRecorderService';
+import { SessionMetricsService } from '../services/analytics/sessionMetricsService';
 import type { CloudUploadResponse } from '../services/cloud/cloudStorageService';
 import type { PrintLayoutType } from '../services/printing/printService';
 import {
@@ -85,6 +86,8 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
     const targetUrl = (exportFormat === 'double' && doubleStripUrl) ? doubleStripUrl : finalImageDataUrl;
     if (!targetUrl) return;
 
+    SessionMetricsService.incrementSessionCount();
+
     try {
       // 1. Convert Data URL to Blob for seamless mobile & desktop PNG download
       const parts = targetUrl.split(';');
@@ -135,6 +138,7 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
   const handleDownloadGif = async () => {
     if (boomerangFrames.length === 0) return;
     setIsGeneratingGif(true);
+    SessionMetricsService.incrementSessionCount();
     try {
       const blob = await GifRecorderService.createAnimatedGifBlob(boomerangFrames, 300, 450, 9);
       const blobUrl = URL.createObjectURL(blob);

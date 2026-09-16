@@ -10,6 +10,7 @@ import { TemplateGrid } from '../components/TemplatePicker/TemplateGrid';
 import { FrameModal } from '../components/FramePreview/FrameModal';
 import { Hero3DFanDisplay } from '../components/Home/Hero3DFanDisplay';
 import { Camera, Grid, Sparkles } from 'lucide-react';
+import { SessionMetricsService } from '../services/analytics/sessionMetricsService';
 
 import { imageCacheService } from '../services/imageService';
 
@@ -32,14 +33,20 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
   const [selectedCategory, setSelectedCategory] = useState<FrameCategory | 'all'>('all');
   const [selectedRatio, setSelectedRatio] = useState<GridAspectRatio | 'all'>('all');
   const [selectedSlotsCount, setSelectedSlotsCount] = useState<number | 'all'>('all');
+  const [badgeFilter, setBadgeFilter] = useState<'all' | 'best-seller' | 'new'>('all');
   const [searchQuery, setSearchQuery] = useState('');
   const [favorites, setFavorites] = useState<string[]>([]);
   const [selectedTemplateForModal, setSelectedTemplateForModal] = useState<TemplateData | null>(null);
+  const [sessionCount, setSessionCount] = useState<string>(SessionMetricsService.getFormattedCount());
 
   const showcaseRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     setFavorites(StorageService.getFavorites());
+
+    const unsubscribe = SessionMetricsService.subscribe(() => {
+      setSessionCount(SessionMetricsService.getFormattedCount());
+    });
 
     // Pre-decode sample images into memory for 60 FPS butter-smooth grid scrolling
     const sampleUrls = [
@@ -51,6 +58,8 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
       'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&w=240&q=70',
     ];
     imageCacheService.preloadBatch(sampleUrls);
+
+    return unsubscribe;
   }, []);
 
   const handleToggleFavorite = (id: string, e: React.MouseEvent) => {
@@ -76,6 +85,12 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
     let result = TemplateService.searchTemplates(searchQuery, selectedCategory);
     if (isShowingFavoritesOnly) {
       result = result.filter((t) => favorites.includes(t.id));
+    }
+
+    if (badgeFilter === 'best-seller') {
+      result = result.filter((t) => t.isBestSeller || t.isPopular);
+    } else if (badgeFilter === 'new') {
+      result = result.filter((t) => t.isNew);
     }
 
     if (selectedRatio !== 'all') {
@@ -104,14 +119,15 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
       !searchQuery &&
       selectedCategory === 'all' &&
       selectedRatio === 'all' &&
-      selectedSlotsCount === 'all'
+      selectedSlotsCount === 'all' &&
+      badgeFilter === 'all'
     ) {
-      const featured = result.filter((t) => t.isPopular || t.isNew);
+      const featured = result.filter((t) => t.isBestSeller || t.isNew || t.isPopular);
       return featured.length >= 4 ? featured.slice(0, 4) : result.slice(0, 4);
     }
 
     return result;
-  }, [searchQuery, selectedCategory, isShowingFavoritesOnly, favorites, isHomeView, selectedRatio, selectedSlotsCount]);
+  }, [searchQuery, selectedCategory, isShowingFavoritesOnly, favorites, isHomeView, selectedRatio, selectedSlotsCount, badgeFilter]);
 
   const [activeSelectedFrame, setActiveSelectedFrame] = useState<TemplateData | null>(null);
 
@@ -183,7 +199,7 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
                 <img src="https://images.unsplash.com/photo-1494790108377-be9c29b29330?auto=format&fit=crop&w=80&q=80" alt="user" />
               </div>
               <span className="proof-text">
-                <strong>10K+</strong> momen berkesan telah dibuat <span style={{ color: '#D90429' }}>♥</span>
+                <strong>{sessionCount}</strong> momen berkesan telah dibuat <span style={{ color: '#D90429' }}>♥</span>
               </span>
             </div>
           </div>
@@ -217,6 +233,68 @@ export const FramePickerView: React.FC<FramePickerViewProps> = ({
         {!isHomeView && (
           <div className="showcase-controls">
             <SearchBar value={searchQuery} onChange={setSearchQuery} />
+
+            {/* Quick Badge Filter Tabs: All, Best Seller, New */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.45rem', flexWrap: 'wrap', justifyContent: 'center' }}>
+              <button
+                className={`category-pill ${badgeFilter === 'all' ? 'active' : ''}`}
+                onClick={() => setBadgeFilter('all')}
+                style={{
+                  background: badgeFilter === 'all' ? 'linear-gradient(135deg, #800020, #B31B38)' : '#FFFFFF',
+                  color: badgeFilter === 'all' ? '#FFFFFF' : 'inherit',
+                  borderColor: badgeFilter === 'all' ? '#800020' : 'var(--color-border)',
+                  fontWeight: 700,
+                  fontSize: '0.82rem',
+                }}
+              >
+                <span>🌟 Semua Koleksi</span>
+              </button>
+              <button
+                className={`category-pill ${badgeFilter === 'best-seller' ? 'active' : ''}`}
+                onClick={() => setBadgeFilter('best-seller')}
+                style={{
+                  background: badgeFilter === 'best-seller' ? 'linear-gradient(135deg, #F59E0B, #D97706)' : '#FFFFFF',
+                  color: badgeFilter === 'best-seller' ? '#FFFFFF' : 'inherit',
+                  borderColor: badgeFilter === 'best-seller' ? '#F59E0B' : 'var(--color-border)',
+                  fontWeight: 700,
+                  fontSize: '0.82rem',
+                }}
+              >
+                <span>⭐ Best Seller</span>
+                <span
+                  className="category-count"
+                  style={{
+                    background: badgeFilter === 'best-seller' ? 'rgba(255,255,255,0.3)' : 'rgba(245,158,11,0.15)',
+                    color: badgeFilter === 'best-seller' ? '#fff' : '#D97706',
+                  }}
+                >
+                  {TemplateService.getAllTemplates().filter((t) => t.isBestSeller || t.isPopular).length}
+                </span>
+              </button>
+              <button
+                className={`category-pill ${badgeFilter === 'new' ? 'active' : ''}`}
+                onClick={() => setBadgeFilter('new')}
+                style={{
+                  background: badgeFilter === 'new' ? 'linear-gradient(135deg, #EC4899, #8B5CF6)' : '#FFFFFF',
+                  color: badgeFilter === 'new' ? '#FFFFFF' : 'inherit',
+                  borderColor: badgeFilter === 'new' ? '#EC4899' : 'var(--color-border)',
+                  fontWeight: 700,
+                  fontSize: '0.82rem',
+                }}
+              >
+                <span>✨ Baru (New)</span>
+                <span
+                  className="category-count"
+                  style={{
+                    background: badgeFilter === 'new' ? 'rgba(255,255,255,0.3)' : 'rgba(236,72,153,0.15)',
+                    color: badgeFilter === 'new' ? '#fff' : '#EC4899',
+                  }}
+                >
+                  {TemplateService.getAllTemplates().filter((t) => t.isNew).length}
+                </span>
+              </button>
+            </div>
+
             <CategoryFilter
               selectedCategory={selectedCategory}
               onSelectCategory={setSelectedCategory}

@@ -1,20 +1,10 @@
 import type { TemplateData } from '../../types/template';
-import { templateCaramelClick } from './caramelClick';
 import {
-  templateSweetMoment,
-  templateSpecialDay,
-  templateFilmStory,
-  templateMovieLove,
-  templateBetterTogether,
-  templateDailyChronicle,
-} from './masterTemplates';
-import {
-  templateCatchYoursStrip,
-  templateCatchYoursDual,
-} from './catchYours';
+  templateNakatamaMarine,
+  templateNakatamaCozyKnit,
+} from './nakatamaScrapbook';
 import { templatePinkScrapbookCollage } from './pinkScrapbookCollage';
 import { cardBurgundyGinghamScrapbook } from './burgundyScrapbook';
-import { haruSky01 } from './haruSky';
 import {
   cardFavoritePersonScrapbook,
   cardDarkRomanceCherries,
@@ -22,124 +12,76 @@ import {
   cardILoveYouFloralGrid,
   cardRetroVinylCassetteFilm,
 } from './fiveAssetTemplates';
+import { templateCatchYoursStrip, templateCatchYoursDual } from './catchYours';
+import { templateCaramelClick } from './caramelClick';
 import {
-  cardScrapbook,
-  cardPolaroid,
-  cardFilmStrip,
-  cardTicket,
-  cardNewspaper,
-  cardCuteSticker,
-  cardRetroCamera,
-  cardMinimalLuxury,
-  cardY2K,
-  cardPostcard,
-  cardRomanticFlower,
-  cardPhotoboothClassic,
-} from './twelveCards';
-import {
-  nusantaraPostcard,
-  jakartaLife4cuts,
-  baliPolaroid,
-  bandungDigicam,
-  jogjaHeritage,
-} from './indonesiaTemplates';
-import {
-  seoulLife4Cuts,
-  tokyoPurikura,
-  parisRiviera,
-  romaCinema,
-  nycDigicam,
-  nusantaraBatik,
-} from './globalCountry';
-import {
-  friendshipBestieForever,
-  friendshipSquadGoals,
-  friendshipY2KGingham,
-} from './friendship';
-import {
-  bdayPartyCelebration,
-  bdayGoldenJubilee,
-  bdaySweetSixteen,
-  bdayCowgirlParty,
-} from './birthday';
-import {
-  gradNavyVictory,
-  gradBurgundyHonors,
-  gradEmeraldScholar,
-  gradGazettePress,
-} from './graduation';
+  templateSweetMoment,
+  templateBetterTogether,
+} from './masterTemplates';
+import { haruSky01 } from './haruSky';
+import { cardScrapbook, cardCuteSticker, cardRomanticFlower, cardPolaroid } from './twelveCards';
+import { seoulLife4Cuts, tokyoPurikura } from './globalCountry';
+import { jakartaLife4cuts, baliPolaroid } from './indonesiaTemplates';
+import { friendshipBestieForever, friendshipSquadGoals, friendshipY2KGingham } from './friendship';
+import { bdayPartyCelebration, bdaySweetSixteen, bdayCowgirlParty } from './birthday';
+import { gradNavyVictory, gradBurgundyHonors } from './graduation';
 import { seasonalSummer01 } from './seasonal';
 
+/**
+ * Curated High-Aesthetic Photobooth Catalog (Gen Z Scrapbook, Nakatama, Digicam & Y2K)
+ * Obsolete plain/flat templates have been pruned per user instruction.
+ */
 export const TEMPLATES: TemplateData[] = [
-  // 💖 1. Romantic
+  // 🌟 TOP MARQUEE: Viral TikTok Scrapbook & Nakatama Themes
+  templateNakatamaCozyKnit,
+  templateNakatamaMarine,
+  templatePinkScrapbookCollage,
+  cardBurgundyGinghamScrapbook,
+  cardFavoritePersonScrapbook,
+  cardSilverDigicamGingham,
+  cardDarkRomanceCherries,
+
+  // 💖 1. Romantic & Best Sellers
   templateCatchYoursStrip,
   templateCatchYoursDual,
-  templateSweetMoment,
-  cardFavoritePersonScrapbook,
-  cardDarkRomanceCherries,
   cardILoveYouFloralGrid,
-  templateMovieLove,
+  templateSweetMoment,
   cardRomanticFlower,
 
-  // 👯 2. Friendship / Bestie
-  friendshipBestieForever,
-  friendshipSquadGoals,
-  templateCaramelClick,
-  templateBetterTogether,
-  friendshipY2KGingham,
-  baliPolaroid,
-
-  // 🎀 3. Cute & Scrapbook
+  // 🎀 2. Cute, Kawaii & Korean Life 4 Cuts
   seoulLife4Cuts,
   tokyoPurikura,
   haruSky01,
-  templatePinkScrapbookCollage,
-  cardBurgundyGinghamScrapbook,
-  cardScrapbook,
   cardCuteSticker,
+  cardScrapbook,
 
-  // 📷 4. Vintage & Film Strip
-  templateSpecialDay,
-  templateFilmStory,
-  templateDailyChronicle,
-  jogjaHeritage,
-  cardFilmStrip,
-  cardTicket,
-  cardNewspaper,
-  cardRetroCamera,
+  // 👯 3. Friendship & Bestie Squad
+  friendshipBestieForever,
+  friendshipSquadGoals,
+  templateBetterTogether,
+  templateCaramelClick,
+  friendshipY2KGingham,
+  baliPolaroid,
+
+  // 📷 4. Aesthetic Vintage & Digicam
   cardRetroVinylCassetteFilm,
-  parisRiviera,
-  romaCinema,
-
-  // 💎 5. Minimal & Y2K
-  cardMinimalLuxury,
-  cardSilverDigicamGingham,
-  bandungDigicam,
-  nycDigicam,
-  cardY2K,
   cardPolaroid,
-  cardPostcard,
-  cardPhotoboothClassic,
   jakartaLife4cuts,
-  nusantaraPostcard,
-  nusantaraBatik,
 
-  // 🎂 6. Birthday
+  // 🎂 5. Birthday Celebration
   bdayPartyCelebration,
-  bdayGoldenJubilee,
   bdaySweetSixteen,
   bdayCowgirlParty,
 
-  // 🎓 7. Graduation
+  // 🎓 6. Graduation Honors
   gradNavyVictory,
   gradBurgundyHonors,
-  gradEmeraldScholar,
-  gradGazettePress,
 
-  // 🌴 8. Seasonal
+  // 🌴 7. Seasonal
   seasonalSummer01,
 ];
 
+export * from './nakatamaScrapbook';
 export * from './masterTemplates';
 export * from './catchYours';
 export * from './caramelClick';
@@ -154,4 +96,3 @@ export * from './friendship';
 export * from './birthday';
 export * from './seasonal';
 export * from './haruSky';
-

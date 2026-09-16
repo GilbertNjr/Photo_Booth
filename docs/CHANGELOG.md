@@ -1,3 +1,28 @@
+## [1.4.0] - 2026-09-16 (Freeform Sticker Transformer, Nakatama Scrapbook Frames, Catalog Pruning & Privacy Architecture)
+
+### Added & Enhanced
+- **Freeform Interactive Sticker Transformer (`CustomizeView.tsx`):**
+  - Continuous 360° rotation stem handle (🔄) with pointer capture and angle calculation via `Math.atan2`.
+  - Continuous zoom-in / zoom-out corner scale handle (↘️) with dynamic distance scaling (`Math.hypot`).
+  - Quick-action floating handles for direct sticker deletion (✕) and one-tap duplication (📄).
+  - Multi-touch mobile pinch-to-zoom and two-finger rotation gesture tracking.
+  - Floating status chip indicating current rotation angle and scale percentage (`📐 15° • 🔍 120%`).
+- **Aesthetic Nakatama & Photobox Scrapbook Themes (`nakatamaScrapbook.ts`, `canvasEngine.ts`):**
+  - **Marine Ocean Aesthetic (`nakatama-marine`):** The Great Wave off Kanagawa artwork, procedural ocean water ripples & caustics, wave-crest photo slot borders, sailor ribbon, seashells, blue & white starfish, Area Photobox seal, and retro ransom letter blocks ("HELLO").
+  - **Autumn Cozy Knit & Dump Scrapbook (`nakatama-cozy-knit`):** Braided cable-knit sweater texture shader, scalloped postage stamp photo frames with white perforation dots, 3D plush teddy bear popping out with bucket hat, red knitted winter scarf with "I remember it all too well" embroidery, London red phone booth, and typewriter love label.
+- **Card Pruning & Catalog Curation (`templates/index.ts`, `FramePickerView.tsx`, `FrameCard.tsx`):**
+  - Pruned plain, repetitive card templates to highlight top aesthetic and scrapbook designs.
+  - Added golden `⭐ BEST SELLER` badge and vibrant `✨ NEW` badge on card thumbnails.
+  - Added star ratings (`★ 4.9`) and usage metrics (`3.2k dipakai`) on all frames.
+  - Added one-click quick collection filter pills ("Semua", "⭐ Best Seller", "✨ Baru (New)").
+- **Zero-Database Privacy Architecture & Copyright Security (`PrivacyModal.tsx`, `Navbar.tsx`, `Footer.tsx`):**
+  - Dedicated interactive Privacy Modal explaining 100% on-device WebRTC & Canvas processing (zero photo storage on external servers/databases).
+  - Automatic memory purge upon session completion or browser refresh.
+  - Official developer copyright notice: `© 2026 GilbertNjr. PixBooth Studio. All Rights Reserved.`.
+- **Live Session Counter Service (`sessionMetricsService.ts`):**
+  - Persistent, reactive session counter tracking photo downloads and prints with portfolio baseline (1,428+ prints).
+  - Live metric widgets in Navbar, Hero section, and Footer.
+
 ## [1.3.0] - 2026-09-16 (TikTok AR Face Filters, Boomerang Motion GIF & Kiosk Mode)
 
 ### Added & Enhanced

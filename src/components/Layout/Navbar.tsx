@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { Camera, Heart, Menu, X, Home, LayoutGrid, HelpCircle, Info, Maximize, Minimize } from 'lucide-react';
+import { Camera, Heart, Menu, X, Home, LayoutGrid, HelpCircle, Info, Maximize, Minimize, ShieldCheck } from 'lucide-react';
+import { PrivacyModal } from '../Common/PrivacyModal';
 
 export type NavSection = 'hero' | 'frames' | 'how-to-use' | 'about' | 'favorites';
 
@@ -29,6 +30,7 @@ export const Navbar: React.FC<NavbarProps> = ({
   onToggleKiosk,
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
 
   const handleMobileNav = (action?: () => void) => {
     setIsMobileMenuOpen(false);
@@ -103,6 +105,21 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <Camera size={15} />
             <span>Riwayat Foto</span>
+          </button>
+
+          <button
+            className="nav-action-pill"
+            onClick={() => setIsPrivacyOpen(true)}
+            title="Jaminan Privasi 100% On-Device (Tanpa Database)"
+            style={{
+              background: 'rgba(16, 185, 129, 0.08)',
+              borderColor: 'rgba(16, 185, 129, 0.3)',
+              color: '#065F46',
+              fontWeight: 700,
+            }}
+          >
+            <ShieldCheck size={15} color="#10B981" />
+            <span>Privasi</span>
           </button>
 
           {onToggleKiosk && (
@@ -189,6 +206,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>Riwayat Foto</span>
             </button>
 
+            <button
+              className="mobile-menu-item"
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                setIsPrivacyOpen(true);
+              }}
+              style={{ color: '#065F46', fontWeight: 700 }}
+            >
+              <ShieldCheck size={18} color="#10B981" />
+              <span>Jaminan Privasi 100% On-Device</span>
+            </button>
+
             {onToggleKiosk && (
               <button
                 className="mobile-menu-item"
@@ -202,6 +231,11 @@ export const Navbar: React.FC<NavbarProps> = ({
           </div>
         </div>
       )}
+
+      <PrivacyModal
+        isOpen={isPrivacyOpen}
+        onClose={() => setIsPrivacyOpen(false)}
+      />
     </header>
   );
 };
