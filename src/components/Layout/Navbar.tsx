@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
-import { Camera, Heart, Menu, X, Home, LayoutGrid, HelpCircle, Info, Maximize, Minimize, ShieldCheck } from 'lucide-react';
+import { Camera, Heart, Menu, X, Home, LayoutGrid, HelpCircle, Info, Maximize, Minimize, ShieldCheck, Mail } from 'lucide-react';
 import { PrivacyModal } from '../Common/PrivacyModal';
+import { FeedbackModal } from '../Common/FeedbackModal';
 
 export type NavSection = 'hero' | 'frames' | 'how-to-use' | 'about' | 'favorites';
 
@@ -31,6 +32,7 @@ export const Navbar: React.FC<NavbarProps> = ({
 }) => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+  const [isFeedbackOpen, setIsFeedbackOpen] = useState(false);
 
   const handleMobileNav = (action?: () => void) => {
     setIsMobileMenuOpen(false);
@@ -120,6 +122,21 @@ export const Navbar: React.FC<NavbarProps> = ({
           >
             <ShieldCheck size={15} color="#10B981" />
             <span>Privasi</span>
+          </button>
+
+          <button
+            className="nav-action-pill"
+            onClick={() => setIsFeedbackOpen(true)}
+            title="Kirim saran atau ide bingkai baru langsung ke developer"
+            style={{
+              background: 'rgba(225, 29, 72, 0.08)',
+              borderColor: 'rgba(225, 29, 72, 0.25)',
+              color: '#BE123C',
+              fontWeight: 700,
+            }}
+          >
+            <Mail size={15} color="#E11D48" />
+            <span>Saran</span>
           </button>
 
           {onToggleKiosk && (
@@ -218,6 +235,18 @@ export const Navbar: React.FC<NavbarProps> = ({
               <span>Jaminan Privasi 100% On-Device</span>
             </button>
 
+            <button
+              className="mobile-menu-item"
+              onClick={() => {
+                setIsMobileMenuOpen(false);
+                setIsFeedbackOpen(true);
+              }}
+              style={{ color: '#BE123C', fontWeight: 700 }}
+            >
+              <Mail size={18} color="#E11D48" />
+              <span>Punya Saran / Masukan?</span>
+            </button>
+
             {onToggleKiosk && (
               <button
                 className="mobile-menu-item"
@@ -235,6 +264,11 @@ export const Navbar: React.FC<NavbarProps> = ({
       <PrivacyModal
         isOpen={isPrivacyOpen}
         onClose={() => setIsPrivacyOpen(false)}
+      />
+
+      <FeedbackModal
+        isOpen={isFeedbackOpen}
+        onClose={() => setIsFeedbackOpen(false)}
       />
     </header>
   );

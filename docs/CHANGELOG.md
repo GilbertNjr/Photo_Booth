@@ -15,6 +15,17 @@
   - Added golden `⭐ BEST SELLER` badge and vibrant `✨ NEW` badge on card thumbnails.
   - Added star ratings (`★ 4.9`) and usage metrics (`3.2k dipakai`) on all frames.
   - Added one-click quick collection filter pills ("Semua", "⭐ Best Seller", "✨ Baru (New)").
+- **Centralized Dynamic App Versioning (`appConfig.ts`):**
+  - Single source of truth for app version (`v1.4.0`), build date, author copyright, and release codename.
+  - Synchronized dynamically in `AboutView.tsx`, `Footer.tsx`, and `Navbar.tsx`.
+- **Real-Time Interactive Feedback & Support System (`feedbackService.ts`, `FeedbackModal.tsx`):**
+  - Direct email relay to official developer email **`pixbooth.support@gmail.com`**.
+  - Interactive aesthetic feedback modal with 5 category pills (`💡 Ide Bingkai`, `✨ Fitur Baru`, `🐞 Lapor Bug`, `💌 Pujian/Kesan`, `💬 Lainnya`).
+  - Interactive 5-star rating selector with live sentiment labels.
+  - Client-side rate-limit protection (45s anti-spam cooldown).
+  - Telemetry collection without private facial data (device type, viewport size, timestamp).
+  - Graceful fallback with one-click "Salin Email" and prefilled `mailto:` client opener.
+  - Interactive bottom card in `AboutView.tsx` and quick access pills in `Navbar.tsx` and `Footer.tsx`.
 - **Zero-Database Privacy Architecture & Copyright Security (`PrivacyModal.tsx`, `Navbar.tsx`, `Footer.tsx`):**
   - Dedicated interactive Privacy Modal explaining 100% on-device WebRTC & Canvas processing (zero photo storage on external servers/databases).
   - Automatic memory purge upon session completion or browser refresh.

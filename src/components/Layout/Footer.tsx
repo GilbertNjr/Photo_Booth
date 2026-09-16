@@ -1,10 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import { Heart, Sparkles, Camera, ShieldCheck, Lock } from 'lucide-react';
 import { PrivacyModal } from '../Common/PrivacyModal';
+import { FeedbackModal } from '../Common/FeedbackModal';
 import { SessionMetricsService } from '../../services/analytics/sessionMetricsService';
+import { APP_CONFIG } from '../../config/appConfig';
 
 export const Footer: React.FC = () => {
   const [isPrivacyModalOpen, setIsPrivacyModalOpen] = useState(false);
+  const [isFeedbackModalOpen, setIsFeedbackModalOpen] = useState(false);
   const [sessionCount, setSessionCount] = useState<string>(SessionMetricsService.getFormattedCount());
 
   useEffect(() => {
@@ -69,6 +72,20 @@ export const Footer: React.FC = () => {
             >
               <span>🔥 {sessionCount} Sesi Dicetak</span>
             </div>
+            <button
+              className="footer-badge-pill"
+              onClick={() => setIsFeedbackModalOpen(true)}
+              style={{
+                cursor: 'pointer',
+                background: 'rgba(225, 29, 72, 0.08)',
+                borderColor: 'rgba(225, 29, 72, 0.25)',
+                color: '#BE123C',
+                fontWeight: 700,
+              }}
+              title="Kirim saran atau ide bingkai baru langsung ke developer"
+            >
+              <span>💌 Kirim Saran</span>
+            </button>
           </div>
 
           {/* Divider Line */}
@@ -99,8 +116,20 @@ export const Footer: React.FC = () => {
                 <Lock size={12} /> Jaminan Privasi
               </button>
             </div>
-            <div className="footer-copyright" style={{ fontWeight: 600 }}>
-              © 2026 GilbertNjr. PixBooth Studio. All Rights Reserved.
+            <div className="footer-copyright" style={{ fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.45rem', flexWrap: 'wrap' }}>
+              <span>© {APP_CONFIG.copyrightYear} {APP_CONFIG.author}. {APP_CONFIG.name}.</span>
+              <span
+                style={{
+                  fontSize: '0.74rem',
+                  background: 'rgba(128, 0, 32, 0.08)',
+                  color: '#800020',
+                  padding: '0.1rem 0.5rem',
+                  borderRadius: '9999px',
+                  fontWeight: 800,
+                }}
+              >
+                {APP_CONFIG.version}
+              </span>
             </div>
           </div>
         </div>
@@ -109,6 +138,11 @@ export const Footer: React.FC = () => {
       <PrivacyModal
         isOpen={isPrivacyModalOpen}
         onClose={() => setIsPrivacyModalOpen(false)}
+      />
+
+      <FeedbackModal
+        isOpen={isFeedbackModalOpen}
+        onClose={() => setIsFeedbackModalOpen(false)}
       />
     </>
   );
