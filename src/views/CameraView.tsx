@@ -38,6 +38,8 @@ export const CameraView: React.FC<CameraViewProps> = ({
   const [selectedFilmPreset, setSelectedFilmPreset] = useState<FilmGradeType>('original');
   const [activeARFilter, setActiveARFilter] = useState<ARFilterType>('none');
   const [isAISmileEnabled] = useState(true);
+  const [isRingLightOn, setIsRingLightOn] = useState<boolean>(false);
+  const [ringLightTone, setRingLightTone] = useState<'studio' | 'warm' | 'soft-pink'>('studio');
 
   // Capture State
   const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
@@ -378,8 +380,100 @@ export const CameraView: React.FC<CameraViewProps> = ({
           </div>
         )}
 
+        {/* 💡 Digital Ring Light Beauty Toolbar */}
+        <div
+          style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            padding: '0.35rem 0.85rem',
+            margin: '0 0.85rem 0.65rem',
+            background: isRingLightOn ? '#FFFBEB' : '#FFFFFF',
+            border: isRingLightOn ? '1.5px solid #F59E0B' : '1px solid var(--color-border-soft)',
+            borderRadius: '9999px',
+            boxShadow: isRingLightOn ? '0 0 16px rgba(245, 158, 11, 0.25)' : '0 2px 8px rgba(0,0,0,0.04)',
+            transition: 'all 0.25s ease',
+          }}
+        >
+          <button
+            type="button"
+            onClick={() => setIsRingLightOn((prev) => !prev)}
+            style={{
+              background: isRingLightOn ? '#D97706' : '#F3F4F6',
+              color: isRingLightOn ? '#FFFFFF' : '#374151',
+              border: 'none',
+              borderRadius: '9999px',
+              padding: '0.28rem 0.75rem',
+              fontSize: '0.78rem',
+              fontWeight: 800,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '0.35rem',
+              transition: 'all 0.2s ease',
+            }}
+          >
+            <span>💡 Ring Light Layar:</span>
+            <span style={{ color: isRingLightOn ? '#FEF08A' : '#9CA3AF' }}>
+              {isRingLightOn ? 'ON' : 'OFF'}
+            </span>
+          </button>
+
+          {isRingLightOn && (
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.3rem' }}>
+              {[
+                { id: 'studio', label: 'Studio White', color: '#FFFFFF', border: '#9CA3AF' },
+                { id: 'warm', label: 'Warm Glow', color: '#FEF08A', border: '#F59E0B' },
+                { id: 'soft-pink', label: 'Soft Pink', color: '#FCE7F3', border: '#EC4899' },
+              ].map((t) => (
+                <button
+                  key={t.id}
+                  type="button"
+                  onClick={() => setRingLightTone(t.id as any)}
+                  style={{
+                    border: ringLightTone === t.id ? `2px solid ${t.border}` : '1px solid #E5E7EB',
+                    background: t.color,
+                    color: '#1F2937',
+                    padding: '0.2rem 0.55rem',
+                    borderRadius: '9999px',
+                    fontSize: '0.72rem',
+                    fontWeight: ringLightTone === t.id ? 800 : 600,
+                    cursor: 'pointer',
+                    boxShadow: ringLightTone === t.id ? '0 0 8px rgba(0,0,0,0.15)' : 'none',
+                  }}
+                >
+                  {t.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+
         {/* Camera Viewport Area */}
         <div className="camera-mockup-viewport-wrapper" style={{ position: 'relative' }}>
+          {/* 💡 Digital Ring Light Virtual Softbox Glow Frame */}
+          {isRingLightOn && (
+            <div
+              style={{
+                position: 'absolute',
+                inset: '-8px',
+                borderRadius: '24px',
+                pointerEvents: 'none',
+                zIndex: 25,
+                boxShadow: ringLightTone === 'studio'
+                  ? '0 0 80px 30px rgba(255, 255, 255, 0.98), inset 0 0 50px 15px rgba(255, 255, 255, 0.9)'
+                  : ringLightTone === 'warm'
+                  ? '0 0 80px 30px rgba(255, 230, 160, 0.98), inset 0 0 50px 15px rgba(255, 230, 160, 0.9)'
+                  : '0 0 80px 30px rgba(255, 200, 220, 0.98), inset 0 0 50px 15px rgba(255, 200, 220, 0.9)',
+                border: ringLightTone === 'studio'
+                  ? '10px solid rgba(255, 255, 255, 0.98)'
+                  : ringLightTone === 'warm'
+                  ? '10px solid rgba(255, 240, 190, 0.98)'
+                  : '10px solid rgba(255, 220, 235, 0.98)',
+                transition: 'all 0.3s ease',
+              }}
+            />
+          )}
           {/* Pose Transition 3-Second Countdown Overlay */}
           {poseTransitionCountdown !== null && (
             <div

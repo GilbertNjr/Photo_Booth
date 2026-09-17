@@ -18,12 +18,20 @@ import { HowToUseView } from './views/HowToUseView';
 
 type Step = 'picker' | 'camera' | 'customize' | 'final';
 
+export interface SavedSessionStrip {
+  id: string;
+  templateName: string;
+  dataUrl: string;
+  timestamp: string;
+}
+
 export function App() {
   const [currentStep, setCurrentStep] = useState<Step>('picker');
   const [selectedFrame, setSelectedFrame] = useState<TemplateData | null>(null);
   const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
   const [finalImageDataUrl, setFinalImageDataUrl] = useState<string>('');
   const [appliedFilter, setAppliedFilter] = useState<PhotoFilterType>('original');
+  const [sessionStrips, setSessionStrips] = useState<SavedSessionStrip[]>([]);
 
   const [isShowingFavoritesOnly, setIsShowingFavoritesOnly] = useState(false);
   const [isShowingHowToUse, setIsShowingHowToUse] = useState(false);
@@ -67,6 +75,7 @@ export function App() {
     setCapturedPhotos([]);
     setFinalImageDataUrl('');
     setAppliedFilter('original');
+    setSessionStrips([]);
     navigateToStep('picker');
   };
 
@@ -159,7 +168,11 @@ export function App() {
 
   const handleSelectFrame = (template: TemplateData) => {
     setSelectedFrame(template);
-    navigateToStep('camera');
+    if (capturedPhotos.length > 0) {
+      navigateToStep('customize');
+    } else {
+      navigateToStep('camera');
+    }
   };
 
   const handlePhotosCaptured = (photos: string[]) => {
@@ -172,7 +185,26 @@ export function App() {
     if (selectedFilter) {
       setAppliedFilter(selectedFilter);
     }
+    const newStrip: SavedSessionStrip = {
+      id: `strip-${Date.now()}`,
+      templateName: selectedFrame?.name || 'PixBooth Strip',
+      dataUrl: imageDataUrl,
+      timestamp: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+    };
+    setSessionStrips((prev) => {
+      const exists = prev.some((s) => s.dataUrl === imageDataUrl);
+      if (exists) return prev;
+      return [...prev.slice(-3), newStrip];
+    });
     navigateToStep('final');
+  };
+
+  const handleTryAnotherFrame = () => {
+    setCurrentStep('picker');
+    setIsShowingFavoritesOnly(false);
+    setIsShowingHowToUse(false);
+    setIsAllFramesCatalog(true);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleStepClick = (stepId: StepId) => {
@@ -312,6 +344,9 @@ export function App() {
           <FinalPreviewView
             finalImageDataUrl={finalImageDataUrl}
             selectedFilter={appliedFilter}
+            sessionStrips={sessionStrips}
+            onSelectStripFromTray={(strip) => setFinalImageDataUrl(strip.dataUrl)}
+            onTryAnotherFrame={handleTryAnotherFrame}
             onEditCustomization={() => setCurrentStep('customize')}
             onNewSession={handleNewSession}
           />

@@ -24,14 +24,13 @@ export interface FaceDetectionData {
 
 export class ARFilterService {
   private static animFrame = 0;
-  private static lastSmoothedFace: FaceDetectionData | null = null;
 
   /**
-   * Fast, ultra-lightweight real-time face tracker running on canvas at 60 FPS
+   * Fast multi-face tracker (detects up to 3 people simultaneously side-by-side)
    */
-  static detectFace(videoElement: HTMLVideoElement, width: number, height: number): FaceDetectionData {
+  static detectFaces(videoElement: HTMLVideoElement, width: number, height: number): FaceDetectionData[] {
     if (!videoElement || videoElement.readyState < 2 || !videoElement.videoWidth) {
-      return this.getDefaultFace(width, height);
+      return [this.getDefaultFace(width, height)];
     }
 
     try {
@@ -41,139 +40,150 @@ export class ARFilterService {
       offscreen.width = sampleW;
       offscreen.height = sampleH;
       const ctx = offscreen.getContext('2d', { willReadFrequently: true });
-      if (!ctx) return this.getDefaultFace(width, height);
+      if (!ctx) return [this.getDefaultFace(width, height)];
 
       ctx.drawImage(videoElement, 0, 0, sampleW, sampleH);
       const imgData = ctx.getImageData(0, 0, sampleW, sampleH);
       const data = imgData.data;
 
-      let minX = sampleW;
-      let maxX = 0;
-      let minY = sampleH;
-      let maxY = 0;
-      let skinCount = 0;
+      // Vertical column skin density histogram
+      const colDensity = new Int16Array(sampleW);
+      const minRowForCol = new Int16Array(sampleW).fill(sampleH);
+      const maxRowForCol = new Int16Array(sampleW).fill(0);
+      let totalSkin = 0;
 
-      // Find face skin bounding box
       for (let y = 10; y < sampleH - 10; y++) {
-        for (let x = 15; x < sampleW - 15; x++) {
+        for (let x = 12; x < sampleW - 12; x++) {
           const idx = (y * sampleW + x) * 4;
           const r = data[idx];
           const g = data[idx + 1];
           const b = data[idx + 2];
 
-          // Normalized skin color heuristic
           const isSkin = r > 70 && g > 35 && b > 20 && r > g && r > b && Math.abs(r - g) > 12;
           if (isSkin) {
-            skinCount++;
-            if (x < minX) minX = x;
-            if (x > maxX) maxX = x;
-            if (y < minY) minY = y;
-            if (y > maxY) maxY = y;
+            colDensity[x]++;
+            totalSkin++;
+            if (y < minRowForCol[x]) minRowForCol[x] = y;
+            if (y > maxRowForCol[x]) maxRowForCol[x] = y;
           }
         }
       }
 
       const totalPixels = sampleW * sampleH;
-      const isFacePresent = skinCount > totalPixels * 0.03 && maxX > minX && maxY > minY;
-
-      if (!isFacePresent) {
-        return this.getDefaultFace(width, height);
+      if (totalSkin < totalPixels * 0.02) {
+        return [this.getDefaultFace(width, height)];
       }
 
-      // Map sampled coords to target canvas dimensions
+      // Find horizontal clusters (segments of active skin columns)
+      interface Cluster {
+        startX: number;
+        endX: number;
+        minY: number;
+        maxY: number;
+        skinPixels: number;
+      }
+      const clusters: Cluster[] = [];
+      let inCluster = false;
+      let curStart = 0;
+      let curMinY = sampleH;
+      let curMaxY = 0;
+      let curPixels = 0;
+
+      for (let x = 12; x < sampleW - 12; x++) {
+        if (colDensity[x] >= 5) {
+          if (!inCluster) {
+            inCluster = true;
+            curStart = x;
+            curMinY = minRowForCol[x];
+            curMaxY = maxRowForCol[x];
+            curPixels = colDensity[x];
+          } else {
+            curPixels += colDensity[x];
+            if (minRowForCol[x] < curMinY) curMinY = minRowForCol[x];
+            if (maxRowForCol[x] > curMaxY) curMaxY = maxRowForCol[x];
+          }
+        } else {
+          // Check for small gap (<= 3 cols)
+          let gapFilled = false;
+          if (inCluster) {
+            for (let g = 1; g <= 3 && x + g < sampleW - 12; g++) {
+              if (colDensity[x + g] >= 5) {
+                gapFilled = true;
+                break;
+              }
+            }
+          }
+          if (!gapFilled && inCluster) {
+            inCluster = false;
+            const endX = x - 1;
+            if (curPixels > 30 && endX - curStart >= 8) {
+              clusters.push({ startX: curStart, endX, minY: curMinY, maxY: curMaxY, skinPixels: curPixels });
+            }
+          }
+        }
+      }
+      if (inCluster && curPixels > 30) {
+        clusters.push({ startX: curStart, endX: sampleW - 13, minY: curMinY, maxY: curMaxY, skinPixels: curPixels });
+      }
+
+      // If one cluster is very wide (> 55px), split into 2 people posing close together
+      const finalClusters: Cluster[] = [];
+      for (const cl of clusters) {
+        const span = cl.endX - cl.startX;
+        if (span >= 55) {
+          const mid = Math.round((cl.startX + cl.endX) / 2);
+          finalClusters.push({ ...cl, endX: mid });
+          finalClusters.push({ ...cl, startX: mid + 1 });
+        } else {
+          finalClusters.push(cl);
+        }
+      }
+
+      if (finalClusters.length === 0) {
+        return [this.getDefaultFace(width, height)];
+      }
+
+      // Map up to 3 clusters to FaceDetectionData
       const scaleX = width / sampleW;
       const scaleY = height / sampleH;
 
-      const rawBox = {
-        x: minX * scaleX,
-        y: minY * scaleY,
-        width: Math.max(width * 0.35, (maxX - minX) * scaleX),
-        height: Math.max(height * 0.45, (maxY - minY) * scaleY),
-      };
+      const detectedFaces: FaceDetectionData[] = finalClusters.slice(0, 3).map((cl) => {
+        const rawBox = {
+          x: cl.startX * scaleX,
+          y: cl.minY * scaleY,
+          width: Math.max(width * 0.28, (cl.endX - cl.startX) * scaleX),
+          height: Math.max(height * 0.38, (cl.maxY - cl.minY) * scaleY),
+        };
 
-      const centerX = rawBox.x + rawBox.width / 2;
-      const centerY = rawBox.y + rawBox.height / 2;
+        const centerX = rawBox.x + rawBox.width / 2;
+        const centerY = rawBox.y + rawBox.height / 2;
 
-      // Compute facial landmarks based on human head proportions
-      const leftEye = { x: centerX - rawBox.width * 0.22, y: centerY - rawBox.height * 0.14 };
-      const rightEye = { x: centerX + rawBox.width * 0.22, y: centerY - rawBox.height * 0.14 };
-      const forehead = { x: centerX, y: rawBox.y + rawBox.height * 0.08 };
-      const nose = { x: centerX, y: centerY + rawBox.height * 0.05 };
-      const mouth = { x: centerX, y: centerY + rawBox.height * 0.26 };
-      const leftCheek = { x: centerX - rawBox.width * 0.28, y: centerY + rawBox.height * 0.10 };
-      const rightCheek = { x: centerX + rawBox.width * 0.28, y: centerY + rawBox.height * 0.10 };
-
-      // Smile heuristic based on cheek brightness & width expansion
-      const isSmiling = rawBox.width / rawBox.height > 0.72;
-
-      const currentFace: FaceDetectionData = {
-        hasFace: true,
-        box: rawBox,
-        leftEye,
-        rightEye,
-        nose,
-        mouth,
-        leftCheek,
-        rightCheek,
-        forehead,
-        isSmiling,
-        tiltAngle: 0,
-      };
-
-      // Smooth jitter with Linear Interpolation (lerp)
-      if (!this.lastSmoothedFace) {
-        this.lastSmoothedFace = currentFace;
-      } else {
-        const lerpFactor = 0.35;
-        this.lastSmoothedFace = {
+        return {
           hasFace: true,
-          box: {
-            x: this.lerp(this.lastSmoothedFace.box.x, currentFace.box.x, lerpFactor),
-            y: this.lerp(this.lastSmoothedFace.box.y, currentFace.box.y, lerpFactor),
-            width: this.lerp(this.lastSmoothedFace.box.width, currentFace.box.width, lerpFactor),
-            height: this.lerp(this.lastSmoothedFace.box.height, currentFace.box.height, lerpFactor),
-          },
-          leftEye: {
-            x: this.lerp(this.lastSmoothedFace.leftEye.x, currentFace.leftEye.x, lerpFactor),
-            y: this.lerp(this.lastSmoothedFace.leftEye.y, currentFace.leftEye.y, lerpFactor),
-          },
-          rightEye: {
-            x: this.lerp(this.lastSmoothedFace.rightEye.x, currentFace.rightEye.x, lerpFactor),
-            y: this.lerp(this.lastSmoothedFace.rightEye.y, currentFace.rightEye.y, lerpFactor),
-          },
-          nose: {
-            x: this.lerp(this.lastSmoothedFace.nose.x, currentFace.nose.x, lerpFactor),
-            y: this.lerp(this.lastSmoothedFace.nose.y, currentFace.nose.y, lerpFactor),
-          },
-          mouth: {
-            x: this.lerp(this.lastSmoothedFace.mouth.x, currentFace.mouth.x, lerpFactor),
-            y: this.lerp(this.lastSmoothedFace.mouth.y, currentFace.mouth.y, lerpFactor),
-          },
-          leftCheek: {
-            x: this.lerp(this.lastSmoothedFace.leftCheek.x, currentFace.leftCheek.x, lerpFactor),
-            y: this.lerp(this.lastSmoothedFace.leftCheek.y, currentFace.leftCheek.y, lerpFactor),
-          },
-          rightCheek: {
-            x: this.lerp(this.lastSmoothedFace.rightCheek.x, currentFace.rightCheek.x, lerpFactor),
-            y: this.lerp(this.lastSmoothedFace.rightCheek.y, currentFace.rightCheek.y, lerpFactor),
-          },
-          forehead: {
-            x: this.lerp(this.lastSmoothedFace.forehead.x, currentFace.forehead.x, lerpFactor),
-            y: this.lerp(this.lastSmoothedFace.forehead.y, currentFace.forehead.y, lerpFactor),
-          },
-          isSmiling,
+          box: rawBox,
+          leftEye: { x: centerX - rawBox.width * 0.22, y: centerY - rawBox.height * 0.14 },
+          rightEye: { x: centerX + rawBox.width * 0.22, y: centerY - rawBox.height * 0.14 },
+          forehead: { x: centerX, y: rawBox.y + rawBox.height * 0.08 },
+          nose: { x: centerX, y: centerY + rawBox.height * 0.05 },
+          mouth: { x: centerX, y: centerY + rawBox.height * 0.26 },
+          leftCheek: { x: centerX - rawBox.width * 0.28, y: centerY + rawBox.height * 0.10 },
+          rightCheek: { x: centerX + rawBox.width * 0.28, y: centerY + rawBox.height * 0.10 },
+          isSmiling: rawBox.width / rawBox.height > 0.72,
           tiltAngle: 0,
         };
-      }
+      });
 
-      return this.lastSmoothedFace;
+      return detectedFaces;
     } catch {
-      return this.getDefaultFace(width, height);
+      return [this.getDefaultFace(width, height)];
     }
   }
 
-  private static lerp(start: number, end: number, factor: number): number {
-    return start + (end - start) * factor;
+  /**
+   * Fast single-face tracker fallback
+   */
+  static detectFace(videoElement: HTMLVideoElement, width: number, height: number): FaceDetectionData {
+    return this.detectFaces(videoElement, width, height)[0];
   }
 
   private static getDefaultFace(width: number, height: number): FaceDetectionData {
@@ -216,7 +226,7 @@ export class ARFilterService {
 
     ctx.clearRect(0, 0, width, height);
 
-    const face = this.detectFace(videoElement, width, height);
+    const faces = this.detectFaces(videoElement, width, height);
 
     ctx.save();
     if (mirror) {
@@ -224,36 +234,37 @@ export class ARFilterService {
       ctx.scale(-1, 1);
     }
 
-    // --- 1. BEAUTY GLOW & SOFT PINK BLUSH (Always active in beauty or prop modes) ---
-    this.drawCheekBlush(ctx, face.leftCheek.x, face.leftCheek.y, face.box.width * 0.18);
-    this.drawCheekBlush(ctx, face.rightCheek.x, face.rightCheek.y, face.box.width * 0.18);
+    faces.forEach((face) => {
+      // --- 1. BEAUTY GLOW & SOFT PINK BLUSH (Active on all detected faces) ---
+      this.drawCheekBlush(ctx, face.leftCheek.x, face.leftCheek.y, face.box.width * 0.18);
+      this.drawCheekBlush(ctx, face.rightCheek.x, face.rightCheek.y, face.box.width * 0.18);
 
-    // --- 2. SPECIFIC AR PROPS RENDERING ---
-    switch (activeFilter) {
-      case 'bunny':
-        this.drawBunnyEars(ctx, face);
-        break;
-      case 'cat':
-        this.drawCatEars(ctx, face);
-        break;
-      case 'y2k':
-        this.drawY2KShades(ctx, face);
-        break;
-      case 'angel':
-        this.drawAngelHalo(ctx, face);
-        break;
-      case 'sparkles':
-        this.drawSparkles(ctx, face);
-        break;
-      case 'hearts':
-        this.drawFloatingHearts(ctx, face);
-        break;
-      case 'beauty':
-      default:
-        // Beauty already has cheek blush + subtle chin sparkle
-        this.drawStar(ctx, face.rightCheek.x + face.box.width * 0.12, face.rightCheek.y - 10, 10, 'rgba(255, 255, 255, 0.8)');
-        break;
-    }
+      // --- 2. SPECIFIC AR PROPS RENDERING FOR EACH PERSON ---
+      switch (activeFilter) {
+        case 'bunny':
+          this.drawBunnyEars(ctx, face);
+          break;
+        case 'cat':
+          this.drawCatEars(ctx, face);
+          break;
+        case 'y2k':
+          this.drawY2KShades(ctx, face);
+          break;
+        case 'angel':
+          this.drawAngelHalo(ctx, face);
+          break;
+        case 'sparkles':
+          this.drawSparkles(ctx, face);
+          break;
+        case 'hearts':
+          this.drawFloatingHearts(ctx, face);
+          break;
+        case 'beauty':
+        default:
+          this.drawStar(ctx, face.rightCheek.x + face.box.width * 0.12, face.rightCheek.y - 10, 10, 'rgba(255, 255, 255, 0.8)');
+          break;
+      }
+    });
 
     ctx.restore();
   }

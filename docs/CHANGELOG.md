@@ -1,3 +1,27 @@
+## [1.6.0] - 2026-09-17 (Digital Ring Light, 3D Hologram Foil Tilt, Multi-Face AR & Photo Tray Comparison)
+
+### Added & Enhanced
+- **Digital Ring Light / Virtual Softbox Face Illumination (`CameraView.tsx`):**
+  - Integrated on-screen virtual softbox lighting for low-light and dim environments.
+  - 3 adjustable light tone presets: Studio White (`studio`, 5500K daylight), Warm Glow (`warm`, 3200K golden hour), and Soft Pink (`soft-pink`, pastel beauty illumination).
+  - High-intensity screen perimeter luminescence with inner diffuse glow (`inset 0 0 50px`) and outer bloom (`0 0 80px`), brightening users' faces directly via monitor/phone screen emission without harsh glare.
+- **Dynamic 3D Hologram Foil Tilt with Gyroscope & Mouse Movement (`FinalPreviewView.tsx`):**
+  - Interactive K-Pop collectible photocard foil reflection effect.
+  - Desktop: tracks cursor movement across the canvas to calculate real-time 3D perspective pitch and roll (`rotateX`, `rotateY`).
+  - Mobile: integrates `deviceorientation` sensor (gyroscope `gamma` and `beta` angles) for physical tilt interaction.
+  - Dynamic iridescent rainbow radial light beam with color-dodge blending and specular gloss flare that moves realistically as the card tilts.
+  - Dedicated "✨ Efek Holo Foil: ON/OFF" toggle button.
+- **Multi-Face AR Props & Cheek Blush Detection (`arFilterService.ts`):**
+  - Upgraded real-time facial feature engine with skin-column histogram clustering (`detectFaces()`).
+  - Capable of simultaneously detecting up to 3 faces in group photobooth shots at 60 FPS zero-lag.
+  - Renders cheek blush and AR stickers (cat ears, bunny ears, sunglasses, angel halo) across all detected subjects concurrently.
+- **Photo Tray Drawer & Side-by-Side Strip Comparison (`App.tsx`, `FinalPreviewView.tsx`):**
+  - Session strip history drawer saving up to 4 rendered photo strip variations.
+  - "Coba Bingkai Lain (Gunakan Foto Ini)" flow: allows instant re-framing with existing captured photos in 1 click without needing to retake photos.
+  - Side-by-Side Comparison modal: inspect two different frame styles (Strip A vs Strip B) simultaneously, with instant selection and download of either version.
+- **Centralized Version Bump (`appConfig.ts`):**
+  - Version updated to `v1.6.0 (Aesthetic Studio & Hologram Edition)`.
+
 ## [1.5.0] - 2026-09-17 (Standby Mirror Mode, Slot-by-Slot Retake, Real-Time Feedback Key, Studio Backdrops, Tactile Textures & Vivid GIF)
 
 ### Added & Enhanced

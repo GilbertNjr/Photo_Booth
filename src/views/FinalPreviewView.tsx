@@ -8,6 +8,7 @@ import { GifRecorderService } from '../services/gif/gifRecorderService';
 import { SessionMetricsService } from '../services/analytics/sessionMetricsService';
 import type { CloudUploadResponse } from '../services/cloud/cloudStorageService';
 import type { PrintLayoutType } from '../services/printing/printService';
+import type { SavedSessionStrip } from '../App';
 import {
   Download,
   Printer,
@@ -23,6 +24,9 @@ import {
 interface FinalPreviewViewProps {
   finalImageDataUrl: string;
   selectedFilter?: string;
+  sessionStrips?: SavedSessionStrip[];
+  onSelectStripFromTray?: (strip: SavedSessionStrip) => void;
+  onTryAnotherFrame?: () => void;
   onEditCustomization: () => void;
   onNewSession: () => void;
 }
@@ -30,6 +34,9 @@ interface FinalPreviewViewProps {
 export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
   finalImageDataUrl,
   selectedFilter,
+  sessionStrips = [],
+  onSelectStripFromTray,
+  onTryAnotherFrame,
   onEditCustomization,
   onNewSession,
 }) => {
@@ -38,6 +45,20 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
   const [selectedPrintLayout, setSelectedPrintLayout] = useState<PrintLayoutType>('4x6');
   const [copiedLink, setCopiedLink] = useState(false);
   const [cloudData, setCloudData] = useState<CloudUploadResponse | null>(null);
+
+  // 3D Hologram K-Pop Photocard Foil State
+  const [isHoloFoilActive, setIsHoloFoilActive] = useState<boolean>(true);
+  const [tilt, setTilt] = useState<{ rx: number; ry: number; shineX: number; shineY: number }>({
+    rx: 0,
+    ry: 0,
+    shineX: 50,
+    shineY: 50,
+  });
+
+  // Photo Tray Side-by-Side Comparison Modal State
+  const [isComparisonModalOpen, setIsComparisonModalOpen] = useState(false);
+  const [compareIndexA, setCompareIndexA] = useState<number>(0);
+  const [compareIndexB, setCompareIndexB] = useState<number>(1);
 
   // View Mode: Static Print Photo Strip vs Animated Live Motion Boomerang
   const [previewMode, setPreviewMode] = useState<'photo' | 'gif'>('photo');
@@ -54,6 +75,40 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
     const loop = GifRecorderService.generateBoomerangLoop();
     setBoomerangFrames(loop);
   }, []);
+
+  // DeviceOrientation Gyroscope Tilt for Mobile Devices
+  useEffect(() => {
+    if (!isHoloFoilActive || previewMode === 'gif') return;
+
+    const handleOrientation = (e: DeviceOrientationEvent) => {
+      if (e.gamma !== null && e.beta !== null) {
+        const ry = Math.max(-14, Math.min(14, (e.gamma / 45) * 14));
+        const rx = Math.max(-14, Math.min(14, ((e.beta - 45) / 45) * 14));
+        const shineX = 50 + (ry / 14) * 40;
+        const shineY = 50 + (rx / 14) * 40;
+        setTilt({ rx, ry, shineX, shineY });
+      }
+    };
+
+    window.addEventListener('deviceorientation', handleOrientation, { passive: true });
+    return () => window.removeEventListener('deviceorientation', handleOrientation);
+  }, [isHoloFoilActive, previewMode]);
+
+  const handleViewportMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (!isHoloFoilActive || previewMode === 'gif') return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    const rx = -((y - rect.height / 2) / (rect.height / 2)) * 14;
+    const ry = ((x - rect.width / 2) / (rect.width / 2)) * 14;
+    const shineX = (x / rect.width) * 100;
+    const shineY = (y / rect.height) * 100;
+    setTilt({ rx, ry, shineX, shineY });
+  };
+
+  const handleViewportMouseLeave = () => {
+    setTilt({ rx: 0, ry: 0, shineX: 50, shineY: 50 });
+  };
 
   // Animate boomerang loop when previewMode === 'gif'
   useEffect(() => {
@@ -196,8 +251,8 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
           </button>
         </div>
 
-        {/* Dual Mode Switcher: Static Print vs Boomerang GIF */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', margin: '0.4rem 0 0.5rem' }}>
+        {/* Dual Mode Switcher: Static Print vs Boomerang GIF & 3D Hologram Toggle */}
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', margin: '0.4rem 0 0.5rem', flexWrap: 'wrap' }}>
           <button
             type="button"
             onClick={() => setPreviewMode('photo')}
@@ -244,6 +299,32 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
             <span>Live Motion (GIF) 🎬</span>
             <span style={{ fontSize: '0.62rem', background: '#FF7597', color: '#fff', padding: '0.1rem 0.35rem', borderRadius: '4px' }}>NEW</span>
           </button>
+
+          {previewMode === 'photo' && (
+            <button
+              type="button"
+              onClick={() => setIsHoloFoilActive((p) => !p)}
+              style={{
+                padding: '0.35rem 0.85rem',
+                borderRadius: '9999px',
+                border: isHoloFoilActive ? '1.5px solid #EC4899' : '1px solid var(--color-border)',
+                background: isHoloFoilActive ? 'linear-gradient(135deg, #FFF1F2 0%, #F5F3FF 100%)' : '#ffffff',
+                color: isHoloFoilActive ? '#9D174D' : 'var(--color-neutral-sub)',
+                fontSize: '0.76rem',
+                fontWeight: 800,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.35rem',
+                boxShadow: isHoloFoilActive ? '0 0 12px rgba(236, 72, 153, 0.25)' : 'none',
+                transition: 'all 0.2s ease',
+              }}
+              title="Aktifkan efek kilau hologram 3D saat HP atau mouse digerakkan"
+            >
+              <span>🌈 Hologram Foil:</span>
+              <span style={{ color: isHoloFoilActive ? '#BE185D' : '#9CA3AF' }}>{isHoloFoilActive ? 'ON' : 'OFF'}</span>
+            </button>
+          )}
         </div>
 
         {/* Format Selector Pill Switcher for Print Photo */}
@@ -299,24 +380,79 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
           </div>
         )}
 
-        {/* Center Viewport Container */}
-        <div className="camera-mockup-viewport-wrapper" style={{ position: 'relative', aspectRatio: 'auto', height: 'clamp(300px, 46vh, 460px)', padding: '0.25rem', background: 'transparent', display: 'flex', alignItems: 'center', justifyContent: 'center', overflow: 'hidden', minWidth: 0, minHeight: 0, touchAction: 'pan-y', margin: '0 auto' }}>
+        {/* Center Viewport Container with Interactive 3D Tilt */}
+        <div
+          className="camera-mockup-viewport-wrapper"
+          onMouseMove={handleViewportMouseMove}
+          onMouseLeave={handleViewportMouseLeave}
+          style={{
+            position: 'relative',
+            aspectRatio: 'auto',
+            height: 'clamp(300px, 46vh, 460px)',
+            padding: '0.25rem',
+            background: 'transparent',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            overflow: 'visible',
+            minWidth: 0,
+            minHeight: 0,
+            touchAction: 'pan-y',
+            margin: '0 auto',
+            perspective: '1000px',
+          }}
+        >
           {previewMode === 'photo' ? (
-            <img
-              src={exportFormat === 'double' && doubleStripUrl ? doubleStripUrl : finalImageDataUrl}
-              alt="Hasil Akhir Frame PNG"
+            <div
               style={{
+                position: 'relative',
                 maxHeight: '100%',
                 maxWidth: '100%',
-                width: 'auto',
-                height: 'auto',
-                objectFit: 'contain',
-                display: 'block',
-                margin: '0 auto',
-                borderRadius: '16px',
-                boxShadow: '0 16px 40px rgba(122, 28, 40, 0.18), 0 4px 12px rgba(0,0,0,0.06)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                transform: isHoloFoilActive
+                  ? `perspective(1000px) rotateX(${tilt.rx}deg) rotateY(${tilt.ry}deg) scale3d(1.02, 1.02, 1.02)`
+                  : 'none',
+                transition: 'transform 0.08s ease-out',
+                transformStyle: 'preserve-3d',
               }}
-            />
+            >
+              <img
+                src={exportFormat === 'double' && doubleStripUrl ? doubleStripUrl : finalImageDataUrl}
+                alt="Hasil Akhir Frame PNG"
+                style={{
+                  maxHeight: 'clamp(280px, 44vh, 440px)',
+                  maxWidth: '100%',
+                  width: 'auto',
+                  height: 'auto',
+                  objectFit: 'contain',
+                  display: 'block',
+                  margin: '0 auto',
+                  borderRadius: '16px',
+                  boxShadow: isHoloFoilActive
+                    ? '0 20px 50px rgba(236, 72, 153, 0.25), 0 8px 24px rgba(0,0,0,0.12)'
+                    : '0 16px 40px rgba(122, 28, 40, 0.18), 0 4px 12px rgba(0,0,0,0.06)',
+                }}
+              />
+
+              {/* 🌈 Dynamic 3D Iridescent Hologram Foil Overlay */}
+              {isHoloFoilActive && (
+                <div
+                  style={{
+                    position: 'absolute',
+                    inset: 0,
+                    borderRadius: '16px',
+                    pointerEvents: 'none',
+                    background: `radial-gradient(circle at ${tilt.shineX}% ${tilt.shineY}%, rgba(255, 255, 255, 0.55) 0%, rgba(255, 182, 193, 0.35) 25%, rgba(186, 230, 253, 0.35) 50%, rgba(254, 240, 138, 0.3) 75%, transparent 100%)`,
+                    mixBlendMode: 'color-dodge',
+                    opacity: 0.82,
+                    zIndex: 10,
+                    transition: 'opacity 0.2s ease',
+                  }}
+                />
+              )}
+            </div>
           ) : (
             <div style={{ position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', width: '100%' }}>
               {boomerangFrames.length > 0 ? (
@@ -525,6 +661,109 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
               <span>Foto Lagi</span>
             </button>
           </div>
+
+          {/* 🗂️ Photo Tray: Baki Foto Sesi Ini (Ganti Bingkai Tanpa Foto Ulang) */}
+          {sessionStrips && sessionStrips.length > 0 && (
+            <div
+              style={{
+                background: '#FAF5EF',
+                borderRadius: '16px',
+                border: '1.5px solid #E5D5C5',
+                padding: '0.85rem',
+                marginTop: '0.5rem',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '0.65rem',
+              }}
+            >
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ fontSize: '0.82rem', fontWeight: 800, color: '#4A3324', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+                  <span>🗂️</span>
+                  <span>Baki Foto Sesi Ini ({sessionStrips.length} Koleksi)</span>
+                </div>
+
+                {sessionStrips.length >= 2 && (
+                  <button
+                    type="button"
+                    onClick={() => {
+                      setCompareIndexA(0);
+                      setCompareIndexB(sessionStrips.length - 1);
+                      setIsComparisonModalOpen(true);
+                    }}
+                    style={{
+                      fontSize: '0.74rem',
+                      fontWeight: 800,
+                      color: 'var(--color-burgundy-deep)',
+                      background: '#FFFFFF',
+                      border: '1px solid var(--color-border)',
+                      borderRadius: '9999px',
+                      padding: '0.2rem 0.65rem',
+                      cursor: 'pointer',
+                    }}
+                  >
+                    🔍 Bandingkan
+                  </button>
+                )}
+              </div>
+
+              {/* Horizontal Thumbnails */}
+              <div style={{ display: 'flex', gap: '0.65rem', overflowX: 'auto', paddingBottom: '0.2rem' }}>
+                {sessionStrips.map((strip, idx) => {
+                  const isCurrent = strip.dataUrl === finalImageDataUrl;
+                  return (
+                    <div
+                      key={strip.id}
+                      onClick={() => onSelectStripFromTray?.(strip)}
+                      style={{
+                        flex: '0 0 auto',
+                        cursor: 'pointer',
+                        borderRadius: '10px',
+                        padding: '3px',
+                        border: isCurrent ? '2px solid var(--color-burgundy-deep)' : '1px solid #D8C8B8',
+                        background: isCurrent ? '#FFFFFF' : '#F5EFE6',
+                        transition: 'all 0.2s ease',
+                        textAlign: 'center',
+                      }}
+                      title="Klik untuk pratinjau strip ini"
+                    >
+                      <img
+                        src={strip.dataUrl}
+                        alt={`Strip #${idx + 1}`}
+                        style={{ width: '48px', height: '72px', objectFit: 'contain', borderRadius: '6px', display: 'block' }}
+                      />
+                      <span style={{ fontSize: '0.65rem', fontWeight: 700, color: '#4A3324', display: 'block', marginTop: '2px' }}>
+                        #{idx + 1}
+                      </span>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Action Button: Coba Bingkai Lain Menggunakan Foto yang Sama */}
+              {onTryAnotherFrame && (
+                <button
+                  type="button"
+                  onClick={onTryAnotherFrame}
+                  style={{
+                    background: '#FFFFFF',
+                    border: '1.5px dashed var(--color-burgundy-deep)',
+                    color: 'var(--color-burgundy-deep)',
+                    borderRadius: '10px',
+                    padding: '0.55rem',
+                    fontSize: '0.8rem',
+                    fontWeight: 800,
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    gap: '0.4rem',
+                  }}
+                >
+                  <span>🎨 Coba Bingkai Lain (Gunakan Foto Ini)</span>
+                </button>
+              )}
+            </div>
+          )}
         </div>
       </div>
 
@@ -795,6 +1034,161 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
           </div>
         </div>
       </Modal>
+
+      {/* 🔍 Side-by-Side Comparison Modal */}
+      {isComparisonModalOpen && sessionStrips.length >= 2 && (
+        <Modal isOpen={isComparisonModalOpen} onClose={() => setIsComparisonModalOpen(false)} title="🔍 Bandingkan Hasil Strip Foto">
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+            <p style={{ color: 'var(--color-neutral-sub)', fontSize: '0.86rem', textAlign: 'center', margin: 0 }}>
+              Pilih 2 variasi strip foto dari baki sesi untuk dibandingkan berdampingan:
+            </p>
+
+            {/* Selectors for Strip A and Strip B */}
+            <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: 1 }}>
+                <label style={{ fontSize: '0.75rem', fontWeight: 800, color: '#4A3324' }}>STRIP A:</label>
+                <select
+                  value={compareIndexA}
+                  onChange={(e) => setCompareIndexA(Number(e.target.value))}
+                  style={{
+                    padding: '0.4rem',
+                    borderRadius: '8px',
+                    border: '1px solid var(--color-border)',
+                    fontSize: '0.8rem',
+                    fontWeight: 700,
+                  }}
+                >
+                  {sessionStrips.map((s, i) => (
+                    <option key={s.id} value={i}>
+                      #{i + 1} - {s.templateName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '0.25rem', flex: 1 }}>
+                <label style={{ fontSize: '0.75rem', fontWeight: 800, color: '#4A3324' }}>STRIP B:</label>
+                <select
+                  value={compareIndexB}
+                  onChange={(e) => setCompareIndexB(Number(e.target.value))}
+                  style={{
+                    padding: '0.4rem',
+                    borderRadius: '8px',
+                    border: '1px solid var(--color-border)',
+                    fontSize: '0.8rem',
+                    fontWeight: 700,
+                  }}
+                >
+                  {sessionStrips.map((s, i) => (
+                    <option key={s.id} value={i}>
+                      #{i + 1} - {s.templateName}
+                    </option>
+                  ))}
+                </select>
+              </div>
+            </div>
+
+            {/* Side by Side Display Container */}
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: 'repeat(2, 1fr)',
+                gap: '1rem',
+                alignItems: 'center',
+                justifyContent: 'center',
+                background: '#F9FAFB',
+                padding: '1rem',
+                borderRadius: '16px',
+                border: '1px solid #E5E7EB',
+              }}
+            >
+              {/* Strip A */}
+              {sessionStrips[compareIndexA] && (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{ fontSize: '0.76rem', fontWeight: 800, color: 'var(--color-burgundy-deep)' }}>
+                    Pilihan A (#{compareIndexA + 1})
+                  </div>
+                  <img
+                    src={sessionStrips[compareIndexA].dataUrl}
+                    alt="Strip A"
+                    style={{
+                      maxHeight: '280px',
+                      maxWidth: '100%',
+                      objectFit: 'contain',
+                      borderRadius: '10px',
+                      boxShadow: '0 8px 20px rgba(0,0,0,0.12)',
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onSelectStripFromTray?.(sessionStrips[compareIndexA]);
+                      setIsComparisonModalOpen(false);
+                    }}
+                    style={{
+                      background: 'var(--color-burgundy-deep)',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '0.35rem 0.75rem',
+                      fontSize: '0.74rem',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    ✓ Pilih Strip Ini
+                  </button>
+                </div>
+              )}
+
+              {/* Strip B */}
+              {sessionStrips[compareIndexB] && (
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '0.5rem' }}>
+                  <div style={{ fontSize: '0.76rem', fontWeight: 800, color: 'var(--color-burgundy-deep)' }}>
+                    Pilihan B (#{compareIndexB + 1})
+                  </div>
+                  <img
+                    src={sessionStrips[compareIndexB].dataUrl}
+                    alt="Strip B"
+                    style={{
+                      maxHeight: '280px',
+                      maxWidth: '100%',
+                      objectFit: 'contain',
+                      borderRadius: '10px',
+                      boxShadow: '0 8px 20px rgba(0,0,0,0.12)',
+                    }}
+                  />
+                  <button
+                    type="button"
+                    onClick={() => {
+                      onSelectStripFromTray?.(sessionStrips[compareIndexB]);
+                      setIsComparisonModalOpen(false);
+                    }}
+                    style={{
+                      background: 'var(--color-burgundy-deep)',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: '8px',
+                      padding: '0.35rem 0.75rem',
+                      fontSize: '0.74rem',
+                      fontWeight: 800,
+                      cursor: 'pointer',
+                    }}
+                  >
+                    ✓ Pilih Strip Ini
+                  </button>
+                </div>
+              )}
+            </div>
+
+            <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '0.5rem' }}>
+              <Button variant="secondary" onClick={() => setIsComparisonModalOpen(false)}>
+                Tutup
+              </Button>
+            </div>
+          </div>
+        </Modal>
+      )}
     </div>
   );
 };
