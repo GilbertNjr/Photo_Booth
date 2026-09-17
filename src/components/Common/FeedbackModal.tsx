@@ -336,14 +336,26 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                   width: '100%',
                   padding: '0.75rem',
                   borderRadius: '12px',
-                  border: '1.5px solid #E5E7EB',
-                  fontSize: '0.86rem',
+                  border: '1.5px solid #D1D5DB',
+                  fontSize: '0.88rem',
                   fontFamily: 'inherit',
                   resize: 'vertical',
                   boxSizing: 'border-box',
                   outline: 'none',
-                  background: '#FAFAFA',
-                  transition: 'border-color 0.2s ease',
+                  background: '#FFFFFF',
+                  color: '#111827',
+                  fontWeight: 500,
+                  lineHeight: 1.5,
+                  boxShadow: 'inset 0 1px 2px rgba(0,0,0,0.04)',
+                  transition: 'border-color 0.2s ease, box-shadow 0.2s ease',
+                }}
+                onFocus={(e) => {
+                  e.currentTarget.style.borderColor = '#800020';
+                  e.currentTarget.style.boxShadow = '0 0 0 3px rgba(128, 0, 32, 0.12)';
+                }}
+                onBlur={(e) => {
+                  e.currentTarget.style.borderColor = '#D1D5DB';
+                  e.currentTarget.style.boxShadow = 'inset 0 1px 2px rgba(0,0,0,0.04)';
                 }}
               />
             </div>
@@ -361,12 +373,21 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                   placeholder="Contoh: Sarah"
                   style={{
                     width: '100%',
-                    padding: '0.6rem 0.75rem',
+                    padding: '0.65rem 0.75rem',
                     borderRadius: '10px',
-                    border: '1px solid #E5E7EB',
+                    border: '1px solid #D1D5DB',
                     fontSize: '0.84rem',
                     boxSizing: 'border-box',
-                    background: '#FAFAFA',
+                    background: '#FFFFFF',
+                    color: '#111827',
+                    fontWeight: 500,
+                    outline: 'none',
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = '#800020';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = '#D1D5DB';
                   }}
                 />
               </div>
@@ -382,12 +403,21 @@ export const FeedbackModal: React.FC<FeedbackModalProps> = ({ isOpen, onClose })
                   placeholder="Jika ingin dibalas"
                   style={{
                     width: '100%',
-                    padding: '0.6rem 0.75rem',
+                    padding: '0.65rem 0.75rem',
                     borderRadius: '10px',
-                    border: '1px solid #E5E7EB',
+                    border: '1px solid #D1D5DB',
                     fontSize: '0.84rem',
                     boxSizing: 'border-box',
-                    background: '#FAFAFA',
+                    background: '#FFFFFF',
+                    color: '#111827',
+                    fontWeight: 500,
+                    outline: 'none',
+                  }}
+                  onFocus={(e) => {
+                    e.currentTarget.style.borderColor = '#800020';
+                  }}
+                  onBlur={(e) => {
+                    e.currentTarget.style.borderColor = '#D1D5DB';
                   }}
                 />
               </div>

@@ -52,7 +52,8 @@ export class GifRecorderService {
     frames: string[],
     targetWidth: number = 280,
     targetHeight: number = 420,
-    fps: number = 8
+    fps: number = 8,
+    filterCss?: string
   ): Promise<Blob> {
     if (frames.length === 0) {
       throw new Error('No frames recorded to encode GIF');
@@ -110,10 +111,18 @@ export class GifRecorderService {
     // 4. Encode each frame
     for (const img of images) {
       ctx.clearRect(0, 0, targetWidth, targetHeight);
+
+      // Apply vibrant brightness and photo filter compensation
+      ctx.filter = filterCss
+        ? `${filterCss} brightness(1.10) saturate(1.15)`
+        : 'brightness(1.10) contrast(1.05) saturate(1.15)';
+
       ctx.drawImage(img, 0, 0, targetWidth, targetHeight);
+      ctx.filter = 'none';
+
       const imgData = ctx.getImageData(0, 0, targetWidth, targetHeight);
 
-      // Quantize to 64 color palette
+      // Quantize to 64 color palette with closest match
       const { indexedPixels, palette } = this.quantize64(imgData.data, targetWidth * targetHeight);
 
       // Graphic Control Extension
@@ -171,18 +180,35 @@ export class GifRecorderService {
 
     for (let i = 0; i < pixelCount; i++) {
       const idx = i * 4;
-      // Quantize 8-bit RGB to 6-bit (reduce color depth for fast matching)
-      const r = rgbaData[idx] & 0b11100000;
-      const g = rgbaData[idx + 1] & 0b11100000;
-      const b = rgbaData[idx + 2] & 0b11000000;
+      const rVal = rgbaData[idx];
+      const gVal = rgbaData[idx + 1];
+      const bVal = rgbaData[idx + 2];
+
+      // Quantize key
+      const r = rVal & 0b11100000;
+      const g = gVal & 0b11100000;
+      const b = bVal & 0b11000000;
       const key = (r << 8) | (g << 2) | (b >> 4);
 
       if (colorMap[key] === undefined) {
         if (palette.length < 64) {
           colorMap[key] = palette.length;
-          palette.push([rgbaData[idx], rgbaData[idx + 1], rgbaData[idx + 2]]);
+          palette.push([rVal, gVal, bVal]);
         } else {
-          colorMap[key] = 0; // Nearest fallback
+          // Find closest color match in current palette instead of black fallback
+          let bestDist = Infinity;
+          let bestIdx = 0;
+          for (let p = 0; p < palette.length; p++) {
+            const dr = rVal - palette[p][0];
+            const dg = gVal - palette[p][1];
+            const db = bVal - palette[p][2];
+            const dist = dr * dr + dg * dg + db * db;
+            if (dist < bestDist) {
+              bestDist = dist;
+              bestIdx = p;
+            }
+          }
+          colorMap[key] = bestIdx;
         }
       }
       indexedPixels[i] = colorMap[key];

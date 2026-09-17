@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Download, Eye, EyeOff, Plus, Minus, RotateCw, Check, ArrowLeft, Maximize2, Trash2, Copy } from 'lucide-react';
+import { Download, Eye, EyeOff, Plus, Minus, RotateCw, Check, ArrowLeft, Maximize2, Trash2, Copy, Upload } from 'lucide-react';
 import type { TemplateData, PaperTextureType, GridAspectRatio } from '../types/template';
 import type { PhotoFilterType, PlacedSticker } from '../types/editor';
 import { FilterPicker } from '../components/PhotoEditor/FilterPicker';
@@ -14,7 +14,7 @@ interface CustomizeViewProps {
   template: TemplateData;
   capturedPhotos: string[];
   onBackToCamera: () => void;
-  onApplyCustomization: (finalImageDataUrl: string) => void;
+  onApplyCustomization: (finalImageDataUrl: string, selectedFilter?: PhotoFilterType) => void;
 }
 
 export const CustomizeView: React.FC<CustomizeViewProps> = ({
@@ -30,6 +30,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
   const [selectedFilter, setSelectedFilter] = useState<PhotoFilterType>('original');
   const [backgroundColor, setBackgroundColor] = useState<string>(template.backgroundColor);
   const [backgroundTexture, setBackgroundTexture] = useState<PaperTextureType>(template.backgroundTexture || 'none');
+  const [customBackdropUrl, setCustomBackdropUrl] = useState<string | undefined>(template.customBackdropUrl);
   const [customTexts, setCustomTexts] = useState<Record<string, string>>({});
   const [customBottomText, setCustomBottomText] = useState<string>('2026.09.15 • PHOTO BOOTH STUDIO');
   const [placedStickers, setPlacedStickers] = useState<PlacedSticker[]>([]);
@@ -92,6 +93,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
         filter: selectedFilter,
         backgroundColor,
         backgroundTexture,
+        customBackdropUrl,
         customTexts,
         customBottomText,
         placedStickers: [], // Exclude stickers from background to eliminate ghosting
@@ -112,7 +114,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
     return () => {
       isCancelled = true;
     };
-  }, [currentTemplate, capturedPhotos, selectedFilter, backgroundColor, backgroundTexture, customTexts, customBottomText, skinSmoothness, beautyBrightness, showWashiTape, showLiveStamp, showBarcode, washiTapeColor]);
+  }, [currentTemplate, capturedPhotos, selectedFilter, backgroundColor, backgroundTexture, customBackdropUrl, customTexts, customBottomText, skinSmoothness, beautyBrightness, showWashiTape, showLiveStamp, showBarcode, washiTapeColor]);
 
   const handleTextChange = (id: string, value: string) => {
     setCustomTexts((prev) => ({ ...prev, [id]: value }));
@@ -392,6 +394,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
         filter: selectedFilter,
         backgroundColor,
         backgroundTexture,
+        customBackdropUrl,
         customTexts,
         customBottomText,
         placedStickers,
@@ -400,11 +403,11 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
         showBarcode,
         washiTapeColor,
       });
-      onApplyCustomization(finalDataUrl);
+      onApplyCustomization(finalDataUrl, selectedFilter);
     } catch (e) {
       console.error('Error rendering final canvas:', e);
       if (livePreviewUrl) {
-        onApplyCustomization(livePreviewUrl);
+        onApplyCustomization(livePreviewUrl, selectedFilter);
       }
     } finally {
       setIsRendering(false);
@@ -914,7 +917,7 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
               {[
                 { id: 'stickers', label: 'STICKERS' },
                 { id: 'frame', label: 'FRAME' },
-                { id: 'bg', label: 'TEKSTUR' },
+                { id: 'bg', label: 'BACKDROP' },
                 { id: 'layout', label: 'GRID' },
                 { id: 'text', label: 'TEXT' },
                 { id: 'filter', label: 'FILTER' },
@@ -1056,49 +1059,159 @@ export const CustomizeView: React.FC<CustomizeViewProps> = ({
             )}
 
             {activeTab === 'bg' && (
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
-                <label style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-neutral-sub)', textTransform: 'uppercase' }}>
-                  TEKSTUR & PATTERN BACKGROUND
-                </label>
-
-                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.65rem' }}>
-                  {[
-                    { id: 'none', label: 'Polos Solid', icon: '🎨' },
-                    { id: 'matte', label: 'Matte Paper', icon: '📜' },
-                    { id: 'polaroid-gloss', label: 'Polaroid Gloss', icon: '📸' },
-                    { id: 'linen', label: 'Linen Fabric', icon: '🧵' },
-                    { id: 'holographic', label: 'Holographic', icon: '🌈' },
-                    { id: 'dots', label: 'Polka Dots', icon: '✨' },
-                    { id: 'grid', label: 'Grid Lines', icon: '📐' },
-                    { id: 'gingham', label: 'Kain Gingham', icon: '🧺' },
-                    { id: 'paper', label: 'Vintage Paper', icon: '📰' },
-                    { id: 'film-grain', label: 'Retro Grain', icon: '🎞️' },
-                  ].map((pat) => {
-                    const isSelected = backgroundTexture === pat.id;
-                    return (
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+                {/* 1. Backdrop Studio & Custom Image Upload */}
+                <div>
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '0.65rem' }}>
+                    <label style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-neutral-sub)', textTransform: 'uppercase' }}>
+                      🖼️ STUDIO BACKDROP & FOTO SENDIRI
+                    </label>
+                    {customBackdropUrl && (
                       <button
-                        key={pat.id}
-                        onClick={() => setBackgroundTexture(pat.id as any)}
+                        onClick={() => setCustomBackdropUrl(undefined)}
                         style={{
-                          padding: '0.65rem 0.85rem',
-                          borderRadius: 'var(--radius-md)',
-                          border: isSelected ? '2px solid var(--color-burgundy-deep)' : '1px solid var(--color-border)',
-                          background: isSelected ? 'var(--color-pink-soft)' : '#ffffff',
-                          color: isSelected ? 'var(--color-burgundy-deep)' : 'var(--color-neutral-dark)',
-                          fontWeight: isSelected ? 800 : 600,
-                          fontSize: '0.82rem',
-                          display: 'flex',
-                          alignItems: 'center',
-                          gap: '0.5rem',
+                          fontSize: '0.75rem',
+                          color: '#DC2626',
+                          background: '#FEE2E2',
+                          border: 'none',
+                          padding: '0.2rem 0.5rem',
+                          borderRadius: '6px',
                           cursor: 'pointer',
-                          transition: 'all 0.15s ease',
+                          fontWeight: 700,
                         }}
                       >
-                        <span style={{ fontSize: '1.1rem' }}>{pat.icon}</span>
-                        <span>{pat.label}</span>
+                        ✕ Reset Backdrop
                       </button>
-                    );
-                  })}
+                    )}
+                  </div>
+
+                  {/* Upload Button */}
+                  <div style={{ marginBottom: '0.75rem' }}>
+                    <label
+                      style={{
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        gap: '0.5rem',
+                        padding: '0.75rem',
+                        border: '2px dashed var(--color-burgundy-deep)',
+                        borderRadius: 'var(--radius-md)',
+                        background: 'var(--color-pink-soft)',
+                        color: 'var(--color-burgundy-deep)',
+                        fontWeight: 800,
+                        fontSize: '0.84rem',
+                        cursor: 'pointer',
+                        transition: 'all 0.2s ease',
+                      }}
+                    >
+                      <Upload size={16} />
+                      <span>{customBackdropUrl ? 'Ganti Background Foto Sendiri' : '+ Upload Background Foto Sendiri (JPG/PNG)'}</span>
+                      <input
+                        type="file"
+                        accept="image/*"
+                        style={{ display: 'none' }}
+                        onChange={(e) => {
+                          const file = e.target.files?.[0];
+                          if (file) {
+                            const reader = new FileReader();
+                            reader.onload = (ev) => {
+                              if (ev.target?.result) {
+                                setCustomBackdropUrl(ev.target.result as string);
+                              }
+                            };
+                            reader.readAsDataURL(file);
+                          }
+                        }}
+                      />
+                    </label>
+                  </div>
+
+                  {/* Backdrop Studio Presets */}
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '0.5rem' }}>
+                    {[
+                      { id: 'none', label: 'Polos Studio', color: 'linear-gradient(135deg, #FFF1F2 0%, #FFE4E6 100%)', url: undefined },
+                      { id: 'sakura', label: 'Sakura Blush', color: 'linear-gradient(135deg, #FFB7B2 0%, #FFDAC1 100%)', url: 'https://images.unsplash.com/photo-1522383225653-ed111181a951?auto=format&fit=crop&w=800&q=80' },
+                      { id: 'sunset', label: 'Sunset Glow', color: 'linear-gradient(135deg, #F97316 0%, #EC4899 100%)', url: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?auto=format&fit=crop&w=800&q=80' },
+                      { id: 'midnight', label: 'Midnight Blue', color: 'linear-gradient(135deg, #0F172A 0%, #1E3A8A 100%)', url: 'https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80' },
+                      { id: 'studio-beige', label: 'Beige Cozy', color: 'linear-gradient(135deg, #E6D5B8 0%, #EAE0D5 100%)', url: 'https://images.unsplash.com/photo-1513519245088-0e12902e5a38?auto=format&fit=crop&w=800&q=80' },
+                      { id: 'lavender', label: 'Lavender Dream', color: 'linear-gradient(135deg, #C084FC 0%, #E9D5FF 100%)', url: 'https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80' },
+                    ].map((bd) => {
+                      const isSelected = customBackdropUrl === bd.url;
+                      return (
+                        <button
+                          key={bd.id}
+                          onClick={() => setCustomBackdropUrl(bd.url)}
+                          style={{
+                            padding: '0.6rem 0.4rem',
+                            borderRadius: 'var(--radius-md)',
+                            border: isSelected ? '2px solid var(--color-burgundy-deep)' : '1px solid var(--color-border)',
+                            background: bd.color,
+                            color: bd.id === 'midnight' ? '#ffffff' : '#1F2937',
+                            fontWeight: isSelected ? 800 : 600,
+                            fontSize: '0.75rem',
+                            display: 'flex',
+                            flexDirection: 'column',
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            gap: '0.25rem',
+                            cursor: 'pointer',
+                            boxShadow: isSelected ? '0 0 0 2px var(--color-burgundy-deep)' : 'none',
+                          }}
+                        >
+                          <span>{bd.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+                </div>
+
+                {/* 2. Paper Texture Selection */}
+                <div>
+                  <label style={{ fontSize: '0.82rem', fontWeight: 800, color: 'var(--color-neutral-sub)', textTransform: 'uppercase', display: 'block', marginBottom: '0.65rem' }}>
+                    📜 TEKSTUR FISIK KERTAS (TACTILE TEXTURES)
+                  </label>
+
+                  <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '0.65rem' }}>
+                    {[
+                      { id: 'none', label: 'Polos Solid', icon: '🎨' },
+                      { id: 'matte', label: 'Matte Paper Gelas', icon: '📜' },
+                      { id: 'linen', label: 'Linen Fabric Tenun', icon: '🧵' },
+                      { id: 'vintage-paper', label: 'Kertas Koran Antik', icon: '📰' },
+                      { id: 'cable-knit', label: 'Rajut Wol Cozy Nakatama', icon: '🧶' },
+                      { id: 'water-ripples', label: 'Ombak Laut Marine', icon: '🌊' },
+                      { id: 'holographic', label: 'Pelangi Holographic', icon: '🌈' },
+                      { id: 'polaroid-gloss', label: 'Polaroid Resin Gloss', icon: '📸' },
+                      { id: 'dots', label: 'Polka Dots Estetik', icon: '✨' },
+                      { id: 'grid', label: 'Grid Kotak Modern', icon: '📐' },
+                      { id: 'gingham', label: 'Kain Gingham Piknik', icon: '🧺' },
+                      { id: 'film-grain', label: 'Film Grain 35mm', icon: '🎞️' },
+                    ].map((pat) => {
+                      const isSelected = backgroundTexture === pat.id;
+                      return (
+                        <button
+                          key={pat.id}
+                          onClick={() => setBackgroundTexture(pat.id as any)}
+                          style={{
+                            padding: '0.65rem 0.85rem',
+                            borderRadius: 'var(--radius-md)',
+                            border: isSelected ? '2px solid var(--color-burgundy-deep)' : '1px solid var(--color-border)',
+                            background: isSelected ? 'var(--color-pink-soft)' : '#ffffff',
+                            color: isSelected ? 'var(--color-burgundy-deep)' : 'var(--color-neutral-dark)',
+                            fontWeight: isSelected ? 800 : 600,
+                            fontSize: '0.82rem',
+                            display: 'flex',
+                            alignItems: 'center',
+                            gap: '0.5rem',
+                            cursor: 'pointer',
+                            transition: 'all 0.15s ease',
+                          }}
+                        >
+                          <span style={{ fontSize: '1.1rem' }}>{pat.icon}</span>
+                          <span>{pat.label}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
                 </div>
               </div>
             )}

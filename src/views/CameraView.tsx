@@ -44,11 +44,18 @@ export const CameraView: React.FC<CameraViewProps> = ({
   const [activeSlotIndex, setActiveSlotIndex] = useState<number>(0);
   const [isCapturingSequence, setIsCapturingSequence] = useState(false);
   const [isSessionStarted, setIsSessionStarted] = useState(false);
+  const [isStandbyStage, setIsStandbyStage] = useState(true);
+  const [poseTransitionCountdown, setPoseTransitionCountdown] = useState<number | null>(null);
   const [currentCountdown, setCurrentCountdown] = useState<number | null>(null);
   const [showFlash, setShowFlash] = useState(false);
 
   const activePreset = FILM_PRESETS.find((p) => p.id === selectedFilmPreset) || FILM_PRESETS[0];
   const isAllPhotosDone = capturedPhotos.filter(Boolean).length === template.photoSlotsCount;
+
+  // Auto-scroll to top smoothly when entering camera view
+  useEffect(() => {
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }, []);
 
   // Initialize Camera
   useEffect(() => {
@@ -278,9 +285,16 @@ export const CameraView: React.FC<CameraViewProps> = ({
         await new Promise((r) => setTimeout(r, 500));
         setCurrentCountdown(null);
 
-        // Brief pause before next photo slot if more remain
+        // Comfortable 3-second pose change transition before next photo slot
         if (slot < totalSlots - 1) {
-          await new Promise((r) => setTimeout(r, 1200));
+          for (let p = 3; p > 0; p--) {
+            setPoseTransitionCountdown(p);
+            try {
+              if (soundEnabled) CaptureService.playCountdownBeep(false);
+            } catch {}
+            await new Promise((r) => setTimeout(r, 1000));
+          }
+          setPoseTransitionCountdown(null);
         }
       }
     } catch (err) {
@@ -338,8 +352,75 @@ export const CameraView: React.FC<CameraViewProps> = ({
           </button>
         </div>
 
+        {/* Standby "Get Ready & Bercermin" Banner */}
+        {isStandbyStage && !isCapturingSequence && capturedPhotos.filter(Boolean).length === 0 && (
+          <div
+            style={{
+              background: 'linear-gradient(135deg, #800020, #A61B34)',
+              color: '#FFFFFF',
+              padding: '0.75rem 1.25rem',
+              borderRadius: '16px',
+              margin: '0.25rem 0.85rem 0.85rem',
+              textAlign: 'center',
+              boxShadow: '0 4px 14px rgba(128, 0, 32, 0.25)',
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'center',
+              gap: '0.2rem',
+            }}
+          >
+            <div style={{ fontWeight: 800, fontSize: '0.98rem', display: 'flex', alignItems: 'center', gap: '0.35rem' }}>
+              <span>✨</span> Bercermin &amp; Atur Posisi Wajahmu
+            </div>
+            <div style={{ fontSize: '0.8rem', opacity: 0.92 }}>
+              Kamera aktif dalam mode cermin. Silakan pilih filter warna atau AR di bawah, lalu tekan tombol siap untuk mulai!
+            </div>
+          </div>
+        )}
+
         {/* Camera Viewport Area */}
-        <div className="camera-mockup-viewport-wrapper">
+        <div className="camera-mockup-viewport-wrapper" style={{ position: 'relative' }}>
+          {/* Pose Transition 3-Second Countdown Overlay */}
+          {poseTransitionCountdown !== null && (
+            <div
+              style={{
+                position: 'absolute',
+                inset: 0,
+                zIndex: 60,
+                background: 'rgba(20, 10, 15, 0.78)',
+                backdropFilter: 'blur(8px)',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: '#FFFFFF',
+                textAlign: 'center',
+                padding: '1.5rem',
+                animation: 'fadeIn 0.2s ease',
+              }}
+            >
+              <div style={{ fontSize: '1.35rem', fontWeight: 800, color: '#FECDD3', letterSpacing: '0.02em', marginBottom: '0.5rem' }}>
+                💃 Ganti Gaya Berikutnya! ✨
+              </div>
+              <div
+                style={{
+                  fontSize: '5rem',
+                  fontWeight: 900,
+                  color: '#FFFFFF',
+                  textShadow: '0 4px 24px rgba(255, 117, 151, 0.7)',
+                  lineHeight: 1,
+                  transform: 'scale(1.1)',
+                  transition: 'transform 0.2s ease',
+                }}
+              >
+                {poseTransitionCountdown}
+              </div>
+              <div style={{ fontSize: '0.88rem', color: '#F3F4F6', opacity: 0.9, marginTop: '0.75rem', fontWeight: 600 }}>
+                Siapkan pose terbaikmu untuk Foto #{activeSlotIndex + 1}
+              </div>
+            </div>
+          )}
+
           {/* Realtime Live Video Stream */}
           <video
             ref={videoRef}
@@ -691,6 +772,41 @@ export const CameraView: React.FC<CameraViewProps> = ({
           </button>
         </div>
 
+        {/* Standby Start Button (Big Friendly Button) */}
+        {isStandbyStage && capturedPhotos.filter(Boolean).length === 0 && (
+          <div style={{ padding: '0 0.85rem', marginBottom: '0.85rem' }}>
+            <button
+              type="button"
+              className="standby-start-btn"
+              onClick={() => {
+                setIsStandbyStage(false);
+                startCaptureSequence();
+              }}
+              disabled={!isCameraReady || isCapturingSequence}
+              style={{
+                width: '100%',
+                padding: '0.9rem 1.5rem',
+                borderRadius: '9999px',
+                background: 'linear-gradient(135deg, #800020, #B31B38)',
+                color: '#ffffff',
+                border: 'none',
+                fontWeight: 800,
+                fontSize: '1rem',
+                cursor: !isCameraReady || isCapturingSequence ? 'not-allowed' : 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                gap: '0.5rem',
+                boxShadow: '0 8px 24px rgba(128, 0, 32, 0.35)',
+                transition: 'transform 0.15s ease, background 0.15s ease',
+              }}
+            >
+              <CameraIcon size={20} />
+              <span>Saya Sudah Siap! Mulai Ambil Foto 📸</span>
+            </button>
+          </div>
+        )}
+
         {/* Clean Shutter Button & Slot Progress Indicator */}
         <div className="camera-mockup-shutter-row">
           <div className="shutter-spacer" />
@@ -699,6 +815,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
           <button
             className="mockup-main-shutter-btn"
             onClick={() => {
+              setIsStandbyStage(false);
               if (capturedPhotos[activeSlotIndex]) {
                 captureSingleSlot(activeSlotIndex);
               } else {
@@ -725,7 +842,138 @@ export const CameraView: React.FC<CameraViewProps> = ({
           </div>
         </div>
 
-        {/* Proceed to Customize / Retake Buttons when all shots done */}
+        {/* 🌟 Interactive Slot-by-Slot Retake Gallery (Pilih Slot Mana Saja untuk Diulang) */}
+        {capturedPhotos.filter(Boolean).length > 0 && (
+          <div
+            style={{
+              marginTop: '1rem',
+              width: '100%',
+              background: '#FFFBF9',
+              border: '1.5px solid #F3E8E2',
+              borderRadius: '18px',
+              padding: '0.85rem',
+              boxSizing: 'border-box',
+            }}
+          >
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'space-between',
+                marginBottom: '0.65rem',
+                flexWrap: 'wrap',
+                gap: '0.35rem',
+              }}
+            >
+              <span style={{ fontSize: '0.85rem', fontWeight: 800, color: 'var(--color-neutral-dark)' }}>
+                Galeri Hasil Foto ({capturedPhotos.filter(Boolean).length}/{template.photoSlotsCount})
+              </span>
+              <span style={{ fontSize: '0.74rem', color: '#800020', fontWeight: 700 }}>
+                💡 Klik "Ulang" pada foto yang ingin diganti
+              </span>
+            </div>
+
+            <div
+              style={{
+                display: 'grid',
+                gridTemplateColumns: `repeat(${Math.min(template.photoSlotsCount, 4)}, 1fr)`,
+                gap: '0.5rem',
+                width: '100%',
+              }}
+            >
+              {Array.from({ length: template.photoSlotsCount }).map((_, idx) => {
+                const photo = capturedPhotos[idx];
+                const isCurrent = activeSlotIndex === idx && isCapturingSequence;
+                return (
+                  <div
+                    key={idx}
+                    style={{
+                      display: 'flex',
+                      flexDirection: 'column',
+                      gap: '0.3rem',
+                      alignItems: 'center',
+                      background: '#FFFFFF',
+                      border: isCurrent ? '2px solid #800020' : '1px solid #E5E7EB',
+                      borderRadius: '12px',
+                      padding: '0.4rem',
+                      boxShadow: isCurrent ? '0 4px 12px rgba(128, 0, 32, 0.18)' : '0 2px 6px rgba(0,0,0,0.03)',
+                    }}
+                  >
+                    <div
+                      style={{
+                        width: '100%',
+                        aspectRatio: '3/4',
+                        borderRadius: '8px',
+                        overflow: 'hidden',
+                        background: '#F3F4F6',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        position: 'relative',
+                      }}
+                    >
+                      {photo ? (
+                        <img src={photo} alt={`Foto Slot ${idx + 1}`} style={{ width: '100%', height: '100%', objectFit: 'cover' }} />
+                      ) : (
+                        <span style={{ fontSize: '0.72rem', fontWeight: 800, color: '#9CA3AF' }}>Slot #{idx + 1}</span>
+                      )}
+                      <span
+                        style={{
+                          position: 'absolute',
+                          top: '3px',
+                          left: '3px',
+                          background: 'rgba(0,0,0,0.65)',
+                          color: '#FFFFFF',
+                          fontSize: '0.6rem',
+                          fontWeight: 800,
+                          padding: '0.05rem 0.3rem',
+                          borderRadius: '4px',
+                        }}
+                      >
+                        #{idx + 1}
+                      </span>
+                    </div>
+
+                    {photo ? (
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsStandbyStage(false);
+                          captureSingleSlot(idx);
+                        }}
+                        disabled={isCapturingSequence}
+                        style={{
+                          width: '100%',
+                          padding: '0.35rem 0.15rem',
+                          borderRadius: '8px',
+                          background: '#800020',
+                          color: '#ffffff',
+                          border: 'none',
+                          fontSize: '0.72rem',
+                          fontWeight: 800,
+                          cursor: isCapturingSequence ? 'not-allowed' : 'pointer',
+                          display: 'flex',
+                          alignItems: 'center',
+                          justifyContent: 'center',
+                          gap: '0.2rem',
+                          boxShadow: '0 2px 6px rgba(128, 0, 32, 0.2)',
+                        }}
+                        title={`Ulangi hanya foto #${idx + 1}`}
+                      >
+                        <RefreshCw size={10} />
+                        <span>Ulang #{idx + 1}</span>
+                      </button>
+                    ) : (
+                      <span style={{ fontSize: '0.65rem', color: '#9CA3AF', fontWeight: 600 }}>Menunggu</span>
+                    )}
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        )}
+
+        {/* Proceed to Customize / Reset Buttons when all shots done */}
         {isAllPhotosDone && (
           <div style={{ marginTop: '1rem', width: '100%', display: 'flex', flexDirection: 'column', gap: '0.65rem' }}>
             <Button
@@ -742,35 +990,8 @@ export const CameraView: React.FC<CameraViewProps> = ({
               }}
             >
               <Sparkles size={18} />
-              <span>Lihat Hasil & Edit Bingkai ✨</span>
+              <span>Lihat Hasil &amp; Edit Bingkai ✨</span>
             </Button>
-
-            {/* Retake specific slot button */}
-            {capturedPhotos[activeSlotIndex] && (
-              <button
-                type="button"
-                onClick={() => captureSingleSlot(activeSlotIndex)}
-                disabled={isCapturingSequence}
-                style={{
-                  width: '100%',
-                  padding: '0.65rem',
-                  borderRadius: '9999px',
-                  background: '#FFF5F6',
-                  border: '1.5px solid var(--color-burgundy-deep)',
-                  color: 'var(--color-burgundy-deep)',
-                  fontSize: '0.85rem',
-                  fontWeight: 800,
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'center',
-                  gap: '0.4rem',
-                }}
-              >
-                <RefreshCw size={15} />
-                <span>Foto Ulang Slot #{activeSlotIndex + 1} Saja</span>
-              </button>
-            )}
 
             <button
               type="button"
@@ -778,6 +999,7 @@ export const CameraView: React.FC<CameraViewProps> = ({
                 setCapturedPhotos([]);
                 setActiveSlotIndex(0);
                 setIsSessionStarted(false);
+                setIsStandbyStage(true);
               }}
               style={{
                 width: '100%',

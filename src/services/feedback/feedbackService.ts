@@ -119,8 +119,8 @@ export class FeedbackService {
           Accept: 'application/json',
         },
         body: JSON.stringify({
-          // Free Web3Forms public access key for instant email relay
-          access_key: '6013a778-4ea1-4ebc-8822-6ea3a54b387a',
+          // Official verified Web3Forms access key for pixbooth.support@gmail.com
+          access_key: '6d1afd97-5cbe-4d01-9786-69190d875373',
           subject: `[PixBooth ${APP_CONFIG.version}] ${formattedCategory} dari ${senderName}`,
           from_name: `PixBooth Feedback (${senderName})`,
           to_email: APP_CONFIG.supportEmail,

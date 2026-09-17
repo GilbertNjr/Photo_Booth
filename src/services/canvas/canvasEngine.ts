@@ -5,6 +5,7 @@ export interface RenderCanvasOptions {
   filter?: PhotoFilterType;
   backgroundColor?: string;
   backgroundTexture?: PaperTextureType;
+  customBackdropUrl?: string;
   customTexts?: Record<string, string>;
   customBottomText?: string;
   placedStickers?: PlacedSticker[];
@@ -16,36 +17,35 @@ export interface RenderCanvasOptions {
 
 export class CanvasEngine {
   /**
+   * Get CSS canvas filter string based on selected photo filter type
+   */
+  public static getFilterCss(filter: PhotoFilterType): string {
+    switch (filter) {
+      case 'bright':
+        return 'brightness(1.15) contrast(1.05) saturate(1.1)';
+      case 'warm':
+        return 'sepia(0.25) contrast(1.05) saturate(1.2) hue-rotate(-10deg)';
+      case 'vintage':
+        return 'sepia(0.4) contrast(1.1) brightness(0.95) saturate(0.85)';
+      case 'film':
+        return 'contrast(1.2) saturate(0.85) brightness(1.05) sepia(0.15)';
+      case 'soft':
+        return 'brightness(1.08) contrast(0.92) saturate(1.15)';
+      case 'bw':
+        return 'grayscale(1) contrast(1.2) brightness(1.05)';
+      case 'retro':
+        return 'contrast(1.25) saturate(1.3) hue-rotate(15deg)';
+      case 'original':
+      default:
+        return 'none';
+    }
+  }
+
+  /**
    * Apply CSS canvas filters to 2D Context based on selected photo filter type
    */
   private static applyContextFilter(ctx: CanvasRenderingContext2D, filter: PhotoFilterType): void {
-    switch (filter) {
-      case 'bright':
-        ctx.filter = 'brightness(1.15) contrast(1.05) saturate(1.1)';
-        break;
-      case 'warm':
-        ctx.filter = 'sepia(0.25) contrast(1.05) saturate(1.2) hue-rotate(-10deg)';
-        break;
-      case 'vintage':
-        ctx.filter = 'sepia(0.4) contrast(1.1) brightness(0.95) saturate(0.85)';
-        break;
-      case 'film':
-        ctx.filter = 'contrast(1.2) saturate(0.85) brightness(1.05) sepia(0.15)';
-        break;
-      case 'soft':
-        ctx.filter = 'brightness(1.08) contrast(0.92) saturate(1.15)';
-        break;
-      case 'bw':
-        ctx.filter = 'grayscale(1) contrast(1.2) brightness(1.05)';
-        break;
-      case 'retro':
-        ctx.filter = 'contrast(1.25) saturate(1.3) hue-rotate(15deg)';
-        break;
-      case 'original':
-      default:
-        ctx.filter = 'none';
-        break;
-    }
+    ctx.filter = this.getFilterCss(filter);
   }
 
   /**
@@ -481,25 +481,50 @@ export class CanvasEngine {
     const customTexts = options.customTexts || {};
     const stickers = options.placedStickers || [];
 
-    // 1. Draw Base Background Layer
+    // 1. Draw Base Background Layer (or Custom Backdrop Image)
     ctx.save();
-    if (template.backgroundGradient && template.backgroundGradient !== 'none') {
+    if (options.customBackdropUrl) {
+      try {
+        const bgImg = await this.loadImage(options.customBackdropUrl);
+        const imgRatio = bgImg.width / bgImg.height;
+        const canvasRatio = width / height;
+        let dw = width;
+        let dh = height;
+        let dx = 0;
+        let dy = 0;
+        if (imgRatio > canvasRatio) {
+          dh = height;
+          dw = height * imgRatio;
+          dx = (width - dw) / 2;
+        } else {
+          dw = width;
+          dh = width / imgRatio;
+          dy = (height - dh) / 2;
+        }
+        ctx.drawImage(bgImg, dx, dy, dw, dh);
+      } catch (err) {
+        console.warn('Failed to load custom backdrop image, falling back to background color:', err);
+        ctx.fillStyle = bgColor;
+        ctx.fillRect(0, 0, width, height);
+      }
+    } else if (template.backgroundGradient && template.backgroundGradient !== 'none') {
       const grad = ctx.createLinearGradient(0, 0, 0, height);
       grad.addColorStop(0, bgColor);
       grad.addColorStop(1, template.accentColor ? template.accentColor + '44' : '#00000044');
       ctx.fillStyle = grad;
+      ctx.fillRect(0, 0, width, height);
     } else {
       ctx.fillStyle = bgColor;
+      ctx.fillRect(0, 0, width, height);
     }
-    ctx.fillRect(0, 0, width, height);
     ctx.restore();
 
-    // 1b. Draw Texture Overlays matching UI FrameRender
+    // 1b. Draw High-Impact Tactile Physical Texture Overlays
     if (bgTexture === 'dots') {
       ctx.save();
-      ctx.fillStyle = template.accentColor ? template.accentColor + '33' : 'rgba(255, 255, 255, 0.2)';
-      const step = Math.round(width * 0.035);
-      const r = Math.max(2, width * 0.005);
+      ctx.fillStyle = template.accentColor ? template.accentColor + '66' : 'rgba(255, 255, 255, 0.45)';
+      const step = Math.round(width * 0.045);
+      const r = Math.max(3, width * 0.007);
       for (let x = step / 2; x < width; x += step) {
         for (let y = step / 2; y < height; y += step) {
           ctx.beginPath();
@@ -510,9 +535,9 @@ export class CanvasEngine {
       ctx.restore();
     } else if (bgTexture === 'grid') {
       ctx.save();
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.15)';
-      ctx.lineWidth = Math.max(1, width * 0.002);
-      const gridStep = Math.round(width * 0.06);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
+      ctx.lineWidth = Math.max(1.5, width * 0.0025);
+      const gridStep = Math.round(width * 0.055);
       for (let x = 0; x < width; x += gridStep) {
         ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
       }
@@ -522,8 +547,8 @@ export class CanvasEngine {
       ctx.restore();
     } else if (bgTexture === 'gingham' || bgTexture === 'gingham-red') {
       ctx.save();
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.22)';
-      const gStep = Math.round(width * 0.08);
+      ctx.fillStyle = bgTexture === 'gingham-red' ? 'rgba(217, 4, 41, 0.25)' : 'rgba(255, 255, 255, 0.35)';
+      const gStep = Math.round(width * 0.07);
       for (let x = 0; x < width; x += gStep * 2) {
         ctx.fillRect(x, 0, gStep, height);
       }
@@ -533,18 +558,45 @@ export class CanvasEngine {
       ctx.restore();
     } else if (bgTexture === 'paper' || bgTexture === 'vintage-paper') {
       ctx.save();
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.08)';
-      for (let y = 0; y < height; y += 6) {
-        ctx.fillRect(0, y, width, 1.5);
+      // Warm antique parchment wash & burned aged edges
+      ctx.fillStyle = 'rgba(217, 185, 143, 0.22)';
+      ctx.fillRect(0, 0, width, height);
+
+      const radGrad = ctx.createRadialGradient(
+        width / 2, height / 2, Math.min(width, height) * 0.35,
+        width / 2, height / 2, Math.max(width, height) * 0.72
+      );
+      radGrad.addColorStop(0, 'rgba(0, 0, 0, 0)');
+      radGrad.addColorStop(1, 'rgba(92, 53, 20, 0.28)');
+      ctx.fillStyle = radGrad;
+      ctx.fillRect(0, 0, width, height);
+
+      // Distressed horizontal aged paper pulp ridges
+      for (let y = 0; y < height; y += Math.round(width * 0.015)) {
+        ctx.fillStyle = (y % 2 === 0) ? 'rgba(100, 60, 20, 0.08)' : 'rgba(255, 255, 255, 0.1)';
+        ctx.fillRect(0, y, width, 2);
+      }
+
+      // Organic tea stains & speckles
+      for (let i = 0; i < 500; i++) {
+        const sx = Math.random() * width;
+        const sy = Math.random() * height;
+        const sr = Math.random() * 2.5 + 0.8;
+        ctx.fillStyle = Math.random() > 0.4 ? 'rgba(78, 46, 20, 0.15)' : 'rgba(255, 245, 230, 0.25)';
+        ctx.beginPath();
+        ctx.arc(sx, sy, sr, 0, Math.PI * 2);
+        ctx.fill();
       }
       ctx.restore();
     } else if (bgTexture === 'film-grain') {
       ctx.save();
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.15)';
-      for (let i = 0; i < 1500; i++) {
+      // Rich analog film grain
+      for (let i = 0; i < 7000; i++) {
         const rx = Math.random() * width;
         const ry = Math.random() * height;
-        ctx.fillRect(rx, ry, Math.max(1, width * 0.003), Math.max(1, width * 0.003));
+        const sz = Math.random() * (width * 0.003) + 1;
+        ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255, 255, 255, 0.25)' : 'rgba(0, 0, 0, 0.22)';
+        ctx.fillRect(rx, ry, sz, sz);
       }
       ctx.restore();
     } else if (bgTexture === 'wood') {
@@ -572,58 +624,95 @@ export class CanvasEngine {
       ctx.restore();
     } else if (bgTexture === 'matte') {
       ctx.save();
-      ctx.fillStyle = 'rgba(255, 255, 255, 0.06)';
-      for (let i = 0; i < 2000; i++) {
+      // Velvety soft matte paper with tactile tooth
+      ctx.fillStyle = 'rgba(0, 0, 0, 0.03)';
+      ctx.fillRect(0, 0, width, height);
+      // High-density organic stipple grain
+      for (let i = 0; i < 9000; i++) {
         const rx = Math.random() * width;
         const ry = Math.random() * height;
-        ctx.fillRect(rx, ry, Math.max(1, width * 0.002), Math.max(1, width * 0.002));
-      }
-      ctx.fillStyle = 'rgba(0, 0, 0, 0.04)';
-      for (let i = 0; i < 2000; i++) {
-        const rx = Math.random() * width;
-        const ry = Math.random() * height;
-        ctx.fillRect(rx, ry, Math.max(1, width * 0.002), Math.max(1, width * 0.002));
+        const sz = Math.random() * (width * 0.0035) + 1;
+        ctx.fillStyle = Math.random() > 0.5 ? 'rgba(255, 255, 255, 0.18)' : 'rgba(30, 20, 10, 0.12)';
+        ctx.fillRect(rx, ry, sz, sz);
       }
       ctx.restore();
     } else if (bgTexture === 'polaroid-gloss') {
       ctx.save();
-      const glossGrad = ctx.createLinearGradient(0, 0, width, height);
-      glossGrad.addColorStop(0, 'rgba(255, 255, 255, 0.2)');
-      glossGrad.addColorStop(0.35, 'rgba(255, 255, 255, 0.03)');
-      glossGrad.addColorStop(0.7, 'rgba(0, 0, 0, 0.02)');
-      glossGrad.addColorStop(1, 'rgba(0, 0, 0, 0.12)');
+      // Premium resin-coated gloss sheen
+      const glossGrad = ctx.createLinearGradient(0, 0, width * 0.7, height);
+      glossGrad.addColorStop(0, 'rgba(255, 255, 255, 0.35)');
+      glossGrad.addColorStop(0.25, 'rgba(255, 255, 255, 0.12)');
+      glossGrad.addColorStop(0.5, 'rgba(255, 255, 255, 0)');
+      glossGrad.addColorStop(0.8, 'rgba(0, 0, 0, 0.05)');
+      glossGrad.addColorStop(1, 'rgba(0, 0, 0, 0.22)');
       ctx.fillStyle = glossGrad;
       ctx.fillRect(0, 0, width, height);
+
+      // Specular reflection diagonal band
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.45)';
+      ctx.lineWidth = Math.max(12, width * 0.04);
+      ctx.beginPath();
+      ctx.moveTo(-width * 0.1, height * 0.4);
+      ctx.lineTo(width * 0.9, -height * 0.1);
+      ctx.stroke();
       ctx.restore();
     } else if (bgTexture === 'linen') {
       ctx.save();
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.07)';
-      ctx.lineWidth = 1;
-      const lStep = Math.max(3, Math.round(width * 0.008));
+      // True woven textile cross-hatch fibers
+      const lStep = Math.max(4, Math.round(width * 0.01));
+      ctx.lineWidth = 1.2;
       for (let x = 0; x < width; x += lStep) {
-        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, height); ctx.stroke();
+        ctx.strokeStyle = x % (lStep * 2) === 0 ? 'rgba(255, 255, 255, 0.22)' : 'rgba(0, 0, 0, 0.12)';
+        ctx.beginPath();
+        ctx.moveTo(x, 0);
+        ctx.lineTo(x, height);
+        ctx.stroke();
       }
       for (let y = 0; y < height; y += lStep) {
-        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(width, y); ctx.stroke();
+        ctx.strokeStyle = y % (lStep * 2) === 0 ? 'rgba(255, 255, 255, 0.2)' : 'rgba(0, 0, 0, 0.1)';
+        ctx.beginPath();
+        ctx.moveTo(0, y);
+        ctx.lineTo(width, y);
+        ctx.stroke();
+      }
+      // Micro fiber flecks
+      for (let i = 0; i < 350; i++) {
+        const fx = Math.random() * width;
+        const fy = Math.random() * height;
+        const fLen = Math.random() * 8 + 3;
+        const angle = Math.random() * Math.PI;
+        ctx.strokeStyle = Math.random() > 0.5 ? 'rgba(255, 255, 255, 0.35)' : 'rgba(60, 40, 30, 0.2)';
+        ctx.lineWidth = 0.8;
+        ctx.beginPath();
+        ctx.moveTo(fx, fy);
+        ctx.lineTo(fx + Math.cos(angle) * fLen, fy + Math.sin(angle) * fLen);
+        ctx.stroke();
       }
       ctx.restore();
     } else if (bgTexture === 'holographic') {
       ctx.save();
       const holoGrad = ctx.createLinearGradient(0, 0, width, height);
-      holoGrad.addColorStop(0, 'rgba(255, 192, 203, 0.28)');
-      holoGrad.addColorStop(0.25, 'rgba(173, 216, 230, 0.28)');
-      holoGrad.addColorStop(0.5, 'rgba(255, 255, 224, 0.28)');
-      holoGrad.addColorStop(0.75, 'rgba(221, 160, 221, 0.28)');
-      holoGrad.addColorStop(1, 'rgba(152, 251, 152, 0.28)');
+      holoGrad.addColorStop(0, 'rgba(255, 105, 180, 0.35)');
+      holoGrad.addColorStop(0.2, 'rgba(138, 43, 226, 0.3)');
+      holoGrad.addColorStop(0.4, 'rgba(0, 191, 255, 0.35)');
+      holoGrad.addColorStop(0.6, 'rgba(0, 250, 154, 0.3)');
+      holoGrad.addColorStop(0.8, 'rgba(255, 215, 0, 0.35)');
+      holoGrad.addColorStop(1, 'rgba(255, 69, 0, 0.3)');
       ctx.fillStyle = holoGrad;
       ctx.fillRect(0, 0, width, height);
-      // Iridescent light flare across card
-      ctx.strokeStyle = 'rgba(255, 255, 255, 0.35)';
-      ctx.lineWidth = Math.max(8, width * 0.03);
-      ctx.beginPath();
-      ctx.moveTo(-width * 0.2, height * 0.7);
-      ctx.lineTo(width * 1.2, -height * 0.1);
-      ctx.stroke();
+
+      // Iridescent light flare beam
+      ctx.save();
+      ctx.translate(width / 2, height / 2);
+      ctx.rotate((-35 * Math.PI) / 180);
+      const beamGrad = ctx.createLinearGradient(-width, 0, width, 0);
+      beamGrad.addColorStop(0, 'rgba(255, 255, 255, 0)');
+      beamGrad.addColorStop(0.48, 'rgba(255, 255, 255, 0.55)');
+      beamGrad.addColorStop(0.52, 'rgba(255, 255, 255, 0.55)');
+      beamGrad.addColorStop(1, 'rgba(255, 255, 255, 0)');
+      ctx.fillStyle = beamGrad;
+      ctx.fillRect(-width, -height, width * 2, height * 2);
+      ctx.restore();
       ctx.restore();
     } else if (bgTexture === 'cable-knit') {
       // 🧶 Cozy Cable Knit Sweater Wool Texture (Autumn Nakatama Theme)

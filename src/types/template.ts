@@ -106,6 +106,7 @@ export interface TemplateData {
   backgroundColor: string; // hex or CSS background
   backgroundTexture?: PaperTextureType;
   backgroundGradient?: string;
+  customBackdropUrl?: string;
   frameBorderColor: string;
   frameBorderWidth: number;
   frameBorderRadius: number;

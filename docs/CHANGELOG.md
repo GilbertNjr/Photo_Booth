@@ -1,3 +1,42 @@
+## [1.5.0] - 2026-09-17 (Standby Mirror Mode, Slot-by-Slot Retake, Real-Time Feedback Key, Studio Backdrops, Tactile Textures & Vivid GIF)
+
+### Added & Enhanced
+- **Standby Mirror & Posing Flow (`CameraView.tsx`):**
+  - Instant smooth auto-scroll to the top of viewport upon entering the camera screen.
+  - Interactive Standby "Bercermin & Rapikan Penampilan" mirror mode with a prominent "Saya Sudah Siap! Mulai Ambil Foto 📸" action button.
+  - Animated 3-second pose transition overlay (`💃 Ganti Gaya Berikutnya! ✨`) with circular pulsing countdown between each photo slot.
+- **Interactive Slot-by-Slot Photo Retake (`CameraView.tsx`):**
+  - Real-time thumbnail gallery beneath the camera viewfinder showing each captured slot with status checkmarks.
+  - Dedicated individual retake buttons (`Ulang #1`, `Ulang #2`, `Ulang #3`, `Ulang #4`) allowing retake of ANY specific slot without discarding or resetting the other photos.
+- **Studio Backdrops & Custom Background Image Upload (`CustomizeView.tsx`, `canvasEngine.ts`):**
+  - Tab "BACKDROP" with 6 curated studio backdrop presets (*Sakura Blush*, *Sunset Glow*, *Midnight Blue*, *Beige Cozy*, *Lavender Dream*, and *Polos Studio*).
+  - High-resolution custom background image upload support (`+ Upload Background Foto Sendiri (JPG/PNG)`) with automatic cover fitting (`object-fit: cover`).
+  - 1-click "✕ Reset Backdrop" button.
+- **Tactile High-Impact Paper Textures (`canvasEngine.ts`, `CustomizeView.tsx`):**
+  - Upgraded texture procedural shaders with visible depth and high tactile presence:
+    - `matte`: Velvety fine-art stipple tooth paper grain.
+    - `linen`: Dual-tone cross-hatch woven textile fibers with micro flecks.
+    - `vintage-paper`: Antique parchment wash, tea-stain speckles, and aged edge vignettes.
+    - `cable-knit`: Warm braided knit wool stitches.
+    - `water-ripples`: Marine caustic wave ripples with shimmering surface highlights.
+    - `holographic`: Prismatic metallic rainbow gradient with high-gloss diagonal flare beam.
+    - `polaroid-gloss`: High-shine resin-coated polaroid sheen with specular reflection.
+    - `film-grain`: 35mm silver-halide analog film grain.
+    - `gingham` & `gingham-red`: Crisp picnic checks with thread transparency.
+    - `dots` & `grid`: Clean aesthetic geometric grid and polka dot patterns.
+- **Vivid Boomerang GIF Quality & Filter Matching (`gifRecorderService.ts`, `FinalPreviewView.tsx`):**
+  - Replaced lossy fallback quantization with Euclidean color distance matching, completely eliminating muddy dark blotches and preserving authentic skin tones.
+  - Applied 10% brightness and 15% saturation enhancement during frame rendering.
+  - Synchronized active photo filter CSS with both the live motion boomerang player and downloaded GIF Blob.
+- **Sharp AR Face Filter Rendering (`arFilterService.ts`):**
+  - Doubled cheek blush radial gradient opacity with delicate white specular highlight dots.
+  - Rendered bold, vibrant cat/bunny ears, sunglasses, and golden angel halos.
+- **Real-Time Verified Support Email Relay (`feedbackService.ts`, `FeedbackModal.tsx`):**
+  - Integrated user's verified Web3Forms API Access Key (`6d1afd97-5cbe-4d01-9786-69190d875373`) directly delivering user feedback and bug reports to **`pixbooth.support@gmail.com`**.
+  - Fixed dark text (`#111827`) on crisp white input/textarea fields with elegant `#800020` burgundy focus rings.
+- **Centralized Version Bump (`appConfig.ts`):**
+  - Version updated to `v1.5.0` synchronized across all views and metadata.
+
 ## [1.4.0] - 2026-09-16 (Freeform Sticker Transformer, Nakatama Scrapbook Frames, Catalog Pruning & Privacy Architecture)
 
 ### Added & Enhanced

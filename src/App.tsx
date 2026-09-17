@@ -8,6 +8,7 @@ import { CameraView } from './views/CameraView';
 import { CustomizeView } from './views/CustomizeView';
 import { FinalPreviewView } from './views/FinalPreviewView';
 import type { TemplateData } from './types/template';
+import type { PhotoFilterType } from './types/editor';
 import { TemplateService } from './services/template/templateService';
 import { StorageService } from './services/storage/storageService';
 
@@ -22,6 +23,7 @@ export function App() {
   const [selectedFrame, setSelectedFrame] = useState<TemplateData | null>(null);
   const [capturedPhotos, setCapturedPhotos] = useState<string[]>([]);
   const [finalImageDataUrl, setFinalImageDataUrl] = useState<string>('');
+  const [appliedFilter, setAppliedFilter] = useState<PhotoFilterType>('original');
 
   const [isShowingFavoritesOnly, setIsShowingFavoritesOnly] = useState(false);
   const [isShowingHowToUse, setIsShowingHowToUse] = useState(false);
@@ -64,6 +66,7 @@ export function App() {
     setSelectedFrame(null);
     setCapturedPhotos([]);
     setFinalImageDataUrl('');
+    setAppliedFilter('original');
     navigateToStep('picker');
   };
 
@@ -164,8 +167,11 @@ export function App() {
     navigateToStep('customize');
   };
 
-  const handleApplyCustomization = (imageDataUrl: string) => {
+  const handleApplyCustomization = (imageDataUrl: string, selectedFilter?: PhotoFilterType) => {
     setFinalImageDataUrl(imageDataUrl);
+    if (selectedFilter) {
+      setAppliedFilter(selectedFilter);
+    }
     navigateToStep('final');
   };
 
@@ -305,6 +311,7 @@ export function App() {
         {currentStep === 'final' && finalImageDataUrl && (
           <FinalPreviewView
             finalImageDataUrl={finalImageDataUrl}
+            selectedFilter={appliedFilter}
             onEditCustomization={() => setCurrentStep('customize')}
             onNewSession={handleNewSession}
           />

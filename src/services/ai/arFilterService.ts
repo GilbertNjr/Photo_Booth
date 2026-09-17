@@ -259,17 +259,24 @@ export class ARFilterService {
   }
 
   /**
-   * Soft airbrush blush on cheeks
+   * Soft airbrush blush on cheeks with vibrant, radiant healthy glow
    */
   private static drawCheekBlush(ctx: CanvasRenderingContext2D, x: number, y: number, radius: number): void {
     ctx.save();
-    const grad = ctx.createRadialGradient(x, y, 0, x, y, radius);
-    grad.addColorStop(0, 'rgba(255, 130, 160, 0.45)');
-    grad.addColorStop(0.6, 'rgba(255, 160, 185, 0.20)');
-    grad.addColorStop(1, 'rgba(255, 180, 200, 0)');
+    const grad = ctx.createRadialGradient(x, y, 0, x, y, radius * 1.15);
+    grad.addColorStop(0, 'rgba(255, 90, 135, 0.78)');
+    grad.addColorStop(0.45, 'rgba(255, 130, 165, 0.45)');
+    grad.addColorStop(0.8, 'rgba(255, 170, 195, 0.18)');
+    grad.addColorStop(1, 'rgba(255, 200, 215, 0)');
     ctx.fillStyle = grad;
     ctx.beginPath();
-    ctx.arc(x, y, radius, 0, Math.PI * 2);
+    ctx.arc(x, y, radius * 1.15, 0, Math.PI * 2);
+    ctx.fill();
+
+    // Cute subtle cheek highlight dot
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.65)';
+    ctx.beginPath();
+    ctx.arc(x - radius * 0.25, y - radius * 0.2, 2.5, 0, Math.PI * 2);
     ctx.fill();
     ctx.restore();
   }

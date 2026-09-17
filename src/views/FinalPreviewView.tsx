@@ -22,12 +22,14 @@ import {
 
 interface FinalPreviewViewProps {
   finalImageDataUrl: string;
+  selectedFilter?: string;
   onEditCustomization: () => void;
   onNewSession: () => void;
 }
 
 export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
   finalImageDataUrl,
+  selectedFilter,
   onEditCustomization,
   onNewSession,
 }) => {
@@ -140,7 +142,8 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
     setIsGeneratingGif(true);
     SessionMetricsService.incrementSessionCount();
     try {
-      const blob = await GifRecorderService.createAnimatedGifBlob(boomerangFrames, 300, 450, 9);
+      const activeFilterCss = selectedFilter ? CanvasEngine.getFilterCss(selectedFilter as any) : undefined;
+      const blob = await GifRecorderService.createAnimatedGifBlob(boomerangFrames, 300, 450, 9, activeFilterCss);
       const blobUrl = URL.createObjectURL(blob);
       const timestamp = new Date().toISOString().replace(/[:.]/g, '-').slice(0, 19);
       const fileName = `PixBooth_Motion_${timestamp}.gif`;
@@ -331,6 +334,7 @@ export const FinalPreviewView: React.FC<FinalPreviewViewProps> = ({
                       margin: '0 auto',
                       borderRadius: '16px',
                       boxShadow: '0 16px 40px rgba(139, 92, 246, 0.25), 0 4px 12px rgba(0,0,0,0.08)',
+                      filter: selectedFilter ? CanvasEngine.getFilterCss(selectedFilter as any) : 'none',
                     }}
                   />
                   <div
