@@ -1,4 +1,5 @@
 import type { TemplateData } from '../../types/template';
+import { templateRoyalGalaTicket } from './royalGalaTicket';
 import {
   templateNakatamaMarine,
   templateNakatamaCozyKnit,
@@ -32,6 +33,9 @@ import { seasonalSummer01 } from './seasonal';
  * Obsolete plain/flat templates have been pruned per user instruction.
  */
 export const TEMPLATES: TemplateData[] = [
+  // 🎟️ TOP FEATURED VIP: Royal Gala VIP Ticket 3-Cuts Photostrip
+  templateRoyalGalaTicket,
+
   // 🌟 TOP MARQUEE: Viral TikTok Scrapbook & Nakatama Themes
   templateNakatamaCozyKnit,
   templateNakatamaMarine,

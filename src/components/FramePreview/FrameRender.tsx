@@ -477,12 +477,12 @@ export const FrameRender: React.FC<FrameRenderProps> = React.memo(({
                 ? `${slot.borderRadius}px`
                 : '4px',
               backgroundColor: '#1f2937',
-              boxShadow: '0 6px 16px rgba(0, 0, 0, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.1)',
+              boxShadow: template.id === 'royal-gala-vip-ticket' ? 'none' : '0 6px 16px rgba(0, 0, 0, 0.22), inset 0 0 0 1px rgba(255, 255, 255, 0.1)',
               overflow: 'hidden',
               display: 'flex',
               alignItems: 'center',
               justifyContent: 'center',
-              border: '2px solid rgba(255, 255, 255, 0.9)',
+              border: template.id === 'royal-gala-vip-ticket' || slot.borderStyle === 'none' ? 'none' : '2px solid rgba(255, 255, 255, 0.9)',
               zIndex: index + 2,
             }}
           >
@@ -504,8 +504,27 @@ export const FrameRender: React.FC<FrameRenderProps> = React.memo(({
         );
       })}
 
+      {/* Royal Gala VIP Ticket Overlay Frame */}
+      {template.id === 'royal-gala-vip-ticket' && (
+        <img
+          src="/assets/frames/royal-gala/royal-gala-overlay-std.png"
+          alt="Royal Gala Frame"
+          style={{
+            position: 'absolute',
+            inset: 0,
+            width: '100%',
+            height: '100%',
+            objectFit: 'fill',
+            zIndex: 8,
+            pointerEvents: 'none',
+          }}
+        />
+      )}
+
       {/* Render Decorative Elements */}
-      {template.decorativeElements.map((el) => (
+      {template.decorativeElements
+        .filter((el) => !(template.id === 'royal-gala-vip-ticket' && el.id === 'gala-badge-seal'))
+        .map((el) => (
         <div
           key={el.id}
           style={{
@@ -530,7 +549,9 @@ export const FrameRender: React.FC<FrameRenderProps> = React.memo(({
       ))}
 
       {/* Render HD Typography Text Elements */}
-      {template.textElements.map((el) => {
+      {template.textElements
+        .filter((el) => !(template.id === 'royal-gala-vip-ticket' && el.id === 'gala-title'))
+        .map((el) => {
         const isSerif = el.fontFamily?.toLowerCase().includes('playfair') || el.fontFamily?.toLowerCase().includes('serif');
         const isScript = el.fontFamily?.toLowerCase().includes('caveat') || el.fontFamily?.toLowerCase().includes('cursive');
 

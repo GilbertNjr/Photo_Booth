@@ -1255,7 +1255,7 @@ export class CanvasEngine {
           this.roundRectPath(ctx, slotRectX + 3, slotRectY + 3, slotW - 6, slotH - 6, Math.max(2, borderRadius - 2));
           ctx.stroke();
           ctx.restore();
-        } else {
+        } else if (slot.borderStyle !== 'none' && template.id !== 'royal-gala-vip-ticket') {
           // Standard Crisp White Frame Border
           ctx.save();
           if (slot.shape === 'arch') {
@@ -1271,6 +1271,16 @@ export class CanvasEngine {
       }
 
       ctx.restore();
+    }
+
+    // 3a. Render Royal Gala VIP Ticket Frame Overlay (High-Resolution Gold Bevel & Filigree)
+    if (template.id === 'royal-gala-vip-ticket') {
+      try {
+        const overlayImg = await this.loadImage('/assets/frames/royal-gala/royal-gala-overlay.png');
+        ctx.drawImage(overlayImg, 0, 0, width, height);
+      } catch (err) {
+        console.warn('Failed to load royal gala overlay:', err);
+      }
     }
 
     // 3b. Render Realistic Washi Tapes over Photo Slots if enabled
@@ -1298,6 +1308,9 @@ export class CanvasEngine {
 
     // 4. Render Template Decorative Elements
     for (const el of template.decorativeElements) {
+      if (template.id === 'royal-gala-vip-ticket' && el.id === 'gala-badge-seal') {
+        continue;
+      }
       ctx.save();
       const elX = (el.x / 100) * width;
       const elY = (el.y / 100) * height;
@@ -1343,6 +1356,9 @@ export class CanvasEngine {
 
     // 5. Render HD Text Elements (Customized or Default)
     template.textElements.forEach((el) => {
+      if (template.id === 'royal-gala-vip-ticket' && el.id === 'gala-title' && !customTexts[el.id]) {
+        return;
+      }
       ctx.save();
       const textX = (el.x / 100) * width;
       const textY = (el.y / 100) * height;

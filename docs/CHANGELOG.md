@@ -19,6 +19,11 @@
   - Session strip history drawer saving up to 4 rendered photo strip variations.
   - "Coba Bingkai Lain (Gunakan Foto Ini)" flow: allows instant re-framing with existing captured photos in 1 click without needing to retake photos.
   - Side-by-Side Comparison modal: inspect two different frame styles (Strip A vs Strip B) simultaneously, with instant selection and download of either version.
+- **Royal Gala VIP Ticket 3-Cuts Photostrip (`royalGalaTicket.ts`, `canvasEngine.ts`, `FrameRender.tsx`):**
+  - Integrated official user-provided Royal Gala VIP admission ticket design in `public/assets/frames/royal-gala/`.
+  - 3-cut landscape photobooth slot layout (~3:2 aspect ratio) with deep burgundy velvet finish, triple gold border, and authentic ticket cutout notches.
+  - High-precision canvas overlay pipeline blending metallic gold bevel frames, rivets, ornate floral filigree dividers, "RG-2025-001" barcode, and ribbon star medal seal with zero bleed gaps.
+  - Positioned at #1 top featured marquee in the catalog with golden `⭐ VIP TICKET` badge.
 - **Centralized Version Bump (`appConfig.ts`):**
   - Version updated to `v1.6.0 (Aesthetic Studio & Hologram Edition)`.
 
