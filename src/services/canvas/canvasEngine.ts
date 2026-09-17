@@ -513,6 +513,8 @@ export class CanvasEngine {
       grad.addColorStop(1, template.accentColor ? template.accentColor + '44' : '#00000044');
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, width, height);
+    } else if (template.id === 'royal-gala-vip-ticket') {
+      ctx.clearRect(0, 0, width, height);
     } else {
       ctx.fillStyle = bgColor;
       ctx.fillRect(0, 0, width, height);
@@ -1140,28 +1142,33 @@ export class CanvasEngine {
         const borderRadius = slot.borderRadius ? (slot.borderRadius / 100) * width * 0.8 : (width * 0.008);
 
         // 1. Draw Drop Shadow
-        ctx.save();
-        ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
-        ctx.shadowBlur = width * 0.02;
-        ctx.shadowOffsetY = height * 0.008;
+        if (template.id !== 'royal-gala-vip-ticket') {
+          ctx.save();
+          ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
+          ctx.shadowBlur = width * 0.02;
+          ctx.shadowOffsetY = height * 0.008;
 
-        if (slot.shape === 'arch') {
-          this.archPath(ctx, slotRectX, slotRectY, slotW, slotH, slotW / 2);
-        } else {
-          this.roundRectPath(ctx, slotRectX, slotRectY, slotW, slotH, borderRadius);
+          if (slot.shape === 'arch') {
+            this.archPath(ctx, slotRectX, slotRectY, slotW, slotH, slotW / 2);
+          } else {
+            this.roundRectPath(ctx, slotRectX, slotRectY, slotW, slotH, borderRadius);
+          }
+          ctx.fillStyle = '#1f2937';
+          ctx.fill();
+          ctx.restore();
         }
-        ctx.fillStyle = '#1f2937';
-        ctx.fill();
-        ctx.restore();
 
         // 2. Draw & Clip Photo
         ctx.save();
-        if (slot.shape === 'arch') {
+        if (template.id === 'royal-gala-vip-ticket') {
+          // Clean unclipped rectangle underlapping the gold frame window with zero gap
+        } else if (slot.shape === 'arch') {
           this.archPath(ctx, slotRectX, slotRectY, slotW, slotH, slotW / 2);
+          ctx.clip();
         } else {
           this.roundRectPath(ctx, slotRectX, slotRectY, slotW, slotH, borderRadius);
+          ctx.clip();
         }
-        ctx.clip();
 
         if (photoSrc) {
           try {
@@ -1391,7 +1398,7 @@ export class CanvasEngine {
     });
 
     // 5b. Render Footer Custom Bottom Text if present
-    if (options.customBottomText) {
+    if (options.customBottomText && template.id !== 'royal-gala-vip-ticket') {
       ctx.save();
       ctx.fillStyle = template.textColor || '#FFFFFF';
       ctx.font = `600 ${Math.round(width * 0.022)}px sans-serif`;
